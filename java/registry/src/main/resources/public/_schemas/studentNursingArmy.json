@@ -196,6 +196,18 @@
               "$id": "#/properties/examBody",
               "type": "string",
               "title": "examBody"
+            },
+            "doc-proof": {
+              "type": "array",
+              "items": {
+                "type": "String"
+              },
+              "title": "All Document Proof"
+            },
+            "paymentStatus": {
+              "$id": "#/properties/paymentStatus",
+              "type": "string",
+              "title": "paymentStatus"
             }
           }
         }
@@ -232,7 +244,10 @@
           "finalYearRollNo": "$.finalYearRollNo",
           "examBody": "$.examBody",
           "armyRegNo": "$.armyRegNo",
-          "date": "$.date"
+          "date": "$.date",
+          "doc-proof": "$.doc-proof",
+          "candidatePic": "$.candidatePic",
+          "paymentStatus": "$.paymentStatus"
         },
         "credentialTemplate": {
           "@context": [
@@ -338,7 +353,26 @@
                 "@context": {
                   "name": "schema:Text"
                 }
+              },
+              "candidatePic": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#candidatePic",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "doc-proof": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#doc-proof",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "paymentStatus": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#paymentStatus",
+                "@context": {
+                  "name": "schema:Text"
+                }
               }
+
             }
           ],
           "type": ["VerifiableCredential"],
@@ -357,7 +391,8 @@
             "examBody": "{{examBody}}",
             "finalYearRollNo": "{{finalYearRollNo}}",
             "armyRegNo": "{{armyRegNo}}",
-            "date": "{{date}}"
+            "date": "{{date}}",
+            "candidatePic": "{{candidatePic}}"
           },
           "issuer": "did:web:sunbirdrc.dev/vc/skill"
         }
