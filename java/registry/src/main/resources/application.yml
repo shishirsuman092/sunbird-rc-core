@@ -242,13 +242,14 @@ keycloak-admin:
   client-secret: ${sunbird_sso_admin_client_secret:QF5op6Hb3Y9mY1rU0IycdjmD7j3Bvzkh}
 keycloak-user:
   set-default-password: ${sunbird_keycloak_user_set_password:true}
-  default-password: ${sunbird_keycloak_user_password:admin}
+  default-password: ${sunbird_keycloak_user_password:admin@admin}
   # email actions which will be trigger by keycloak
   # example email actions: VERIFY_EMAIL, UPDATE_PROFILE, UPDATE_PASSWORD, TERMS_AND_CONDITIONS etc.
   # email details should be configured in keycloak realm settings
   email-actions: ${keycloack_user_email_actions:}
 claims:
   url: ${claims_url:http://10.0.2.18:8082}
+  download-path: /api/v1/files/download
 authentication:
   enabled: ${authentication_enabled:true}
   publicKey:  ${authentication_publickey:MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqcnkhmVj8NgQOwmazlsD5qtz09cnVFLZgSeIFGOo7p8ySGVaK3FHhxUFtsbSOq6vYaS1JPnX7RGZ2Y8zwVLwLVVjhBIwRG/cGdqbERd+/iBK6RRVxy+xxQ5uP0H6XUZAVkX2ATn95Mrd3DYhsXtHqRVe3OHkDn0k2ge8wWzP9K5FD2ZyjzGByhXAJo3usq6fcq6tvnT68GuAWd3QC95Xav39rBUFvVxyI+MrXPflpJd+2YMvpFdvsyxzf3WU+2f7R1QIqvDXIRqiPtHADNbScM/zm/8/+FCfSqd/tnxKdgtfUCwzOp4BI+7fG6bWGdwd77jr8sCperPHUhp4GJUbgQIDAQAB}
