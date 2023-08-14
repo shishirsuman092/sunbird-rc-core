@@ -51,8 +51,8 @@ public class SunbirdRCApplication {
         return context;
     }
 
-//    @Value("${cors.allowedOrigin}")
-//    public String corsAllowedOrigin;
+    @Value("${cors.allowedOrigin}")
+    public String corsAllowedOrigin;
 
     @Bean
     public FilterRegistrationBean corsFilter() {
@@ -60,18 +60,18 @@ public class SunbirdRCApplication {
         list.add("*");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        //config.setAllowCredentials(true);
-//        config.addAllowedOrigin(corsAllowedOrigin);
-        config.addAllowedOrigin("*");
-//        config.setAllowedOrigins(list);
-//        config.addAllowedHeader("*");
-//        config.addAllowedMethod("POST");
-//        config.addAllowedMethod("DELETE");
-//        config.addAllowedMethod("GET");
-//        config.addAllowedMethod("OPTIONS");
-//        config.addAllowedMethod("PUT");
-//        source.registerCorsConfiguration("/**", config);
-        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
+          config.setAllowCredentials(true);
+          config.addAllowedOrigin(corsAllowedOrigin);
+          config.addAllowedOrigin("*");
+          config.setAllowedOrigins(list);
+          config.addAllowedHeader("*");
+          config.addAllowedMethod("POST");
+          config.addAllowedMethod("DELETE");
+          config.addAllowedMethod("GET");
+          config.addAllowedMethod("OPTIONS");
+          config.addAllowedMethod("PUT");
+          source.registerCorsConfiguration("/**", config);
+          FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
         bean.setOrder(0);
         return bean;
     }
