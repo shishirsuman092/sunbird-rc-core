@@ -12,19 +12,20 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Courses {
+public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "category")
-    private String category;
-    @Column(name = "courseName")
-    private String courseName;
+    @Column(name = "eid")
+    private String eid;
 
-    @Column(name = "courseNameKey")
-    private String courseNameKey;
+    @Column(name = "ets")
+    private Long ets;
 
-    @Column(name = "shortName")
-    private String shortName;
+    @Column(name = "ver")
+    private String ver;
+
+    @Column(name = "mid")
+    private String mid;
 }
