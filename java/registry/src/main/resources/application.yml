@@ -66,7 +66,7 @@ registry:
     host: ${redis_host:10.0.2.18}
     port: ${redis_port:6379}
   digilocker:
-    hkey: ${hmackey:vTV3Jl81kXDOca70TT2+P/YAb5DXnS+DDr/ArlFhow0=}
+    hmackey: ${digilocker_hmackey:vTV3Jl81kXDOca70TT2+P/YAb5DXnS+DDr/ArlFhow0=}
 
 workflow:
   enabled: ${workflow.enable:true}
@@ -249,6 +249,7 @@ keycloak-user:
   email-actions: ${keycloack_user_email_actions:}
 claims:
   url: ${claims_url:http://10.0.2.18:8082}
+  domain-url: ${claims_domain-url:http://registration.uphrh.in:8082}
   download-path: /api/v1/files/download
 authentication:
   enabled: ${authentication_enabled:true}
