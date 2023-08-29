@@ -111,7 +111,9 @@
         "nurseRegNo": {"type": "string","title": "nurseRegNo"},
         "nurseRegdate": {"type": "string","title": "nurseRegdate"},
         "courseState": {"type": "string","title": "courseState"},
-        "courseCouncil": {"type": "string","title": "courseCouncil"}
+        "courseCouncil": {"type": "string","title": "courseCouncil"},
+        "certificateNumber": {"type": "string","title": "certificateNumber"},
+        "claimType": {"type": "string","title": "claimType"}
       }
     }
   },
@@ -180,7 +182,9 @@
           "nurseRegNo": "$.nurseRegNo",
           "nurseRegDate": "$.nurseRegDate",
           "courseState": "$.courseState",
-          "courseCouncil": "$.courseCouncil"
+          "courseCouncil": "$.courseCouncil",
+          "certificateNumber": "$.certificateNumber",
+          "claimType": "$.claimType"
         },
         "credentialTemplate": {
           "@context": [
@@ -399,6 +403,18 @@
                 "@context": {
                   "name": "schema:Text"
                 }
+              },
+              "certificateNumber": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#certificateNumber",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "claimType": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#claimType",
+                "@context": {
+                  "name": "schema:Text"
+                }
               }
             }
           ],
@@ -440,7 +456,9 @@
             "nurseRegNo": "{{nurseRegNo}}",
             "nurseRegDate": "{{nurseRegDate}}",
             "courseState": "{{courseState}}",
-            "courseCouncil": "{{courseCouncil}}"
+            "courseCouncil": "{{courseCouncil}}",
+            "certificateNumber": "{{certificateNumber}}",
+            "claimType": "{{claimType}}"
           },
           "issuer": "did:web:sunbirdrc.dev/vc/skill"
         }
