@@ -67,7 +67,7 @@ public class CoursesController {
 
     @GetMapping("/course-template-key/{courseName}")
     public ResponseEntity<String> getCourseShortName(@PathVariable String courseName) {
-        courseName = courseName.replace(" ","");
+        //courseName = courseName.replace(" ","");
         String course = coursesService.getCourseTemplateKey(courseName);
         return ResponseEntity.ok(course);
     }

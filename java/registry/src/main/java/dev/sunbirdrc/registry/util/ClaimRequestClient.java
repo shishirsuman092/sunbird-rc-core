@@ -31,6 +31,8 @@ import java.util.List;
 @Component
 public class ClaimRequestClient {
     private static final String GET_CERTIFICATE_NUMBER = "/api/v1/generate-certNumber";
+
+    private static final String GET_TEMPLATE_KEY = "/api/v1/courses/course-template-key/";
     private static Logger logger = LoggerFactory.getLogger(ClaimRequestClient.class);
     private final String claimRequestUrl;
     private final RestTemplate restTemplate;
@@ -284,7 +286,7 @@ public class ClaimRequestClient {
         headers.set("accept", "*/*");
         ResponseEntity<List> response = restTemplate.exchange(
                 builder.toUriString(), HttpMethod.GET, null, List.class, queryParams, headers
-        );        logger.info("end getCredentials ...");
+        );        logger.info("end getCourseCategory ...");
         return response.getBody();
     }
 
@@ -298,7 +300,7 @@ public class ClaimRequestClient {
         headers.set("accept", "*/*");
         ResponseEntity<List> response = restTemplate.exchange(
                 requestUrl, HttpMethod.GET, null, List.class, queryParams, headers
-        );        logger.info("end getCredentials ...");
+        );        logger.info("end getAllCourses ...");
         return response.getBody();
     }
 
@@ -314,7 +316,18 @@ public class ClaimRequestClient {
         headers.set("accept", "*/*");
         ResponseEntity<Long> response = restTemplate.exchange(
                 builder.toUriString(), HttpMethod.GET, null, Long.class, headers
-        );        logger.info("end getCredentials ...");
+        );        logger.info("end getCertificateNumber ...");
+        return response.getBody();
+    }
+
+    public String getTemplateKey(String courseName) {
+        String requestUrl = claimRequestUrl + GET_TEMPLATE_KEY + courseName;
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(requestUrl);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("accept", "*/*");
+        ResponseEntity<String> response = restTemplate.exchange(
+                builder.toUriString(), HttpMethod.GET, null, String.class, headers
+        );        logger.info("end getTemplateKey ...");
         return response.getBody();
     }
 
