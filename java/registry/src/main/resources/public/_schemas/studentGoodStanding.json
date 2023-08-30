@@ -97,7 +97,8 @@
           "$id": "#/properties/paymentStatus",
           "type": "string",
           "title": "paymentStatus"
-        }
+        },
+        "claimType": {"type": "string","title": "claimType"}
       }
     }
   },
@@ -110,7 +111,7 @@
       }
     ],
     "inviteRoles": ["anonymous"],
-    "roles": ["StudentGoodstanding"],
+    "roles": ["StudentFromUP"],
     "attestationPolicies": [
       {
         "name": "studentGoodstandingVerification",
@@ -131,7 +132,8 @@
           "workPlace": "$.workPlace",
           "council":"$.council",
           "docproof": "$.docproof",
-          "paymentStatus": "$.paymentStatus"
+          "paymentStatus": "$.paymentStatus",
+          "claimType": "$.claimType"
         },
         "credentialTemplate": {
           "@context": [
@@ -231,6 +233,12 @@
                 "@context": {
                   "name": "schema:Text"
                 }
+              },
+              "claimType": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#claimType",
+                "@context": {
+                  "name": "schema:Text"
+                }
               }
 
             }
@@ -250,7 +258,8 @@
             "trainingCenter": "{{trainingCenter}}",
             "registrationNumber": "{{registrationNumber}}",
             "workPlace": "{{workPlace}}",
-            "docproof": "{{docproof}}"
+            "docproof": "{{docproof}}",
+            "claimType": "{{claimType}}"
           },
           "issuer": "did:web:sunbirdrc.dev/vc/skill"
         }
