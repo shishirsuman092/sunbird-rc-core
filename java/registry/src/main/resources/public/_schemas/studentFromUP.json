@@ -113,7 +113,8 @@
         "courseState": {"type": "string","title": "courseState"},
         "courseCouncil": {"type": "string","title": "courseCouncil"},
         "certificateNumber": {"type": "string","title": "certificateNumber"},
-        "claimType": {"type": "string","title": "claimType"}
+        "claimType": {"type": "string","title": "claimType"},
+        "secretToken": {"type": "string","title": "secretToken"}
       }
     }
   },
@@ -123,25 +124,12 @@
       {
         "email": "/email",
         "mobile": "/phoneNumber",
-        "userId": "/phoneNumber"
+        "userId": "/phoneNumber",
+        "password": "/secretToken"
       }
     ],
     "inviteRoles": ["anonymous"],
-    "roles": ["StudentFromUP","StudentOutsideUP"],
-
-    "notificationTemplates": {
-      "create": [
-        {
-          "subject": "Credential Created from schema",
-          "body": "{\"sender\": \"AppName\",\"route\": \"4\",\"country\": \"91\",\"unicode\": 1,\"sms\": [{    \"message\": \"{{name}}, Your {{entityType}} credential has been created\",    \"to\": [      \"{{contact}}]\"    ]  \n      }],\n      ",
-          "invite": ": [],\n      ",
-          "update": ": [],\n      ",
-          "delete": ": [],\n      ",
-          "revoke": ": []\n  }\n}"
-        }
-      ]
-    },
-
+    "roles": ["StudentFromUP"],
     "attestationPolicies": [
       {
         "name": "studentVerification",
@@ -184,7 +172,8 @@
           "courseState": "$.courseState",
           "courseCouncil": "$.courseCouncil",
           "certificateNumber": "$.certificateNumber",
-          "claimType": "$.claimType"
+          "claimType": "$.claimType",
+          "secretToken": "$.secretToken"
         },
         "credentialTemplate": {
           "@context": [
@@ -412,6 +401,12 @@
               },
               "claimType": {
                 "@id": "https://github.com/sunbird-specs/vc-specs#claimType",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "secretToken": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#secretToken",
                 "@context": {
                   "name": "schema:Text"
                 }
