@@ -423,4 +423,14 @@ public class DigiLockerUtils {
         }
     }
 
+    public static String getValidityDate() {
+        // Get the current date
+        LocalDate currentDate = LocalDate.now();
+        LocalDate futureDate = currentDate.plusYears(5);
+        // Format the dates as strings using a DateTimeFormatter
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String futureDateString = futureDate.format(formatter);
+        return futureDateString;
+    }
+
 }
