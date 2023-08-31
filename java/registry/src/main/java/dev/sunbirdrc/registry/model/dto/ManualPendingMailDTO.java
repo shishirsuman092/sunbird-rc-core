@@ -21,4 +21,5 @@ public class ManualPendingMailDTO {
     private String courseCouncil;
     private String country;
     private String state;
+    private String attachment;
 }
