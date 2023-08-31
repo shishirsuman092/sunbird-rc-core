@@ -310,8 +310,17 @@ public class RegistryEntityController extends AbstractController {
         Response response = new Response(Response.API_ID.POST, "OK", responseParams);
         Map<String, Object> result = new HashMap<>();
         ObjectNode newRootNode = objectMapper.createObjectNode();
-        newRootNode.set(entityName, rootNode);
+        ObjectNode objectNode = (ObjectNode) rootNode;
+        if(entityName.equals("StudentFromUP") || entityName.equals("StudentOutsideUP")){
+            objectNode.put("certificateNumber",String.valueOf(claimRequestClient.getCertificateNumber()));
+            if(objectNode.get("university")==null)
+                objectNode.put("university","NA");
+            if(objectNode.get("validityUpto")==null) {
+                objectNode.put("validityUpto", DigiLockerUtils.getValidityDate());
+            }
+        }
 
+        newRootNode.set(entityName, rootNode);
         try {
             checkEntityNameInDefinitionManager(entityName);
             String userId = registryHelper.authorizeManageEntity(request, entityName);
@@ -599,20 +608,25 @@ public class RegistryEntityController extends AbstractController {
     }
 
 
-    private String getTemplateUrlFromRequest(HttpServletRequest request, String entityName) {
+    private String getTemplateUrlFromRequestFromRegType(HttpServletRequest request, String entityName, String courseName) {
         String template = Template;
 
         if(entityName.equalsIgnoreCase("StudentForeignVerification")){
-            return "https://raw.githubusercontent.com/kumarpawantarento/templates/main/Foreign-certificate";
+            return "https://raw.githubusercontent.com/kumarpawantarento/templates/main/Foreign-certificate.html";
         } else if (entityName.equalsIgnoreCase("StudentGoodstanding")) {
-            return "https://raw.githubusercontent.com/kumarpawantarento/templates/main/GoodStanding";
+            return "https://raw.githubusercontent.com/kumarpawantarento/templates/main/GoodStanding.html";
         }
 
         if (externalTemplatesEnabled && !StringUtils.isEmpty(request.getHeader(template))) {
             return request.getHeader(template);
         }
+
+        String templateKey = claimRequestClient.getTemplateKey(courseName);
+
+        logger.info("template key for courseName::"+courseName + ":" + templateKey);
+
         if (definitionsManager.getCertificateTemplates(entityName) != null && definitionsManager.getCertificateTemplates(entityName).size() > 0 && !StringUtils.isEmpty(request.getHeader(TemplateKey))) {
-            String templateUri = definitionsManager.getCertificateTemplates(entityName).getOrDefault(request.getHeader(TemplateKey), null);
+            String templateUri = definitionsManager.getCertificateTemplates(entityName).getOrDefault(templateKey, null);
             if (!StringUtils.isEmpty(templateUri)) {
                 try {
                     if (templateUri.startsWith(MINIO_URI_PREFIX)) {
@@ -630,7 +644,7 @@ public class RegistryEntityController extends AbstractController {
         return null;
     }
 
-    private String getTemplateUrlFromRequestFromRegType(HttpServletRequest request, String entityName) {
+    private String getTemplateUrlFromRequest(HttpServletRequest request, String entityName) {
         if (externalTemplatesEnabled && !StringUtils.isEmpty(request.getHeader(Template))) {
             return request.getHeader(Template);
         }
@@ -980,9 +994,10 @@ public class RegistryEntityController extends AbstractController {
                         .get(entityName);
                 JsonNode node = jsonNode.get(attestationName);
                 String fileName = getFileNameOfCredentials(node);
+                String courseName = jsonNode.get("courseName").asText();
                 boolean wc = false;
                 JsonNode attestationNode = getAttestationSignedData(attestationId, node);
-                String templateUrlFromRequest = getTemplateUrlFromRequest(request, entityName);
+                String templateUrlFromRequest = getTemplateUrlFromRequestFromRegType(request, entityName,courseName);
                 certificate = certificateService.getCertificate(attestationNode,
                         entityName,
                         entityId,
@@ -991,12 +1006,23 @@ public class RegistryEntityController extends AbstractController {
                         getAttestationNode(attestationId, node),
                         fileName, wc
                 );
-                if(certificate!=null){
+                if(certificate != null){
                     String url = getCredUrl(fileName, certificate);
                     if(url != null){
                         shareCredentials(node, url);
-                    }}
+                    }
+                }
 
+                // push credentials for web copy
+                templateUrlFromRequest = templateUrlFromRequest.replace(".html","-WC.html");
+                Object certificateWc = certificateService.getCertificate(attestationNode,
+                        entityName,
+                        entityId,
+                        request.getHeader(HttpHeaders.ACCEPT),
+                        templateUrlFromRequest,
+                        getAttestationNode(attestationId, node),
+                        fileName+"wc", false);
+                certificateService.saveToGCS(certificateWc, entityId+"wc");
             }
             return new ResponseEntity<>(certificate, HttpStatus.OK);
         } catch (RecordNotFoundException re) {

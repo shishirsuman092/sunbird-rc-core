@@ -114,7 +114,10 @@
         "courseCouncil": {"type": "string","title": "courseCouncil"},
         "certificateNumber": {"type": "string","title": "certificateNumber"},
         "claimType": {"type": "string","title": "claimType"},
-        "secretToken": {"type": "string","title": "secretToken"}
+        "secretToken": {"type": "string","title": "secretToken"},
+        "university": {"type": "string", "default": "NA","title": "university"},
+        "candidateSignature": {"type": "string","default": "NA","title": "candidateSignature"},
+        "validityUpto": {"type": "string","default": "NA","title": "validityUpto"}
       }
     }
   },
@@ -173,7 +176,9 @@
           "courseCouncil": "$.courseCouncil",
           "certificateNumber": "$.certificateNumber",
           "claimType": "$.claimType",
-          "secretToken": "$.secretToken"
+          "university": "$.university",
+          "candidateSignature": "$.candidateSignature",
+          "validityUpto": "$.validityUpto"
         },
         "credentialTemplate": {
           "@context": [
@@ -405,8 +410,21 @@
                   "name": "schema:Text"
                 }
               },
-              "secretToken": {
-                "@id": "https://github.com/sunbird-specs/vc-specs#secretToken",
+             "university": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#university",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "candidateSignature": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#candidateSignature",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+
+              "validityUpto": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#validityUpto",
                 "@context": {
                   "name": "schema:Text"
                 }
@@ -453,7 +471,10 @@
             "courseState": "{{courseState}}",
             "courseCouncil": "{{courseCouncil}}",
             "certificateNumber": "{{certificateNumber}}",
-            "claimType": "{{claimType}}"
+            "claimType": "{{claimType}}",
+            "university": "{{university}}",
+            "candidateSignature": "{{candidateSignature}}",
+            "validityUpto": "{{validityUpto}}"
           },
           "issuer": "did:web:sunbirdrc.dev/vc/skill"
         }
