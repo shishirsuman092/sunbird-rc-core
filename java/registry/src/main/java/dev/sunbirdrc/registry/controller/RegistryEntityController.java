@@ -949,7 +949,7 @@ public class RegistryEntityController extends AbstractController {
             JsonNode node = jsonNode.get(attestationName);
             String fileName = getFileNameOfCredentials(node);
             JsonNode credentialsType = node.get("credType");
-            generateImageURL(jsonNode);
+            //generateImageURL(jsonNode);
             JsonNode attestationNode = getAttestationSignedData(attestationId, node);
             certificate = certificateService.getCertificate(attestationNode,
                     entityName,
@@ -1318,9 +1318,14 @@ public class RegistryEntityController extends AbstractController {
 
     private String getFileNameOfCredentials(JsonNode node) {
         StringBuffer fileName = new StringBuffer();
-        String name = node.get(0).get("entityId").toString().replace(" ","");
-        name = name.replace("\"","");
-        fileName.append(name);
+        String osid = node.get("osid")!=null?node.get("osid").asText():null;
+        fileName.append(osid);
+        if(osid==null){
+            String name = node.get(0).get("entityId").toString().replace(" ","");
+            name = name.replace("\"","");
+            fileName.append(name);
+        }
+
         return fileName.toString();
     }
 

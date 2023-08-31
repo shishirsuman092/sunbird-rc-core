@@ -75,7 +75,7 @@ public class ClaimsController {
     @RequestMapping(value = "/api/v1/claims", method = RequestMethod.POST)
     public ResponseEntity<Claim> save(@RequestBody ClaimDTO claimDTO) {
         JSONObject jsonObject = new JSONObject(claimDTO.getPropertyData());
-        String credType1 = jsonObject.get("credType").toString();
+        String credType1 = jsonObject.get("claimType").toString();
         claimDTO.setCredtype(credType1);
         logger.info("Adding new claimDTO {} ", claimDTO.toString());
         logger.info("Cred Type new claimDTO {} ", claimDTO.getCredtype());
