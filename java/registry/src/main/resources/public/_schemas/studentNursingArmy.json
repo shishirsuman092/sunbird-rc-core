@@ -215,15 +215,8 @@
     }
   },
   "_osConfig": {
-    "ownershipAttributes": [
-      {
-        "email": "/email",
-        "mobile": "/phoneNumber",
-        "userId": "/phoneNumber"
-      }
-    ],
     "inviteRoles": ["anonymous"],
-    "roles": ["StudentNursingArmy"],
+    "roles": ["StudentFromUP"],
     "attestationPolicies": [
       {
         "name": "studentVerification",

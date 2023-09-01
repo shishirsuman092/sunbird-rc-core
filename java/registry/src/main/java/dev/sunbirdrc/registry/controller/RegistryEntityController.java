@@ -114,6 +114,7 @@ public class RegistryEntityController extends AbstractController {
             checkEntityNameInDefinitionManager(entityName);
             registryHelper.authorizeInviteEntity(request, entityName);
             watch.start(TAG);
+
             String entityId = registryHelper.inviteEntity(newRootNode, "");
             registryHelper.autoRaiseClaim(entityName, entityId, "", null, newRootNode, dev.sunbirdrc.registry.Constants.USER_ANONYMOUS);
             Map resultMap = new HashMap();
@@ -258,6 +259,15 @@ public class RegistryEntityController extends AbstractController {
         ResponseParams responseParams = new ResponseParams();
         Response response = new Response(Response.API_ID.UPDATE, "OK", responseParams);
         ((ObjectNode) rootNode).put(uuidPropertyName, entityId);
+        ObjectNode objectNode = (ObjectNode) rootNode;
+        if(entityName.equals("StudentFromUP")){
+            objectNode.put("certificateNumber",String.valueOf(claimRequestClient.getCertificateNumber()));
+            if(objectNode.get("university")==null)
+                objectNode.put("university","NA");
+            if(objectNode.get("validityUpto")==null) {
+                objectNode.put("validityUpto", DigiLockerUtils.getValidityDate());
+            }
+        }
         ObjectNode newRootNode = objectMapper.createObjectNode();
         newRootNode.set(entityName, rootNode);
 
@@ -986,8 +996,7 @@ public class RegistryEntityController extends AbstractController {
         try {
             String checkIfAlreadyExists = "issuance/"+entityId+".pdf";
             certificate = certificateService.getCred(checkIfAlreadyExists);
-            if(certificate == null || request.getHeader("correction")==null)
-            {
+
                 checkEntityNameInDefinitionManager(entityName);
                 String readerUserId = getUserId(entityName, request);
                 JsonNode jsonNode = registryHelper.readEntity(readerUserId, entityName, entityId, false, null, false)
@@ -995,6 +1004,9 @@ public class RegistryEntityController extends AbstractController {
                 JsonNode node = jsonNode.get(attestationName);
                 String fileName = getFileNameOfCredentials(node);
                 String courseName = jsonNode.get("courseName").asText();
+                String requestType = jsonNode.get("requestType") !=null ? jsonNode.get("requestType").asText():null;
+            if(certificate == null && courseName != null && !(courseName.contains("Corrected") || courseName.contains("Duplicate")|| courseName.contains("Reissue")) && (requestType != null && requestType.equals("Original")) )
+            {
                 boolean wc = false;
                 JsonNode attestationNode = getAttestationSignedData(attestationId, node);
                 String templateUrlFromRequest = getTemplateUrlFromRequestFromRegType(request, entityName,courseName);
