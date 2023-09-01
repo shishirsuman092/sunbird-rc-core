@@ -116,7 +116,8 @@
         "claimType": {"type": "string","title": "claimType"},
         "university": {"type": "string", "default": "NA","title": "university"},
         "candidateSignature": {"type": "string","default": "NA","title": "candidateSignature"},
-        "validityUpto": {"type": "string","default": "NA","title": "validityUpto"}
+        "validityUpto": {"type": "string","default": "NA","title": "validityUpto"},
+        "requestType": {"type": "string","title": "requestType"}
       }
     }
   },
@@ -168,7 +169,8 @@
           "claimType": "$.claimType",
           "university": "$.university",
           "candidateSignature": "$.candidateSignature",
-          "validityUpto": "$.validityUpto"
+          "validityUpto": "$.validityUpto",
+          "requestType": "$.requestType"
         },
         "credentialTemplate": {
           "@context": [
@@ -417,7 +419,14 @@
                 "@context": {
                   "name": "schema:Text"
                 }
+              },
+              "requestType": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#requestType",
+                "@context": {
+                  "name": "schema:Text"
+                }
               }
+
             }
           ],
           "type": ["VerifiableCredential"],
@@ -463,7 +472,8 @@
             "claimType": "{{claimType}}",
             "university": "{{university}}",
             "candidateSignature": "{{candidateSignature}}",
-            "validityUpto": "{{validityUpto}}"
+            "validityUpto": "{{validityUpto}}",
+            "requestType": "{{requestType}}"
           },
           "issuer": "did:web:sunbirdrc.dev/vc/skill"
         }
