@@ -65,8 +65,8 @@ public class GCPBucketUtil {
 
             Blob blob = bucket.create(gcpDirectoryName + "/" + fileName, fileData, contentType);
             LOGGER.debug("Storing GCS file:"+fileName);
-            validity=validity > 10 ? 10 : validity;
-            URL url =  blob.signUrl(validity, TimeUnit.HOURS,Storage.SignUrlOption.withV4Signature());
+            validity=validity > 30 ? 30 : validity;
+            URL url =  blob.signUrl(validity, TimeUnit.DAYS,Storage.SignUrlOption.withV4Signature());
             String fileUrl = url.toString();
             LOGGER.debug("File url of GCS: "+fileUrl);
 

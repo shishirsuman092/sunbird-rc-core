@@ -992,11 +992,11 @@ public class RegistryEntityController extends AbstractController {
     public ResponseEntity<Object> getAttestationCertificateGCS(HttpServletRequest request, @PathVariable String entityName, @PathVariable String entityId,
                                                             @PathVariable String attestationName, @PathVariable String attestationId) {
         ResponseParams responseParams = new ResponseParams();
-        Object certificate = null;
+        Object certificateWebCopy = null;
+        Object certificateOriginal = null;
         try {
             String checkIfAlreadyExists = "issuance/"+entityId+".pdf";
-            certificate = certificateService.getCred(checkIfAlreadyExists);
-
+            certificateOriginal = certificateService.getCred(checkIfAlreadyExists);
                 checkEntityNameInDefinitionManager(entityName);
                 String readerUserId = getUserId(entityName, request);
                 JsonNode jsonNode = registryHelper.readEntity(readerUserId, entityName, entityId, false, null, false)
@@ -1005,38 +1005,39 @@ public class RegistryEntityController extends AbstractController {
                 String fileName = getFileNameOfCredentials(node);
                 String courseName = jsonNode.get("courseName").asText();
                 String requestType = jsonNode.get("requestType") !=null ? jsonNode.get("requestType").asText():null;
-            if(certificate == null && courseName != null && !(courseName.contains("Corrected") || courseName.contains("Duplicate")|| courseName.contains("Reissue")) && (requestType != null && requestType.equals("Original")) )
+            if((certificateOriginal == null) || (courseName.contains("Corrected") || courseName.contains("Duplicate")|| courseName.contains("Reissue")) )
             {
                 boolean wc = false;
                 JsonNode attestationNode = getAttestationSignedData(attestationId, node);
                 String templateUrlFromRequest = getTemplateUrlFromRequestFromRegType(request, entityName,courseName);
-                certificate = certificateService.getCertificate(attestationNode,
+                certificateWebCopy = certificateService.getCertificate(attestationNode,
+                        entityName,
+                        entityId,
+                        request.getHeader(HttpHeaders.ACCEPT),
+                        templateUrlFromRequest.replace(".html","-WC.html"),
+                        getAttestationNode(attestationId, node),
+                        fileName+"webcopy", wc
+                );
+                String url = null;
+                if(certificateWebCopy != null){
+                    url = getCredUrl(fileName, certificateWebCopy);
+                }
+                certificateOriginal = certificateService.getCertificate(attestationNode,
                         entityName,
                         entityId,
                         request.getHeader(HttpHeaders.ACCEPT),
                         templateUrlFromRequest,
                         getAttestationNode(attestationId, node),
-                        fileName, wc
-                );
-                if(certificate != null){
-                    String url = getCredUrl(fileName, certificate);
-                    if(url != null){
-                        shareCredentials(node, url);
+                        url, false);
+                if(certificateOriginal!=null){
+                    String originalUrl = getCredUrl(fileName, certificateWebCopy);
+                    if(originalUrl != null){
+                        shareCredentials(jsonNode, originalUrl);
                     }
                 }
 
-                // push credentials for web copy
-                templateUrlFromRequest = templateUrlFromRequest.replace(".html","-WC.html");
-                Object certificateWc = certificateService.getCertificate(attestationNode,
-                        entityName,
-                        entityId,
-                        request.getHeader(HttpHeaders.ACCEPT),
-                        templateUrlFromRequest,
-                        getAttestationNode(attestationId, node),
-                        fileName+"wc", false);
-                certificateService.saveToGCS(certificateWc, entityId+"wc");
             }
-            return new ResponseEntity<>(certificate, HttpStatus.OK);
+            return new ResponseEntity<>(certificateOriginal, HttpStatus.OK);
         } catch (RecordNotFoundException re) {
             createSchemaNotFoundResponse(re.getMessage(), responseParams);
             Response response = new Response(Response.API_ID.GET, "ERROR", responseParams);
@@ -1331,8 +1332,9 @@ public class RegistryEntityController extends AbstractController {
     private String getFileNameOfCredentials(JsonNode node) {
         StringBuffer fileName = new StringBuffer();
         String osid = node.get("osid")!=null?node.get("osid").asText():null;
-        fileName.append(osid);
-        if(osid==null){
+        if(osid!=null)
+           fileName.append(osid);
+        else{
             String name = node.get(0).get("entityId").toString().replace(" ","");
             name = name.replace("\"","");
             fileName.append(name);
@@ -1412,7 +1414,7 @@ public class RegistryEntityController extends AbstractController {
             // Mail Send Functionality -Start
             JsonNode email = node.get("email");
             JsonNode name = node.get("name");
-            JsonNode credentialsType = node.get("credType");
+            JsonNode credentialsType = node.get("claimType");
             MailDto mail = new MailDto();
             if (mail != null && name != null) {
                 mail.setName(name.asText());
