@@ -127,23 +127,7 @@ public class UserService {
 
                 LOGGER.info("roleRepresentationList {}", roleRepresentationList);
 
-                try {
-                    TokenManager tokenManager = keycloakConfig
-                            .getUserKeycloak(userLoginDTO.getUsername(), userLoginDTO.getPassword()).tokenManager();
-
-                    AccessTokenResponse accessTokenResponse = tokenManager.getAccessToken();
-
-                    return UserTokenDetailsDTO.builder()
-                            .accessToken(accessTokenResponse.getToken())
-                            .expiresIn(accessTokenResponse.getExpiresIn())
-                            .refreshToken(accessTokenResponse.getRefreshToken())
-                            .refreshExpiresIn(accessTokenResponse.getRefreshExpiresIn())
-                            .tokenType(accessTokenResponse.getTokenType())
-                            .scope(accessTokenResponse.getScope())
-                            .userRepresentation(userRepresentationOptional.get())
-                            .roleRepresentationList(roleRepresentationList)
-                            .build();
-                } catch (NotAuthorizedException e) {
+                try git catch (NotAuthorizedException e) {
                     LOGGER.error("Credentials have authorization issue",e);
                     throw new AuthorizationException("Credentials have authorization issue");
                 } catch (Exception e) {
@@ -498,11 +482,17 @@ public class UserService {
      * @throws Exception
      */
     public void persistUserDetailsWithCredentials(@NonNull CustomUserDTO customUserDTO) throws Exception {
-        UserCredential userCredential = UserCredential.builder()
-                .userName(customUserDTO.getUsername())
-                .password(cipherEncoder.encodeText(customUserDTO.getPassword()))
-                .build();
-
+        Optional<UserCredential> byUserName = userCredentialRepository.findByUserName(customUserDTO.getUsername());
+        UserCredential userCredential = null;
+        if(byUserName.isPresent()){
+            userCredential = byUserName.get();
+            userCredential.setPassword(cipherEncoder.encodeText(customUserDTO.getPassword()));
+        } else {
+            userCredential = UserCredential.builder()
+                    .userName(customUserDTO.getUsername())
+                    .password(cipherEncoder.encodeText(customUserDTO.getPassword()))
+                    .build();
+        }
         userCredentialRepository.save(userCredential);
     }
 
