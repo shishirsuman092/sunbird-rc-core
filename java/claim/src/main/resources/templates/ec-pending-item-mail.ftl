@@ -50,10 +50,6 @@
             <td>${candidate.nursingCollage}</td>
         </tr>
         <tr>
-            <td>Doc Proof</td>
-            <td>${candidate.docProof}</td>
-        </tr>
-        <tr>
             <td>Course State</td>
             <td>${candidate.courseState}</td>
         </tr>

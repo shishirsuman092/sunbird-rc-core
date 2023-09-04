@@ -16,7 +16,7 @@ public class ManualPendingMailDTO {
     private String examBody;
     private String diplomaNumber;
     private String nursingCollage;
-    private String docProof;
+    private String[] docProofs;
     private String courseState;
     private String courseCouncil;
     private String country;
