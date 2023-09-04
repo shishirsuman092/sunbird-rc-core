@@ -498,12 +498,14 @@ public class UserService {
      * @throws Exception
      */
     public void persistUserDetailsWithCredentials(@NonNull CustomUserDTO customUserDTO) throws Exception {
+        LOGGER.info("Saving CustomUserDTO {}", customUserDTO);
         UserCredential userCredential = UserCredential.builder()
                 .userName(customUserDTO.getUsername())
                 .password(cipherEncoder.encodeText(customUserDTO.getPassword()))
                 .build();
-
-        userCredentialRepository.save(userCredential);
+        LOGGER.info("Saving userCredential {}", userCredential);
+        UserCredential save = userCredentialRepository.save(userCredential);
+        LOGGER.info("Saved UserCredential {}", save);
     }
 
     /**
