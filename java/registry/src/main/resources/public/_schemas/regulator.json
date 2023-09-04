@@ -19,7 +19,19 @@
 				"name": { "type": "string" },
 				"phoneNumber": { "type": "string" },
 				"email": { "type": "string" },
-				"council": { "type": "string" }
+				"council": { "type": "string" },
+				"subject": {
+					"type": "string",
+					"enum": [
+						"Math",
+						"Hindi",
+						"English",
+						"History",
+						"Geography",
+						"Physics",
+						"Chemistry",
+						"Biology"
+					]
 				}
 			}
 		}
@@ -32,6 +44,6 @@
 				"userId": "/phoneNumber"
 			}
 		],
-		"inviteRoles": ["SuperAdmin","CouncilAdmin","Admin","Regulator"]
+		"inviteRoles": ["anonymous"]
 	}
 }
