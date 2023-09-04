@@ -1,0 +1,35 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"type": "object",
+	"properties": {
+		"Regulator": {
+			"$ref": "#/definitions/SuperAdmin"
+		}
+	},
+	"required": ["SuperAdmin"],
+	"title": "SuperAdmin",
+	"definitions": {
+		"Regulator": {
+			"$id": "#/properties/SuperAdmin",
+			"type": "object",
+			"title": "SuperAdminschema",
+			"required": ["name", "phoneNumber", "email"],
+			"uniqueIndexFields": ["phoneNumber"],
+			"properties": {
+				"name": { "type": "string" },
+				"phoneNumber": { "type": "string" },
+				"email": { "type": "string" }
+			}
+		}
+	},
+	"_osConfig": {
+		"ownershipAttributes": [
+			{
+				"email": "/email",
+				"mobile": "/phoneNumber",
+				"userId": "/phoneNumber"
+			}
+		],
+		"inviteRoles": ["anonymous"]
+	}
+}
