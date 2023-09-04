@@ -67,17 +67,17 @@ public class RegistryEntityController extends AbstractController {
 
     private static final String TRANSACTION_ID = "transactionId";
     private static Logger logger = LoggerFactory.getLogger(RegistryEntityController.class);
+    @Value("${claims.domain-url}")
+    private String claimRequestUrl;
+    @Value("${claims.download-path}")
+    private String claimDownloadPath;
+    static String static_download_parameter = "?fileName=";
 
-    @Value("${Logo.imgBaseUri:https://casa.upsmfac.org/UploadedFiles/Student/}")
-    private String imgBaseUri;
-    @Value("${GCS_SERVICE_URL:https://casa.upsmfac.org/UploadedFiles/Student/}")
-    public static final String GCS_SERVICE_URL = "http://34.100.212.156:8082/";
     @Value("${digilocker_hmackey:}")
     public static final String DIGILOCKER_KEY = "84600d73-e618-4c80-a347-6b51147103ee";
     @Autowired
     private CertificateServiceImpl certificateService;
-    @Value("${Logo.imgFormat:.jpg}")
-    private String imgFormat;
+
     @Autowired
     private FileStorageService fileStorageService;
 
@@ -1005,22 +1005,25 @@ public class RegistryEntityController extends AbstractController {
                 String fileName = getFileNameOfCredentials(node);
                 String courseName = jsonNode.get("courseName").asText();
                 String requestType = jsonNode.get("requestType") !=null ? jsonNode.get("requestType").asText():null;
-            if((certificateOriginal == null) || (courseName.contains("Corrected") || courseName.contains("Duplicate")|| courseName.contains("Reissue")) )
+            if((certificateOriginal == null) || (courseName.contains("Correction") || courseName.contains("Duplicate")|| courseName.contains("Reissue")) )
             {
                 boolean wc = false;
                 JsonNode attestationNode = getAttestationSignedData(attestationId, node);
                 String templateUrlFromRequest = getTemplateUrlFromRequestFromRegType(request, entityName,courseName);
+                String fileName1 = fileName + "webcopy";
                 certificateWebCopy = certificateService.getCertificate(attestationNode,
                         entityName,
                         entityId,
                         request.getHeader(HttpHeaders.ACCEPT),
                         templateUrlFromRequest.replace(".html","-WC.html"),
                         getAttestationNode(attestationId, node),
-                        fileName+"webcopy", wc
+                        fileName1, wc
                 );
                 String url = null;
+                String fileUrlForQR = getFileUrl(fileName1);
                 if(certificateWebCopy != null){
-                    url = getCredUrl(fileName, certificateWebCopy);
+                    url = certificateService.saveToGCS(certificateWebCopy, fileName1);
+                    logger.debug("WebCopy of Certificate:"+url);
                 }
                 certificateOriginal = certificateService.getCertificate(attestationNode,
                         entityName,
@@ -1028,9 +1031,9 @@ public class RegistryEntityController extends AbstractController {
                         request.getHeader(HttpHeaders.ACCEPT),
                         templateUrlFromRequest,
                         getAttestationNode(attestationId, node),
-                        url, false);
+                        fileUrlForQR, false);
                 if(certificateOriginal!=null){
-                    String originalUrl = getCredUrl(fileName, certificateWebCopy);
+                    String originalUrl = getCredUrl(fileName, certificateOriginal);
                     if(originalUrl != null){
                         shareCredentials(jsonNode, originalUrl);
                     }
@@ -1053,6 +1056,11 @@ public class RegistryEntityController extends AbstractController {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    private String getFileUrl(String fileName) {
+        String fileUrl = claimRequestUrl + claimDownloadPath + static_download_parameter + "issuance/"+fileName + ".pdf";
+        return fileUrl;
     }
 
 
@@ -1368,24 +1376,6 @@ public class RegistryEntityController extends AbstractController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private String generateImageURL(JsonNode rootNode) {
-        JsonNode rollNumber = rootNode.get("finalYearRollNo");
-        JsonNode enrollmentNumber = rootNode.get("enrollmentNumber");
-        JsonNode examYear = rootNode.get("examYear");
-        ObjectNode node = (ObjectNode) rootNode;
-        String url = imgBaseUri;
-        if (examYear != null)
-            url = url.concat(examYear.asText());
-        if (enrollmentNumber != null) {
-            url = url.concat("/E" + enrollmentNumber.asText());
-        } else if (rollNumber != null) {
-            url = url.concat("/rp" + rollNumber.asText());
-            node.put("candidatePic", url);
-        }
-        logger.debug("Generated Img url::" + url);
-        return url;
     }
 
     @Nullable

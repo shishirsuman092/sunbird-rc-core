@@ -2,17 +2,17 @@
 	"$schema": "http://json-schema.org/draft-07/schema",
 	"type": "object",
 	"properties": {
-		"SuperAdmin": {
-			"$ref": "#/definitions/SuperAdmin"
+		"ExamBody": {
+			"$ref": "#/definitions/ExamBody"
 		}
 	},
-	"required": ["SuperAdmin"],
-	"title": "SuperAdmin",
+	"required": ["ExamBody"],
+	"title": "ExamBody",
 	"definitions": {
-		"SuperAdmin": {
-			"$id": "#/properties/SuperAdmin",
+		"ExamBody": {
+			"$id": "#/properties/ExamBody",
 			"type": "object",
-			"title": "SuperAdminschema",
+			"title": "ExamBodyschema",
 			"required": ["name", "phoneNumber", "email"],
 			"uniqueIndexFields": ["phoneNumber"],
 			"properties": {
@@ -31,6 +31,6 @@
 				"userId": "/phoneNumber"
 			}
 		],
-		"inviteRoles": ["Regulator","SuperAdmin"]
+		"inviteRoles": ["SuperAdmin","CouncilAdmin","Admin","Regulator"]
 	}
 }
