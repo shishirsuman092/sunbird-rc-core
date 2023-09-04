@@ -2,23 +2,24 @@
 	"$schema": "http://json-schema.org/draft-07/schema",
 	"type": "object",
 	"properties": {
-		"Regulator": {
+		"CouncilAdmin": {
 			"$ref": "#/definitions/CouncilAdmin"
 		}
 	},
 	"required": ["CouncilAdmin"],
 	"title": "CouncilAdmin",
 	"definitions": {
-		"Regulator": {
+		"CouncilAdmin": {
 			"$id": "#/properties/CouncilAdmin",
 			"type": "object",
-			"title": "CouncilAdminSchema",
+			"title": "CouncilAdminschema",
 			"required": ["name", "phoneNumber", "email"],
 			"uniqueIndexFields": ["phoneNumber"],
 			"properties": {
 				"name": { "type": "string" },
 				"phoneNumber": { "type": "string" },
-				"email": { "type": "string" }
+				"email": { "type": "string" },
+				"council": { "type": "string" }
 			}
 		}
 	},
@@ -30,6 +31,6 @@
 				"userId": "/phoneNumber"
 			}
 		],
-		"inviteRoles": ["anonymous"]
+		"inviteRoles": ["SuperAdmin","CouncilAdmin","Admin","Regulator"]
 	}
 }
