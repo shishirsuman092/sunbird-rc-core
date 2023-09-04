@@ -40,6 +40,9 @@ public class AsyncMailSender {
     @Autowired
     private Configuration freeMarkerConfiguration;
 
+    @Autowired
+    private FileService fileService;
+
     /**
      * @param pendingMailDTOList
      * @param regulatorList
@@ -195,6 +198,14 @@ public class AsyncMailSender {
 
             byte[] doc = Base64.getDecoder().decode(manualPendingMailDTO.getAttachment());
             mimeMessageHelper.addAttachment("CandidateDetails.pdf", new ByteArrayResource(doc));
+
+            if (manualPendingMailDTO.getDocProofs() != null && manualPendingMailDTO.getDocProofs().length > 0) {
+
+                for (int i = 0; i < manualPendingMailDTO.getDocProofs().length; i++) {
+                    mimeMessageHelper.addAttachment("DocProof_" + i,
+                            fileService.downloadFile(manualPendingMailDTO.getDocProofs()[i]));
+                }
+            }
 
             mailSender.send(mimeMessageHelper.getMimeMessage());
         } catch (Exception e) {
