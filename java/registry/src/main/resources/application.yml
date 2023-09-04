@@ -248,7 +248,8 @@ keycloak-user:
   # email details should be configured in keycloak realm settings
   email-actions: ${keycloack_user_email_actions:}
 claims:
-  url: ${claims_url:http://10.0.2.18:8082}
+        #url: ${claims_url:http://10.0.2.18:8082}
+  url: ${claims_url:https://registration.uphrh.in/claim-ms}
   domain-url: ${claims_domain-url:https://registration.uphrh.in/claim-ms}
   download-path: /api/v1/files/download
 authentication:
