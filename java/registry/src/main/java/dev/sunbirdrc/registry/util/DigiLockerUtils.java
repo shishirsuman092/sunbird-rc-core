@@ -60,7 +60,8 @@ public class DigiLockerUtils {
 
     public static String getDocUri() {
         String issuerId = "org.upsmfac";
-        String doctype = "REGCR";
+        CertificateType certificateType = CertificateType.PHCER;
+        String doctype = certificateType.toString();
         int n = 10;
         double docId = Math.floor(Math.random() * (9 * Math.pow(10, n - 1))) + Math.pow(10, (n - 1));
         String docUri = issuerId + "-" + doctype + "-" + docId;

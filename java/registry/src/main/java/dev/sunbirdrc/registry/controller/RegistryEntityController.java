@@ -1191,7 +1191,7 @@ public class RegistryEntityController extends AbstractController {
     public ResponseEntity<Object> pullDocURI(HttpServletRequest request) throws Exception {
         String statusCode = "1";
         Scanner scanner = null;
-        String hmacFromRequest = request.getHeader("hmac");
+        String hmacFromRequest = request.getHeader("x-digilocker-hmac");
         logger.info(hmacFromRequest+":Hmac From server");
         try {
             scanner = new Scanner(request.getInputStream(), "UTF-8");
