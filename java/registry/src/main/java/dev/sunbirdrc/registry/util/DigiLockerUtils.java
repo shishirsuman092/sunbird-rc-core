@@ -305,7 +305,7 @@ public class DigiLockerUtils {
         DocDetailsRs docDetails = new DocDetailsRs();
         docDetails.setDataContent(content);
         docDetails.setDigiLockerId(pullDocRequest.getDocDetails().getDigiLockerId());
-        docDetails.setDocContent(Base64.getEncoder().encodeToString(bytes));
+        docDetails.setDocContent(Base64.getEncoder().encode(bytes));
         resp.setDocDetails(docDetails);
         return resp;
     }
