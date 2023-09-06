@@ -17,8 +17,11 @@ import dev.sunbirdrc.registry.exception.SignatureException;
 import dev.sunbirdrc.registry.middleware.util.Constants;
 import dev.sunbirdrc.registry.middleware.util.JSONUtil;
 import dev.sunbirdrc.registry.middleware.util.OSSystemFields;
+import dev.sunbirdrc.registry.model.event.Actor;
 import dev.sunbirdrc.registry.model.event.Event;
 import dev.sunbirdrc.registry.model.EventType;
+import dev.sunbirdrc.registry.model.event.EventInternal;
+import dev.sunbirdrc.registry.model.event.TelemetryObject;
 import dev.sunbirdrc.registry.service.*;
 import dev.sunbirdrc.registry.sink.DatabaseProvider;
 import dev.sunbirdrc.registry.sink.OSGraph;
@@ -33,7 +36,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -62,6 +64,9 @@ public class RegistryServiceImpl implements RegistryService {
     private SignatureService signatureService;
     @Autowired
     private IDefinitionsManager definitionsManager;
+
+    @Autowired
+    private ClaimRequestClient claimRequestClient;
 
     @Autowired
     private EncryptionHelper encryptionHelper;
@@ -203,6 +208,37 @@ public class RegistryServiceImpl implements RegistryService {
         eventService.pushEvents(event);
     }
 
+    public EventInternal maskAndEmitEventDashBoard(JsonNode dataNode, String index, EventType entity, String userId, String uuid) throws JsonProcessingException {
+        JsonNode maskedNode = entityTransformer.updatePrivateAndInternalFields(
+                dataNode,
+                definitionsManager.getDefinition(index).getOsSchemaConfiguration()
+        );
+        JsonNode courseName1 = dataNode.get("courseName");
+        String courseName = courseName1!=null?courseName1.asText():null;
+        EventInternal event = createEventInternal(entity.name(), userId, "USER", uuid, index, courseName);
+        return event;
+    }
+
+    EventInternal createEventInternal(String eid,
+                                        String actorId,
+                                        String actorType,
+                                        String objectId,
+                                        String objectType,
+                                        String courseName
+    ) {
+        EventInternal event = EventInternal.builder()
+                .telemetryId(objectId)
+                .userId(actorId)
+                .type(objectType)
+                .ets(new Date().getTime())
+                .mid(UUID.randomUUID().toString())
+                .ver("3.1")
+                .eid(eid)
+                .courseName(courseName)
+                .build();
+        return event;
+    }
+
     /**
      * This method adds the entity into db, calls elastic and audit asynchronously
      *
@@ -268,6 +304,9 @@ public class RegistryServiceImpl implements RegistryService {
                     shard, rootNode);
             if(isEventsEnabled) {
                 maskAndEmitEvent(rootNode.get(vertexLabel), vertexLabel, EventType.ADD, userId, entityId);
+            }else{
+                EventInternal event = maskAndEmitEventDashBoard(rootNode.get(vertexLabel), vertexLabel, EventType.ADD, userId, entityId);
+                claimRequestClient.sendEvent(event);
             }
         }
         if (vertexLabel.equals(Schema)) {

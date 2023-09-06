@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import dev.sunbirdrc.pojos.dto.ClaimDTO;
 import dev.sunbirdrc.registry.dao.Learner;
 import dev.sunbirdrc.registry.model.dto.*;
+import dev.sunbirdrc.registry.model.event.EventDao;
+import dev.sunbirdrc.registry.model.event.EventInternal;
 import lombok.NonNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -34,7 +36,7 @@ public class ClaimRequestClient {
 
     private static final String GET_TEMPLATE_KEY = "/api/v1/courses/course-template-key/";
     private static Logger logger = LoggerFactory.getLogger(ClaimRequestClient.class);
-    private final String claimRequestUrl;
+    private String claimRequestUrl;
     private final RestTemplate restTemplate;
     private static final String CLAIMS_PATH = "/api/v1/claims";
     private static final String FETCH_CLAIMS_PATH = "/api/v1/getClaims";
@@ -45,6 +47,7 @@ public class ClaimRequestClient {
     private static final String SAVE_CRED_API = "/api/v1/credentials/save";
     private static final String GET_CRED_URL = "/api/v1/files/download?";
 
+    private static final String SAVE_EVENT_SERVICE = "/v1/api/events";
     private static final String GET_COURSE_CATEGORY = "/api/v1/courses/diploma";
 
     private static final String GET_ALL_COURSES = "/api/v1/courses/";
@@ -102,6 +105,18 @@ public class ClaimRequestClient {
     public void sendMail(MailDto mail) {
         restTemplate.postForObject(claimRequestUrl + MAIL_SEND_URL, mail, HashMap.class);
         logger.info("Mail has successfully sent ...");
+    }
+
+    public void sendEvent(EventInternal event) {
+        HttpMethod method = HttpMethod.POST;
+        restTemplate.exchange(
+                claimRequestUrl + SAVE_EVENT_SERVICE,
+                HttpMethod.POST,
+                new HttpEntity<>(event),
+                EventDao.class
+        );
+        //restTemplate.postForObject(claimRequestUrl + SAVE_EVENT_SERVICE, event, EventInternal.class);
+        logger.info("Event has successfully published ...");
     }
 
     public String saveFileToGCS(Object certificate, String entityId) {

@@ -1,5 +1,7 @@
 package dev.sunbirdrc.claim.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +23,9 @@ public class Event {
     @Column(name = "eid")
     private String eid;
 
+    @Column(name = "userId")
+    private String userId;
+
     @Column(name = "ets")
     private Long ets;
 
@@ -30,6 +35,11 @@ public class Event {
     @Column(name = "mid")
     private String mid;
 
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TelemetryObject> telemetryObjects;
+    @Column(name = "courseName")
+    private String courseName;
+
+    @Column(name ="telemetryId")
+    private String telemetryId;
+    @Column(name ="type")
+    private String type;
 }

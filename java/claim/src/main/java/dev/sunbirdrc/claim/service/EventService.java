@@ -17,18 +17,9 @@ public class EventService {
     @Autowired
     private EventRepository eventRepository;
 
-    @Autowired
-    private TelemetryObjectRepository telemetryObjectRepository;
-
     public Event saveEventWithTelemetry(Event event) {
-        List<TelemetryObject> telemetryObjects = event.getTelemetryObjects();
+
         Event savedEvent = eventRepository.save(event);
-        if (telemetryObjects != null) {
-            for (TelemetryObject telemetryObject : telemetryObjects) {
-                telemetryObject.setEvent(savedEvent);
-                telemetryObjectRepository.save(telemetryObject);
-            }
-        }
 
         return savedEvent;
     }
