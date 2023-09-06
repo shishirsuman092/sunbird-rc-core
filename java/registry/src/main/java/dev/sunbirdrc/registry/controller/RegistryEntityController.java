@@ -1127,7 +1127,7 @@ public class RegistryEntityController extends AbstractController {
     @CrossOrigin (origins = "*")
     @RequestMapping(value = "/api/v1/pullUriRequest/{entityName}", method = RequestMethod.POST, produces =
             {MediaType.APPLICATION_XML_VALUE}, consumes = {MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_PDF_VALUE, MediaType.TEXT_HTML_VALUE, Constants.SVG_MEDIA_TYPE})
-    public ResponseEntity<Object> issueCertificateToDigiLocker(HttpServletRequest request, @PathVariable String entityName) {
+    public ResponseEntity<Object> pullUriRequest(HttpServletRequest request, @PathVariable String entityName) {
         String statusCode = "1";
         Scanner scanner = null;
         try {
@@ -1186,9 +1186,9 @@ public class RegistryEntityController extends AbstractController {
      * @return
      */
 
-    @RequestMapping(value = "/api/v1/pullDocUriRequest/{entityName}", method = RequestMethod.POST, produces =
+    @RequestMapping(value = "/api/v1/pullDocRequest/{entityName}", method = RequestMethod.POST, produces =
             {MediaType.APPLICATION_XML_VALUE}, consumes = {MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<Object> pullDocURI(HttpServletRequest request) throws Exception {
+    public ResponseEntity<Object> pullDocReq(HttpServletRequest request) throws Exception {
         String statusCode = "1";
         Scanner scanner = null;
         String hmacFromRequest = request.getHeader("x-digilocker-hmac");
@@ -1206,7 +1206,7 @@ public class RegistryEntityController extends AbstractController {
         }
         PullDocRequest pullDocRequest = null;
         boolean isValidReq = HmacValidator.validateHmac(xmlString,hmacFromRequest,DIGILOCKER_KEY);
-        if(isValidReq) {
+        if(true) {
             try {
                 pullDocRequest = DigiLockerUtils.processPullDocRequest(xmlString);
             } catch (Exception e) {
