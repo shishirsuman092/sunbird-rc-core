@@ -55,4 +55,16 @@ public class OutsideStudentController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/generateVerifyLink/{entityType}/{entityId}")
+    public ResponseEntity<String> generateVerifyLink(@PathVariable String entityType, @PathVariable String entityId) {
+
+        String verifyLink = studentOutsideUpService.generateVerifyLinkForForeignOutsideStudent(entityType, entityId);
+
+        if (!StringUtils.isEmpty(verifyLink)) {
+            return new ResponseEntity<>(verifyLink, HttpStatus.OK);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

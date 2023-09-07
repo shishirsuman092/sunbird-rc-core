@@ -3,10 +3,13 @@ package dev.sunbirdrc.claim.service;
 import dev.sunbirdrc.claim.config.PropertyMapper;
 import dev.sunbirdrc.claim.entity.StudentOutsideUP;
 import dev.sunbirdrc.claim.exception.ClaimMailException;
+import dev.sunbirdrc.claim.exception.InvalidInputException;
+import dev.sunbirdrc.claim.model.EntityType;
 import dev.sunbirdrc.claim.repository.StudentOutsideUpRowMapper;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,6 +91,25 @@ public class StudentOutsideUpService {
         }
 
         return processedTemplateString;
+    }
+
+    /**
+     * @param entityType
+     * @param entityId
+     * @return
+     */
+    public String generateVerifyLinkForForeignOutsideStudent(String entityType, String entityId) {
+        if (StringUtils.isEmpty(entityType) || StringUtils.isEmpty(entityId)) {
+            throw new InvalidInputException("Parameters are invalid");
+        }
+
+        if (EntityType.FOREIGN.name().equalsIgnoreCase(entityType)) {
+            return propertyMapper.getClaimUrl() + "/api/v1/foreignStudent/" + entityId;
+        } else if (EntityType.OUTSIDE.name().equalsIgnoreCase(entityType)) {
+            return propertyMapper.getClaimUrl() + "/api/v1/outsideStudent/" + entityId;
+        } else {
+            throw new InvalidInputException("Invalid entity type");
+        }
     }
 
 }
