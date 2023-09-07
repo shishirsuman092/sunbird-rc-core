@@ -186,9 +186,28 @@ public class DigiLockerUtils {
             PullURIRequest pullUriRequest = (PullURIRequest) jaxbUnmarshaller.unmarshal(new StringReader(xmlString));
             // Access DocDetails using getDocDetails()
             docDetails = pullUriRequest.getDocDetails();
-            jsonNode =  getSearchNode(docDetails.getName(),docDetails.getMobile(), docDetails.getEmail());
+            jsonNode =  getSearchNode(docDetails.getName(),docDetails.getMobile(), docDetails.getEmail(), docDetails.getFinalYearRollNo());
             jsonNode.fields().forEachRemaining(entry -> objectNode.set(entry.getKey(), entry.getValue()));
        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+        return objectNode;
+    }
+
+    public static ObjectNode getJsonQuery2(String xmlString) {
+        dev.sunbirdrc.registry.util.DocDetails docDetails;
+        JsonNode jsonNode = null;
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode objectNode = objectMapper.createObjectNode();;
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(PullURIRequest.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            PullURIRequest pullUriRequest = (PullURIRequest) jaxbUnmarshaller.unmarshal(new StringReader(xmlString));
+            // Access DocDetails using getDocDetails()
+            docDetails = pullUriRequest.getDocDetails();
+            jsonNode =  getSearchNode(docDetails.getName(),docDetails.getMobile(), docDetails.getEmail(), docDetails.getFinalYearRollNo());
+            jsonNode.fields().forEachRemaining(entry -> objectNode.set(entry.getKey(), entry.getValue()));
+        } catch (JAXBException e) {
             e.printStackTrace();
         }
         return objectNode;
@@ -222,7 +241,7 @@ public class DigiLockerUtils {
 
 
 
-    private static JsonNode getSearchNode(String name,String phoneNumber, String email){
+    private static JsonNode getSearchNode(String name,String phoneNumber, String email, String finalYearRollNumber){
         String searchNode = "{\n" +
                 "    \"filters\": {\n" +
                 "        \"email\": {\n" +
@@ -241,12 +260,34 @@ public class DigiLockerUtils {
                 "    \"limit\": 1,\n" +
                 "    \"offset\": 0\n" +
                 "}";
+        String q1 = "{\n" +
+                "    \"filters\": {\n" +
+                "        \"email\": {\n" +
+                "            \"contains\": \"" +email+
+                "\"\n" +
+                "        },\n" +
+                "        \"phoneNumber\": {\n" +
+                "            \"eq\": \"" +phoneNumber+
+                "\"\n" +
+                "        },\n" +
+                "        \"name\": {\n" +
+                "            \"eq\": \"" +name+
+                "\"\n" +
+                "        },\n" +
+                "        \"finalYearRollNo\": {\n" +
+                "            \"eq\": \"" +finalYearRollNumber+
+                "\"\n" +
+                "        }\n" +
+                "    },\n" +
+                "    \"limit\": 1,\n" +
+                "    \"offset\": 0\n" +
+                "}";
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectMapper mapper = new ObjectMapper();
         JsonFactory factory = mapper.getFactory();
         JsonNode actualObj = null;
         try {
-        JsonParser parser = factory.createParser(searchNode);
+        JsonParser parser = factory.createParser(q1);
         actualObj = mapper.readTree(parser);
        // ((ObjectNode) actualObj.get("filters")).put("email",email);
         } catch (IOException e) {

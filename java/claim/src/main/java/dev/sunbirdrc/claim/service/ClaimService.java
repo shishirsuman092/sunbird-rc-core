@@ -70,22 +70,19 @@ public class ClaimService {
         ClaimWithSize claimWithSize = new ClaimWithSize();
         List<Claim> claims = claimRepository.findAll();
         claimWithSize.setTotalClaim(claims.size());
-        Integer totalOpenClaims = 0;
-        Integer totalapprovedClaims = 0;
-        Integer totalapprovedRejected = 0;
-        for (Claim claim:claims  ) {
-            if(claim.getStatus()!=null && claim.getStatus().equals("APPROVED")){
-                totalapprovedClaims = totalapprovedClaims+1;
-            } else if (claim.getStatus()!=null && claim.getStatus().equals("REJECTED")) {
-                totalapprovedRejected = totalapprovedRejected+1;
-            }else if (claim.getStatus()!=null && claim.getStatus().equals("OPEN")) {
-                totalOpenClaims = totalOpenClaims+1;
-            }
-        }
+        Long totalOpenClaims = claims.stream()
+                .filter(claim -> "OPEN".equals(claim.getStatus()))
+                .count();
+        Long totalApprovedClaims = claims.stream()
+                .filter(claim -> "APPROVED".equals(claim.getStatus()))
+                .count();
+        Long totalApprovedRejected = claims.stream()
+                .filter(claim -> "REJECTED".equals(claim.getStatus()))
+                .count();
         claimWithSize.setClaimList(claims);
-        claimWithSize.setTotalApproved(totalapprovedClaims);
-        claimWithSize.setTotalOpen(totalOpenClaims);
-        claimWithSize.setTotalApproved(totalapprovedClaims);
+        claimWithSize.setTotalOpen(totalOpenClaims.intValue());
+        claimWithSize.setTotalApproved(totalApprovedClaims.intValue());
+        claimWithSize.setTotalRejected(totalApprovedRejected.intValue());
         return claimWithSize;
     }
 
