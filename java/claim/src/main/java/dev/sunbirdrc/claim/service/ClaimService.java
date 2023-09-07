@@ -2,6 +2,7 @@ package dev.sunbirdrc.claim.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import dev.sunbirdrc.claim.dto.ClaimWithNotesDTO;
+import dev.sunbirdrc.claim.dto.ClaimWithSize;
 import dev.sunbirdrc.claim.entity.Claim;
 import dev.sunbirdrc.claim.entity.ClaimNote;
 import dev.sunbirdrc.claim.exception.ClaimAlreadyProcessedException;
@@ -63,6 +64,29 @@ public class ClaimService {
                 .filter(claim -> claimsAuthorizer.isAuthorizedAttestor(claim, attestorNode))
                 .collect(Collectors.toList());
         return toMap(claimsToAttestor, pageable);
+    }
+
+    public ClaimWithSize findAllClaims() {
+        ClaimWithSize claimWithSize = new ClaimWithSize();
+        List<Claim> claims = claimRepository.findAll();
+        claimWithSize.setTotalClaim(claims.size());
+        Integer totalOpenClaims = 0;
+        Integer totalapprovedClaims = 0;
+        Integer totalapprovedRejected = 0;
+        for (Claim claim:claims  ) {
+            if(claim.getStatus()!=null && claim.getStatus().equals("APPROVED")){
+                totalapprovedClaims = totalapprovedClaims+1;
+            } else if (claim.getStatus()!=null && claim.getStatus().equals("REJECTED")) {
+                totalapprovedRejected = totalapprovedRejected+1;
+            }else if (claim.getStatus()!=null && claim.getStatus().equals("OPEN")) {
+                totalOpenClaims = totalOpenClaims+1;
+            }
+        }
+        claimWithSize.setClaimList(claims);
+        claimWithSize.setTotalApproved(totalapprovedClaims);
+        claimWithSize.setTotalOpen(totalOpenClaims);
+        claimWithSize.setTotalApproved(totalapprovedClaims);
+        return claimWithSize;
     }
 
     public List<Claim> findByRequestorName(String entity, Pageable pageable) {
