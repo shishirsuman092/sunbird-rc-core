@@ -47,6 +47,7 @@ public class ClaimsController {
         return new ResponseEntity<>(claims, HttpStatus.OK);
     }
 
+    @CrossOrigin (origins = "*")
     @RequestMapping(value = "/api/v1/all-claims", method = RequestMethod.POST)
     public ResponseEntity<ClaimWithSize> getAllClaims(@RequestHeader HttpHeaders headers) {
         ClaimWithSize claims = claimService.findAllClaims();
