@@ -2,6 +2,7 @@ package dev.sunbirdrc.claim.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import dev.sunbirdrc.claim.dto.ClaimWithNotesDTO;
+import dev.sunbirdrc.claim.dto.ClaimWithSize;
 import dev.sunbirdrc.claim.entity.Claim;
 import dev.sunbirdrc.claim.service.ClaimService;
 import dev.sunbirdrc.claim.service.ClaimsAuthorizer;
@@ -45,6 +46,13 @@ public class ClaimsController {
         Map<String, Object> claims = claimService.findClaimsForAttestor(entity, attestorNode, pageable);
         return new ResponseEntity<>(claims, HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/api/v1/all-claims", method = RequestMethod.POST)
+    public ResponseEntity<ClaimWithSize> getAllClaims(@RequestHeader HttpHeaders headers) {
+        ClaimWithSize claims = claimService.findAllClaims();
+        return new ResponseEntity<>(claims, HttpStatus.OK);
+    }
+
 
 
     @RequestMapping(value = "/api/v2/getClaims", method = RequestMethod.POST)
