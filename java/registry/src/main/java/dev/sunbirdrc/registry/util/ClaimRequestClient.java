@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dev.sunbirdrc.pojos.dto.ClaimDTO;
 import dev.sunbirdrc.registry.dao.Learner;
+import dev.sunbirdrc.registry.model.Document;
 import dev.sunbirdrc.registry.model.dto.*;
 import dev.sunbirdrc.registry.model.event.EventDao;
 import dev.sunbirdrc.registry.model.event.EventInternal;
@@ -35,6 +36,9 @@ public class ClaimRequestClient {
     private static final String GET_CERTIFICATE_NUMBER = "/api/v1/generate-certNumber";
 
     private static final String GET_TEMPLATE_KEY = "/api/v1/courses/course-template-key/";
+
+    private String DIGI_LOCKER_GET = "/api/v1/digilicker/osid/";
+    private String DIGI_LOCKER_SAVE = "/api/v1/digilicker";
     private static Logger logger = LoggerFactory.getLogger(ClaimRequestClient.class);
     private String claimRequestUrl;
     private final RestTemplate restTemplate;
@@ -115,8 +119,28 @@ public class ClaimRequestClient {
                 new HttpEntity<>(event),
                 EventDao.class
         );
-        //restTemplate.postForObject(claimRequestUrl + SAVE_EVENT_SERVICE, event, EventInternal.class);
         logger.info("Event has successfully published ...");
+    }
+
+    public void saveDocument(Document docs) {
+        HttpMethod method = HttpMethod.POST;
+        restTemplate.exchange(
+                claimRequestUrl + DIGI_LOCKER_SAVE,
+                HttpMethod.POST,
+                new HttpEntity<>(docs),
+                Document.class
+        );
+        logger.info("Document has successfully published ...");
+    }
+
+    public String getDocument(String osid) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(claimRequestUrl + DIGI_LOCKER_GET+osid);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("accept", "*/*");
+        ResponseEntity<String> response = restTemplate.exchange(
+                builder.toUriString(), HttpMethod.GET, null, String.class, headers
+        );        logger.info("end getDocument ...");
+        return response.getBody();
     }
 
     public String saveFileToGCS(Object certificate, String entityId) {

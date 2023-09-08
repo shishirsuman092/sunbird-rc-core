@@ -26,6 +26,7 @@ import dev.sunbirdrc.registry.middleware.MiddlewareHaltException;
 import dev.sunbirdrc.registry.middleware.util.Constants;
 import dev.sunbirdrc.registry.middleware.util.JSONUtil;
 import dev.sunbirdrc.registry.middleware.util.OSSystemFields;
+import dev.sunbirdrc.registry.model.Document;
 import dev.sunbirdrc.registry.model.dto.MailDto;
 import dev.sunbirdrc.registry.model.dto.ManualPendingMailDTO;
 import dev.sunbirdrc.registry.service.FileStorageService;
@@ -55,7 +56,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
@@ -1142,31 +1142,52 @@ public class RegistryEntityController extends AbstractController {
                 searchQuery =  scanner1.next();
         }
         DocDetails docDetails = null;
+        ObjectNode searchNode = null;
         // Map to JAXB
-        ObjectNode searchNode = DigiLockerUtils.getJsonQuery(searchQuery);
-
+        PullURIRequest req = null;
+        try {
+            req = DigiLockerUtils.processPullUriRequest(searchQuery);
+            searchNode = DigiLockerUtils.getJsonQuery2(req.getDocDetails());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         JsonNode result = searchEntity(searchNode, entityName);
         JsonNode jsonNode = result.get(entityName);
-        String osid = jsonNode!=null?jsonNode.get(0).get("osid").asText():null;
+        String osid = null;
+        if(jsonNode!=null){
+            osid =  jsonNode.size() > 0 ?jsonNode.get(0).get("osid").asText():null;
+        }
         if(osid!=null) {
             try {
-                String uri = DigiLockerUtils.getDocUri();
-                String fileName = "issuance/"+osid+".pdf";
-                byte[] certificate = certificateService.getCred(fileName);
-                if(certificate!=null){
-                    certificateService.saveforDGL(certificate, uri);
+                // check if uri exists
+                String uri = null;
+                String fileName = null;
+                byte[] certificate = null;
+                String existingUri = claimRequestClient.getDocument(osid);
+                HttpHeaders headers = new HttpHeaders();
+                String responseString = null;
+
+                fileName = "issuance/"+osid+".pdf";
+                certificate = certificateService.getCred(fileName);
+                if(certificate!=null) {
+                    if(existingUri==null){
+                        uri = DigiLockerUtils.getDocUri();
+                        certificateService.saveforDGL((certificate), uri+".pdf");
+                        Document docs = new Document(osid, uri);
+                        claimRequestClient.saveDocument(docs);
+                    }else{
+                        uri = existingUri;
+                    }
                     Person person = DigiLockerUtils.getPersonDetail(result, entityName);
                     String encodedCertificate = Base64.getEncoder().encodeToString(certificate);
                     PullURIResponse pullResponse = DigiLockerUtils.getPullUriResponse(uri, statusCode, osid, encodedCertificate, person);
-                    String responseString = DigiLockerUtils.convertJaxbToString(pullResponse);
-                    HttpHeaders headers = new HttpHeaders();
+                    responseString = DigiLockerUtils.convertJaxbToString(pullResponse);
                     headers.setContentType(MediaType.APPLICATION_XML);
                     return new ResponseEntity<>(responseString, headers, HttpStatus.OK);
                 }else{
                     statusCode = "0";
                     return new ResponseEntity<>(statusCode, HttpStatus.NOT_FOUND);
                 }
-
             } catch (Exception exception) {
                 statusCode = "0";
                 exception.printStackTrace();
@@ -1230,7 +1251,7 @@ public class RegistryEntityController extends AbstractController {
                     Person person = new Person();
                     person.setDob(dob);
                     person.setDob(fullName);
-                    PullDocResponse pullDocResponse = DigiLockerUtils.getDocPullUriResponse(pullDocRequest, statusCode, cred, person);
+                    PullDocResponse pullDocResponse = DigiLockerUtils.getDocPullDocResponse(pullDocRequest, statusCode, cred, person);
                     Object responseString = DigiLockerUtils.convertJaxbToPullDoc(pullDocResponse);
                     HttpHeaders headers = new HttpHeaders();
                     headers.setContentType(MediaType.APPLICATION_XML);

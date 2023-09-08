@@ -12,6 +12,16 @@ public class DocDetails {
     private String finalYearRollNo;
     private String docType;
 
+    public String getDob() {
+        return dob;
+    }
+
+    public void setDob(String dob) {
+        this.dob = dob;
+    }
+
+    private String dob;
+
     public String getEmail() {
         return email;
     }

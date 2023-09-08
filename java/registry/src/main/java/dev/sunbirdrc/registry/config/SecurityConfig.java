@@ -62,7 +62,7 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
                     .antMatchers("/**/invite","/**/v2/{entityName}/claims", "/health", "/error",
                             "/_schemas/**", "/**/templates/**", "/**/*.json", "/**/verify",
                             "/swagger-ui", "/**/search", "/**/attestation/**",
-                            "/api/docs/swagger.json","/api/docs/*.json", "/plugin/**", "/swagger-ui.html","/api/v1/pullUriRequest/*","/api/v1/pullDocUriRequest/*")
+                            "/api/docs/swagger.json","/api/docs/*.json", "/plugin/**", "/swagger-ui.html","/api/v1/pullDocRequest/*","/api/v1/pullUriRequest/*")
                     .permitAll()
                     .and()
                     //.addFilterBefore(schemaFilter, WebAsyncManagerIntegrationFilter.class)

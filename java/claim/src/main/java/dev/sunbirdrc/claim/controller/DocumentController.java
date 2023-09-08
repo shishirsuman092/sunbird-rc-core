@@ -25,12 +25,12 @@ public class DocumentController {
     }
 
     @GetMapping("/osid/{osid}")
-    public ResponseEntity<Document> getDocumentByOsid(@PathVariable String osid) {
+    public ResponseEntity<String> getDocumentByOsid(@PathVariable String osid) {
         Document document = documentService.getDocumentByOsid(osid);
         if (document != null) {
-            return new ResponseEntity<>(document, HttpStatus.OK);
+            return new ResponseEntity<>(document.getDocUri(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("", HttpStatus.OK);
         }
     }
 }
