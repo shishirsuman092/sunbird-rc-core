@@ -635,7 +635,7 @@ public class RegistryEntityController extends AbstractController {
 
         logger.info("template key for courseName::"+courseName + ":" + templateKey);
 
-        if (definitionsManager.getCertificateTemplates(entityName) != null && definitionsManager.getCertificateTemplates(entityName).size() > 0 && !StringUtils.isEmpty(request.getHeader(TemplateKey))) {
+        if (definitionsManager.getCertificateTemplates(entityName) != null && definitionsManager.getCertificateTemplates(entityName).size() > 0) {
             String templateUri = definitionsManager.getCertificateTemplates(entityName).getOrDefault(templateKey, null);
             if (!StringUtils.isEmpty(templateUri)) {
                 try {
