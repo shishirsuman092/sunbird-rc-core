@@ -1206,7 +1206,7 @@ public class RegistryEntityController extends AbstractController {
      * @param
      * @return
      */
-
+    @CrossOrigin (origins = "*")
     @RequestMapping(value = "/api/v1/pullDocRequest/{entityName}", method = RequestMethod.POST, produces =
             {MediaType.APPLICATION_XML_VALUE}, consumes = {MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<Object> pullDocReq(HttpServletRequest request) throws Exception {
