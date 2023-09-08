@@ -27,6 +27,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -125,6 +127,67 @@ public class DigiLockerUtils {
         return request;
     }
 
+
+    public static PullURIRequest processPullUriRequest(String xml) throws Exception{
+        PullURIRequest request = new PullURIRequest();
+        dev.sunbirdrc.registry.util.DocDetails docDetails = new dev.sunbirdrc.registry.util.DocDetails();
+
+        // Create a DocumentBuilderFactory and DocumentBuilder to parse the XML
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+
+        // Parse the XML string into a Document object
+        Document document = builder.parse(new ByteArrayInputStream(xml.getBytes()));
+        Element rootElement = document.getDocumentElement();
+        Element docDetailsElement = (Element) rootElement.getElementsByTagName("DocDetails").item(0);
+        // Get the values of URI and DigiLockerId elements
+        String uid = docDetailsElement.getElementsByTagName("UID").item(0).getTextContent();
+        String name = docDetailsElement.getElementsByTagName("FullName").item(0).getTextContent();
+        String dob = docDetailsElement.getElementsByTagName("DOB").item(0).getTextContent();
+        String email = docDetailsElement.getElementsByTagName("email").item(0).getTextContent();
+        String rollNo = docDetailsElement.getElementsByTagName("finalYearRollNo").item(0).getTextContent();
+        String digiLockerId = docDetailsElement.getElementsByTagName("DigiLockerId").item(0).getTextContent();
+        String docType = docDetailsElement.getElementsByTagName("DocType").item(0).getTextContent();
+
+        docDetails.setDigiLockerId(digiLockerId);
+        docDetails.setDob(dob);
+        docDetails.setName(name);
+        docDetails.setEmail(email);
+        docDetails.setFinalYearRollNo(rollNo);
+        docDetails.setuID(uid);
+        docDetails.setDocType(docType);
+        request.setDocDetails(docDetails);
+
+        logger.info("DigiLockerId: " + digiLockerId);
+        NamedNodeMap attributes = rootElement.getAttributes();
+        for (int i = 0; i < attributes.getLength(); i++) {
+            String attributeName = attributes.item(i).getNodeName();
+            String attributeValue = attributes.item(i).getNodeValue();
+            switch (attributeName.toLowerCase()) {
+                case "txn":
+                    request.setTxn(attributeValue);
+                    break;
+                case "orgid":
+                    request.setOrgId(attributeValue);
+                    break;
+                case "ts":
+                    request.setTs(attributeValue);
+                    break;
+                case "format":
+                    request.setFormat(attributeValue);
+                    break;
+                case "keyhash":
+                    request.setKeyhash(attributeValue);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return request;
+    }
+
+
     public static byte[] decryptWithHashKey(byte[] inputData, String hashKey) throws Exception {
         String algorithm = "AES";
         SecretKeySpec secretKey = new SecretKeySpec(hashKey.getBytes(), algorithm);
@@ -194,20 +257,17 @@ public class DigiLockerUtils {
         return objectNode;
     }
 
-    public static ObjectNode getJsonQuery2(String xmlString) {
-        dev.sunbirdrc.registry.util.DocDetails docDetails;
+
+
+    public static ObjectNode getJsonQuery2(dev.sunbirdrc.registry.util.DocDetails docDetails) {
+        ;
         JsonNode jsonNode = null;
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode objectNode = objectMapper.createObjectNode();;
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(PullURIRequest.class);
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            PullURIRequest pullUriRequest = (PullURIRequest) jaxbUnmarshaller.unmarshal(new StringReader(xmlString));
-            // Access DocDetails using getDocDetails()
-            docDetails = pullUriRequest.getDocDetails();
-            jsonNode =  getSearchNode(docDetails.getName(),docDetails.getMobile(), docDetails.getEmail(), docDetails.getFinalYearRollNo());
+            jsonNode =  getSearchNode(docDetails.getName(),docDetails.getDob(), docDetails.getEmail(), docDetails.getFinalYearRollNo());
             jsonNode.fields().forEachRemaining(entry -> objectNode.set(entry.getKey(), entry.getValue()));
-        } catch (JAXBException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return objectNode;
@@ -239,35 +299,30 @@ public class DigiLockerUtils {
         return resp;
     }
 
+    public static String convertDate(String inputDate) {
+        SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = null;
+        try {
+            Date date = inputFormat.parse(inputDate);
+            formattedDate = outputFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
+        return formattedDate;
+    }
 
-    private static JsonNode getSearchNode(String name,String phoneNumber, String email, String finalYearRollNumber){
-        String searchNode = "{\n" +
-                "    \"filters\": {\n" +
-                "        \"email\": {\n" +
-                "            \"contains\": \"" + email +
-                "\"\n" +
-                "        },\n" +
-                "        \"phoneNumber\": {\n" +
-                "            \"eq\": \"" +phoneNumber+
-                "\"\n" +
-                "        },\n" +
-                "        \"name\": {\n" +
-                "            \"eq\": \"" +name+
-                "\"\n" +
-                "        }\n" +
-                "    },\n" +
-                "    \"limit\": 1,\n" +
-                "    \"offset\": 0\n" +
-                "}";
+    private static JsonNode getSearchNode(String name,String dateOfBirth, String email, String finalYearRollNumber){
+        dateOfBirth = convertDate(dateOfBirth);
         String q1 = "{\n" +
                 "    \"filters\": {\n" +
                 "        \"email\": {\n" +
                 "            \"contains\": \"" +email+
                 "\"\n" +
                 "        },\n" +
-                "        \"phoneNumber\": {\n" +
-                "            \"eq\": \"" +phoneNumber+
+                "        \"dateOfBirth\": {\n" +
+                "            \"eq\": \"" +dateOfBirth+
                 "\"\n" +
                 "        },\n" +
                 "        \"name\": {\n" +
@@ -334,7 +389,7 @@ public class DigiLockerUtils {
 
     }
 
-    public static PullDocResponse getDocPullUriResponse(PullDocRequest pullDocRequest, String status, byte[] bytes, Person person) {
+    public static PullDocResponse getDocPullDocResponse(PullDocRequest pullDocRequest, String status, byte[] bytes, Person person) {
         Object content = convertJaxbToBase64XmlString(person);
         //ResponseStatus
         PullDocResponse resp = new PullDocResponse();
@@ -346,7 +401,8 @@ public class DigiLockerUtils {
         DocDetailsRs docDetails = new DocDetailsRs();
         docDetails.setDataContent(content);
         docDetails.setDigiLockerId(pullDocRequest.getDocDetails().getDigiLockerId());
-        docDetails.setDocContent(Base64.getEncoder().encode(bytes));
+        //docDetails.setDocContent(bytes);
+        docDetails.setDocContent(Base64.getDecoder().decode(bytes));
         resp.setDocDetails(docDetails);
         return resp;
     }
