@@ -86,11 +86,15 @@ public class DigiLockerUtils {
         String uri = docDetailsElement.getElementsByTagName("URI").item(0).getTextContent();
         String name = docDetailsElement.getElementsByTagName("FullName").item(0).getTextContent();
         String dob = docDetailsElement.getElementsByTagName("DOB").item(0).getTextContent();
+        String email = docDetailsElement.getElementsByTagName("email").item(0).getTextContent();
+        String finalYearRollNo = docDetailsElement.getElementsByTagName("finalYearRollNo").item(0).getTextContent();
         String digiLockerId = docDetailsElement.getElementsByTagName("DigiLockerId").item(0).getTextContent();
         docDetails.setUri(uri);
         docDetails.setDigiLockerId(digiLockerId);
         docDetails.setDob(dob);
         docDetails.setFullName(name);
+        docDetails.setEmail(email);
+        docDetails.setFinalYearRollNo(finalYearRollNo);
         request.setDocDetails(docDetails);
 
         // Print the values
@@ -352,18 +356,25 @@ public class DigiLockerUtils {
     }
 
 
-    public static JsonNode getQuryNode(String name,String dob){
-       String formattedDateString =  formatDate(dob);
-        String searchNode = "{\n" +
+    public static JsonNode getQuryNode(String name,String dateOfBirth, String email, String finalYearRollNumber){
+       String formattedDateString =  formatDate(dateOfBirth);
+
+        String q1 = "{\n" +
                 "    \"filters\": {\n" +
+                "        \"email\": {\n" +
+                "            \"contains\": \"" +email+
+                "\"\n" +
+                "        },\n" +
                 "        \"dateOfBirth\": {\n" +
-                "            \"eq\": \"" +
-                formattedDateString +"\""+
-                "\n" +
+                "            \"eq\": \"" +formattedDateString+
+                "\"\n" +
                 "        },\n" +
                 "        \"name\": {\n" +
-                "            \"eq\": \"" +
-                name +
+                "            \"eq\": \"" +name+
+                "\"\n" +
+                "        },\n" +
+                "        \"finalYearRollNo\": {\n" +
+                "            \"eq\": \"" +finalYearRollNumber+
                 "\"\n" +
                 "        }\n" +
                 "    },\n" +
@@ -375,7 +386,7 @@ public class DigiLockerUtils {
         JsonFactory factory = mapper.getFactory();
         JsonNode actualObj = null;
         try {
-            JsonParser parser = factory.createParser(searchNode);
+            JsonParser parser = factory.createParser(q1);
             actualObj = mapper.readTree(parser);
             // ((ObjectNode) actualObj.get("filters")).put("email",email);
         } catch (IOException e) {
@@ -384,10 +395,6 @@ public class DigiLockerUtils {
         return actualObj;
     }
 
-    public static void main(String[] args) {
-       System.out.println( getQuryNode("Mr Rahu","1990-01-01"));
-
-    }
 
     public static PullDocResponse getDocPullDocResponse(PullDocRequest pullDocRequest, String status, byte[] bytes, Person person) {
         Object content = convertJaxbToBase64XmlString(person);
@@ -402,7 +409,7 @@ public class DigiLockerUtils {
         docDetails.setDataContent(content);
         docDetails.setDigiLockerId(pullDocRequest.getDocDetails().getDigiLockerId());
         //docDetails.setDocContent(bytes);
-        docDetails.setDocContent(Base64.getDecoder().decode(bytes));
+        docDetails.setDocContent(Base64.getEncoder().encode(bytes));
         resp.setDocDetails(docDetails);
         return resp;
     }

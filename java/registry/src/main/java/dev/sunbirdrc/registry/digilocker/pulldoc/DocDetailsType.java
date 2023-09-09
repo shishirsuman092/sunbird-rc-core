@@ -8,16 +8,35 @@ import javax.xml.bind.annotation.XmlType;
         "uri",
         "digiLockerId",
         "fullName",
-        "dob"
+        "dob",
+        "email",
+        "finalYearRollNo"
 })
 public class DocDetailsType {
 
     protected String uri;
     protected String fullName;
-
     protected String dob;
     protected String digiLockerId;
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getFinalYearRollNo() {
+        return finalYearRollNo;
+    }
+
+    public void setFinalYearRollNo(String finalYearRollNo) {
+        this.finalYearRollNo = finalYearRollNo;
+    }
+
+    protected String email;
+    protected String finalYearRollNo;
     public String getFullName() {
         return fullName;
     }
