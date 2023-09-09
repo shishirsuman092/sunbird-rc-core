@@ -257,7 +257,7 @@ public class ClaimRequestClient {
         // Add any required headers here
         headers.set("accept", "*/*");
         ResponseEntity<byte[]> response = restTemplate.exchange(
-                builder.toUriString(), HttpMethod.POST, null, byte[].class, queryParams, headers
+                builder.toUriString(), HttpMethod.GET, null, byte[].class, queryParams, headers
         );        logger.info("end getCredentials ...");
         return response.getBody();
     }

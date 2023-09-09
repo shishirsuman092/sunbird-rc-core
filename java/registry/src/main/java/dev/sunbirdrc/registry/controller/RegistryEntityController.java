@@ -1236,10 +1236,14 @@ public class RegistryEntityController extends AbstractController {
             }
             String fullName = pullDocRequest.getDocDetails().getFullName();
             String dob = pullDocRequest.getDocDetails().getDob();
-            JsonNode searchNode = DigiLockerUtils.getQuryNode(fullName, dob);
+            String email = pullDocRequest.getDocDetails().getEmail();
+            String finalYearRollNo = pullDocRequest.getDocDetails().getFinalYearRollNo();
+            JsonNode searchNode = DigiLockerUtils.getQuryNode(fullName, dob, email, finalYearRollNo);
+
             JsonNode result = searchEntityForDGL((ObjectNode) searchNode);
-            if (result == null) {
+            if (result == null || result.size() == 0) {
                 statusCode = "0";
+                logger.info("");
                 return new ResponseEntity<>(statusCode, HttpStatus.NOT_FOUND);
             }
             String credName = pullDocRequest.getDocDetails().getUri();
@@ -1342,7 +1346,6 @@ public class RegistryEntityController extends AbstractController {
 
             Response response = new Response(Response.API_ID.CREATE, HttpStatus.OK.name(), responseParams);
             response.setResult(fileUrl);
-
             responseParams.setErrmsg("");
             responseParams.setStatus(Response.Status.SUCCESSFUL);
 
