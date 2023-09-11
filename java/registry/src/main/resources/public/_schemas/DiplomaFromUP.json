@@ -1,14 +1,14 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
   "type": "object",
-  "properties": { "Registration": { "$ref": "#/definitions/Registration" } },
-  "required": ["Registration"],
-  "title": "Registration",
+  "properties": { "StudentFromUP": { "$ref": "#/definitions/StudentFromUP" } },
+  "required": ["StudentFromUP"],
+  "title": "StudentFromUP",
   "definitions": {
-    "Registration": {
-      "$id": "#/properties/Registration",
+    "StudentFromUP": {
+      "$id": "#/properties/StudentFromUP",
       "type": "object",
-      "title": "Registration",
+      "title": "StudentFromUP",
       "required": ["name", "phoneNumber", "email", "council"],
       "uniqueIndexFields": ["phoneNumber"],
       "properties": {
@@ -71,23 +71,65 @@
         "joiningYear": {"type": "string", "title": "joiningYear"},
         "passingMonth": {"type": "string", "title": "passingMonth"},
         "passingYear": {"type": "string","title": "passingYear"},
+        "examYear": {"type": "string","title": "examYear"},
         "examBody":{"type": "string","title": "examBody"},
-        "paymentStatus":{"type": "string","title": "paymentStatus"}
+        "centerCode": {"type": "string","title": "centerCode"},
+        "paymentStatus":{"type": "string","title": "paymentStatus"},
+        "credType":{"type": "string","title": "credType", "enum":[
+          "ANM_DIPLOMA",
+          "ANM_REG",
+          "BABY_DIPLOMA",
+          "BABY_REG",
+          "BSC_NURSING",
+          "DEGREE",
+          "ETCA_REG",
+          "ETCA_DIPLOMA",
+          "ETCT_REG",
+          "ETCT_DIPLOMA",
+          "GNM_REG",
+          "GNM_DIPLOMA",
+          "PHARMACY_DIPLOMA",
+          "GOODSTANDING_REG",
+          "FOREIGN_REG",
+          "MSC_REG",
+          "PBBSC_REG",
+          "SANITATION_REG",
+          "SANITATION_DIPLOMA",
+          "PHYSIOTHERAPY_DIPLOMA",
+          "OPTOMETRY_REG",
+          "OPTOMETRY_DIPLOMA",
+          "OTTECHNICIAN_REG",
+          "OTTECHNICIAN_DIPLOMA",
+          "CARDIOLOGY_REG",
+          "CARDIOLOGY_DIPLOMA",
+          "BLOOD_TRANSFUSION_REG",
+          "BLOOD_TRANSFUSION_DIPLOMA"
+        ]},
+        "docproof":{"type": "string","title": "docproof"},
+        "regNumber":{"type": "string","title": "regNumber"},
+        "diplomaNumber":{"type": "string","title": "diplomaNumber"},
+        "nurseRegNo": {"type": "string","title": "nurseRegNo"},
+        "nurseRegdate": {"type": "string","title": "nurseRegdate"},
+        "courseState": {"type": "string","title": "courseState"},
+        "courseCouncil": {"type": "string","title": "courseCouncil"},
+        "certificateNumber": {"type": "string","title": "certificateNumber"},
+        "claimType": {"type": "string","title": "claimType"},
+        "university": {"type": "string", "title": "university"},
+        "candidateSignature": {"type": "string","title": "candidateSignature"},
+        "validityUpto": {"type": "string","title": "validityUpto"},
+        "requestType": {"type": "string","title": "requestType"},
+        "feeReciptNo": {"type": "string","title": "feeReciptNo"}
       }
     }
   },
   "_osConfig": {
-
-    "ownershipAttributes": [
-    ],
-    "inviteRoles": ["anonymous"],
-    "roles": ["Regulator","Student"],
+    "roles": ["StudentFromUP"],
     "attestationPolicies": [
       {
         "name": "studentVerification",
-        "conditions": "(ATTESTOR#$.council#.contains(REQUESTER#$.council#))",
-        "type": "MANUAL",
-        "attestorPlugin": "did:internal:ClaimPluginActor?entity=Regulator",
+        "conditions": "(ATTESTOR#$.osid#.equals(REQUESTER#$.osid#))",
+        "type": "AUTOMATED",
+        "attestorPlugin": "did:internal:ClaimPluginActor?entity=StudentFromUP",
         "attestationProperties": {
           "name": "$.name",
           "email": "$.email",
@@ -112,7 +154,24 @@
           "passingYear": "$.passingYear",
           "finalYearRollNo": "$.finalYearRollNo",
           "examBody":  "$.examBody",
-          "paymentStatus": "$.paymentStatus"
+          "examYear":  "$.examYear",
+          "centerCode": "$.centerCode",
+          "paymentStatus": "$.paymentStatus",
+          "credType": "$.credType",
+          "docproof": "$.docproof",
+          "regNumber": "$.regNumber",
+          "diplomaNumber": "$.diplomaNumber",
+          "nurseRegNo": "$.nurseRegNo",
+          "nurseRegDate": "$.nurseRegDate",
+          "courseState": "$.courseState",
+          "courseCouncil": "$.courseCouncil",
+          "certificateNumber": "$.certificateNumber",
+          "claimType": "$.claimType",
+          "university": "$.university",
+          "candidateSignature": "$.candidateSignature",
+          "validityUpto": "$.validityUpto",
+          "requestType": "$.requestType",
+          "feeReciptNo": "$.feeReciptNo"
         },
         "credentialTemplate": {
           "@context": [
@@ -248,6 +307,18 @@
                   "name": "schema:Text"
                 }
               },
+              "examYear": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#examYear",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "centerCode":{
+                "@id": "https://github.com/sunbird-specs/vc-specs#centerCode",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
               "finalYearRollNo": {
                 "@id": "https://github.com/sunbird-specs/vc-specs#finalYearRollNo",
                 "@context": {
@@ -268,6 +339,91 @@
               },
               "feeReciptNo": {
                 "@id": "https://github.com/sunbird-specs/vc-specs#feeReciptNo",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "credType": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#credType",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "docproof": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#docproof",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "regNumber": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#regNumber",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "diplomaNumber": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#diplomaNumber",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "nurseRegNo": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#nurseRegNo",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "nurseRegDate": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#nurseRegDate",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "courseState": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#courseState",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "courseCouncil": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#courseCouncil",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "certificateNumber": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#certificateNumber",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "claimType": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#claimType",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "university": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#university",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "candidateSignature": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#candidateSignature",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+
+              "validityUpto": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#validityUpto",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "requestType": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#requestType",
                 "@context": {
                   "name": "schema:Text"
                 }
@@ -302,7 +458,23 @@
             "finalYearRollNo": "{{finalYearRollNo}}",
             "feeReciptNo": "{{feeReciptNo}}",
             "examBody":  "{{examBody}}",
-            "paymentStatus": "{{paymentStatus}}"
+            "examYear":  "{{examYear}}",
+            "centerCode": "{{centerCode}}",
+            "paymentStatus": "{{paymentStatus}}",
+            "credType":"{{credType}}",
+            "docproof": "{{docproof}}",
+            "regNumber": "{{regNumber}}",
+            "diplomaNumber": "{{diplomaNumber}}",
+            "nurseRegNo": "{{nurseRegNo}}",
+            "nurseRegDate": "{{nurseRegDate}}",
+            "courseState": "{{courseState}}",
+            "courseCouncil": "{{courseCouncil}}",
+            "certificateNumber": "{{certificateNumber}}",
+            "claimType": "{{claimType}}",
+            "university": "{{university}}",
+            "candidateSignature": "{{candidateSignature}}",
+            "validityUpto": "{{validityUpto}}",
+            "requestType": "{{requestType}}"
           },
           "issuer": "did:web:sunbirdrc.dev/vc/skill"
         }
@@ -314,7 +486,6 @@
       "BABY_DIPLOMA": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/BABY-D.html",
       "BABY_REG": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/registration-certificate-nursing.html",
       "BSC_NURSING": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/registration-certificate-nursing.html",
-      "DEGREE": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/registration-certificate.html",
       "ETCA_REG": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/registration-certificate.html",
       "ETCA_DIPLOMA": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/BABY-D.html",
       "ETCT_REG": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/registration-certificate.html",
@@ -322,10 +493,6 @@
       "GNM_REG": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/registration-certificate-nursing.html",
       "GNM_DIPLOMA": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/BABY-D.html",
       "PHARMACY_DIPLOMA": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/BABY-D.html",
-      "GOODSTANDING_REG": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/GoodStanding.html",
-      "FOREIGN_REG": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/Foreign-certificate.html",
-      "MSC_REG": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/MSC-r.html",
-      "PBBSC_REG": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/MSC-r.html",
       "SANITATION_REG": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/registration-certificate.html",
       "SANITATION_DIPLOMA": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/BABY-D.html",
       "PHYSIOTHERAPY_DIPLOMA": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/BABY-D.html",
@@ -336,7 +503,23 @@
       "CARDIOLOGY_REG": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/registration-certificate.html",
       "CARDIOLOGY_DIPLOMA": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/BABY-D.html",
       "BLOOD_TRANSFUSION_REG": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/registration-certificate.html",
-      "BLOOD_TRANSFUSION_DIPLOMA": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/BABY-D.html"
+      "BLOOD_TRANSFUSION_DIPLOMA": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/BABY-D.html",
+      "CME_CERTIFICATE": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/CME.html",
+      "CORRECTED_PRO": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/CORRECTED_PRO.html",
+      "DH_REG": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/DH-REG.html",
+      "ORTHOPAEDIC_DIPLOMA": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/Additional-Registration.html",
+      "MD_MEDICINE_DIPLOMA": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/ADDITIONAL_UP.html",
+      "CORRECTION_PROVISIONAL": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/CORRECTION-provision.html",
+      "OTORHINOLARYNGOLOGY_DIPLOMA": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/CORRECTION-OTHER.html",
+      "MD_RADIODIAGNOSIS": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/Matrimony-Name-Change.additional.html",
+      "NOC_UPMC": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/NOC-medical.html",
+      "ANM_REG_UPNC":"https://raw.githubusercontent.com/kumarpawantarento/templates/main/registration-certificate-nursing.html",
+      "GNM_REG_UPNC":"https://raw.githubusercontent.com/kumarpawantarento/templates/main/registration-certificate-nursing.html",
+      "GOODSTANDING_UPNC":"https://raw.githubusercontent.com/kumarpawantarento/templates/main/GoodStanding-upnc.html",
+      "GNM_REG-UPNC":"https://raw.githubusercontent.com/kumarpawantarento/templates/main/name-change.html",
+      "NOC_UPNC":"https://raw.githubusercontent.com/kumarpawantarento/templates/main/NOC-0001.html",
+      "NPCC_REG":"https://raw.githubusercontent.com/kumarpawantarento/templates/main/NPCC-r.html",
+      "PHYCHIATRIC_DIPLOMA":"https://raw.githubusercontent.com/kumarpawantarento/templates/main/PSYCH.html"
     }
   }
 }
