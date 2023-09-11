@@ -44,6 +44,14 @@
 				"userId": "/phoneNumber"
 			}
 		],
-		"inviteRoles": ["anonymous"]
+		"inviteRoles": ["anonymous"],
+		"notificationTemplates": {
+			"invite": [
+				{
+					"subject": "Credential Account Created",
+					"body": "<html><body> <p><H3>Hi {{name}}</H3></p> <p>Your account has been created. Please update your password.</p>Your default password is <b>{{defaultInvitePassword}}</b>.<p> </p> <p>Thank you,</p> <p>Registration Credential Issuing Authority</p> </body></html>"
+				}
+			]
+		}
 	}
 }
