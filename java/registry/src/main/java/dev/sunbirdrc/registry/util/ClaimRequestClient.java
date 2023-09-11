@@ -44,6 +44,8 @@ public class ClaimRequestClient {
     private final RestTemplate restTemplate;
     private static final String CLAIMS_PATH = "/api/v1/claims";
     private static final String FETCH_CLAIMS_PATH = "/api/v1/getClaims";
+
+    private static final String FETCH_CLAIMS_PATH_V3 = "/api/v3/getClaims";
     private static final String TEMPLATE_KEY = "/course-template-key/";
     private static final String FETCH_CLAIMS_STUDENT_PATH = "/api/v2/getClaims";
     private static final String MAIL_SEND_URL = "/api/v1/sendMail";
@@ -95,6 +97,11 @@ public class ClaimRequestClient {
         requestBody.set("attestorInfo", jsonNode);
         requestBody.put("entity", entityName);
         return restTemplate.postForObject(claimRequestUrl + FETCH_CLAIMS_PATH + "/" + claimId, requestBody, JsonNode.class);
+    }
+
+    public JsonNode getClaimOptional(JsonNode jsonNode, String entityName, String claimId) {
+        ObjectNode requestBody = JsonNodeFactory.instance.objectNode();
+        return restTemplate.postForObject(claimRequestUrl + FETCH_CLAIMS_PATH_V3 + "/" + claimId, null, JsonNode.class);
     }
 
     public ResponseEntity<Object> attestClaim(JsonNode attestationRequest, String claimId) {

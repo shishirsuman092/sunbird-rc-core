@@ -81,6 +81,16 @@ public class ClaimsController {
         }
     }
 
+    @RequestMapping(value = "/api/v3/getClaims/{claimId}", method = RequestMethod.POST)
+    public ResponseEntity<ClaimWithNotesDTO> getClaimById(@RequestHeader HttpHeaders headers, @PathVariable String claimId) {
+        Optional<Claim> claim = claimService.findById(claimId);
+        if (!claim.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+            ClaimWithNotesDTO claimWithNotesDTO = claimService.generateNotesForTheClaim(claim.get());
+            return new ResponseEntity<>(claimWithNotesDTO, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/api/v1/claims", method = RequestMethod.POST)
     public ResponseEntity<Claim> save(@RequestBody ClaimDTO claimDTO) {
         JSONObject jsonObject = new JSONObject(claimDTO.getPropertyData());
