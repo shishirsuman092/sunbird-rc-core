@@ -98,7 +98,8 @@
           "type": "string",
           "title": "paymentStatus"
         },
-        "claimType": {"type": "string","title": "claimType"}
+        "claimType": {"type": "string","title": "claimType"},
+        "feeReciptNo": {"type": "string","title": "feeReciptNo"}
       }
     }
   },
@@ -126,7 +127,8 @@
           "council":"$.council",
           "docproof": "$.docproof",
           "paymentStatus": "$.paymentStatus",
-          "claimType": "$.claimType"
+          "claimType": "$.claimType",
+          "feeReciptNo": "$.feeReciptNo"
         },
         "credentialTemplate": {
           "@context": [
@@ -232,8 +234,13 @@
                 "@context": {
                   "name": "schema:Text"
                 }
+              },
+              "feeReciptNo": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#feeReciptNo",
+                "@context": {
+                  "name": "schema:Text"
+                }
               }
-
             }
           ],
           "type": ["VerifiableCredential"],
@@ -252,7 +259,8 @@
             "registrationNumber": "{{registrationNumber}}",
             "workPlace": "{{workPlace}}",
             "docproof": "{{docproof}}",
-            "claimType": "{{claimType}}"
+            "claimType": "{{claimType}}",
+            "feeReciptNo": "{{feeReciptNo}}"
           },
           "issuer": "did:web:sunbirdrc.dev/vc/skill"
         }

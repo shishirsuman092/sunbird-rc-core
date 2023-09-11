@@ -117,7 +117,8 @@
         "university": {"type": "string", "title": "university"},
         "candidateSignature": {"type": "string","title": "candidateSignature"},
         "validityUpto": {"type": "string","title": "validityUpto"},
-        "requestType": {"type": "string","title": "requestType"}
+        "requestType": {"type": "string","title": "requestType"},
+        "feeReciptNo": {"type": "string","title": "feeReciptNo"}
       }
     }
   },
@@ -179,7 +180,8 @@
           "university": "$.university",
           "candidateSignature": "$.candidateSignature",
           "validityUpto": "$.validityUpto",
-          "requestType": "$.requestType"
+          "requestType": "$.requestType",
+          "feeReciptNo": "$.feeReciptNo"
         },
         "credentialTemplate": {
           "@context": [
