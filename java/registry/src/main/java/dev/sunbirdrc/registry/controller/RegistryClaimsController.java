@@ -111,7 +111,7 @@ public class RegistryClaimsController extends AbstractController{
         }
     }
 
-    @RequestMapping(value = "/api/v1/{entityName}/claims/{claimId}/attest", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/v2/{entityName}/claims/{claimId}/attest", method = RequestMethod.POST)
     public ResponseEntity<Object> attestClaim(
             @PathVariable String claimId,
             @PathVariable String entityName,
@@ -133,6 +133,45 @@ public class RegistryClaimsController extends AbstractController{
 
             responseParams.setStatus(Response.Status.SUCCESSFUL);
             return new ResponseEntity<>(responseParams, HttpStatus.OK);
+        } catch (Exception exception) {
+            logger.error("Exception : {}", exception.getMessage());
+            responseParams.setStatus(Response.Status.UNSUCCESSFUL);
+            responseParams.setErrmsg(exception.getMessage());
+            return new ResponseEntity<>(responseParams, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "/api/v1/{entityName}/claims/{claimId}/attest", method = RequestMethod.POST)
+    public ResponseEntity<Object> attestClaimWithPrecheck(
+            @PathVariable String claimId,
+            @PathVariable String entityName,
+            @RequestBody ObjectNode requestBody,
+            HttpServletRequest request) {
+        ResponseParams responseParams = new ResponseParams();
+        try {
+            logger.info("Attesting claim {} as  {}", claimId, entityName);
+            JsonNode result = registryHelper.getRequestedUserDetails(request, entityName);
+            JsonNode claim = claimRequestClient.getClaimOptional(result.get(entityName).get(0), entityName, claimId);
+            JsonNode action = requestBody.get("action");
+            ObjectNode additionalInputs = generateAdditionInput(claimId, entityName, requestBody, request, action);
+            String attestorCouncil = additionalInputs.get("attestorInfo").get("council").asText();
+            boolean conditionCheck = claim.get("claim").get("conditions").asText().contains(attestorCouncil);
+            if(conditionCheck) {
+                final String attestorPlugin = "did:internal:ClaimPluginActor";
+                PluginRequestMessage pluginRequestMessage = PluginRequestMessage.builder().build();
+                pluginRequestMessage.setAttestorPlugin(attestorPlugin);
+                pluginRequestMessage.setAdditionalInputs(additionalInputs);
+                pluginRequestMessage.setStatus(action.asText());
+                pluginRequestMessage.setUserId(registryHelper.getKeycloakUserId(request));
+                PluginRouter.route(pluginRequestMessage);
+                responseParams.setStatus(Response.Status.SUCCESSFUL);
+                return new ResponseEntity<>(responseParams, HttpStatus.OK);
+            }
+            else{
+                responseParams.setStatus(Response.Status.UNSUCCESSFUL);
+                responseParams.setErrmsg("Requestor and Approver council is not same");
+                return new ResponseEntity<>(responseParams, HttpStatus.BAD_REQUEST);
+            }
         } catch (Exception exception) {
             logger.error("Exception : {}", exception.getMessage());
             responseParams.setStatus(Response.Status.UNSUCCESSFUL);
