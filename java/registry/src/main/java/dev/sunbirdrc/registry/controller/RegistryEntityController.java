@@ -72,16 +72,16 @@ public class RegistryEntityController extends AbstractController {
     private static final String TRANSACTION_ID = "transactionId";
     private static final String REGISTRY_ENDPOINT_SAVE_USERINFO = "http://localhost:8001/api/v1/keycloak/persist/userCredential";
 
-    @Value("${keycloak-admin.token_endpoint}")
-    private static String ADMIN_TOKEN_ENDPOINT;
+    @Value("${keycloak-admin.token_endpoint:http://localhost:8080/auth/realms/sunbird-rc/protocol/openid-connect/token}")
+    private String ADMIN_TOKEN_ENDPOINT;
     @Value("${keycloak-admin.user_name:admin}")
-    private static String ADMIN_USERNAME;
-    @Value("${keycloak-admin.client-id}")
-    private static String ADMIN_CLIENTID;
-    @Value("${keycloak-admin.client-secret}")
-    private static String ADMIN_TOKEN_SECRET;
-    @Value("${keycloak-user.default-password}")
-    private static String DEFAULT_SECRET;
+    private String ADMIN_USERNAME;
+    @Value("${keycloak-admin.client-id:admin-api}")
+    private String ADMIN_CLIENTID;
+    @Value("${keycloak-admin.client-secret:}")
+    private String ADMIN_TOKEN_SECRET;
+    @Value("${keycloak-user.default-password:admin@admin}")
+    private String DEFAULT_SECRET;
     private static Logger logger = LoggerFactory.getLogger(RegistryEntityController.class);
     @Value("${claims.domain-url}")
     private String claimRequestUrl;
@@ -140,12 +140,16 @@ public class RegistryEntityController extends AbstractController {
             // User Persistence in KC - Start
             String userName = rootNode.get("email").asText();
             logger.info("userName:"+userName);
-            String secretToken = rootNode.get("password").asText();
+            JsonNode password = rootNode.get("password");
+            String secretToken = null;
+            if(password!=null){
+                secretToken = password.asText();
+            }
             if(secretToken==null){
                 secretToken = DEFAULT_SECRET;
             }
             logger.info("secretToken:"+secretToken);
-            persistUserInfo(userName,secretToken);
+
             // User Persistence in KC - end
 
             registryHelper.autoRaiseClaim(entityName, entityId, "", null, newRootNode, dev.sunbirdrc.registry.Constants.USER_ANONYMOUS);
@@ -155,6 +159,15 @@ public class RegistryEntityController extends AbstractController {
             response.setResult(result);
             responseParams.setStatus(Response.Status.SUCCESSFUL);
             watch.start(TAG);
+            if(userName!=null && secretToken!=null){
+                try {
+                    String persistStatus  = persistUserInfo(userName,secretToken);
+                }catch (Exception ex){
+                    ex.printStackTrace();
+                }
+
+            }
+
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (RecordNotFoundException e) {
             createSchemaNotFoundResponse(e.getMessage(), responseParams);
@@ -1268,7 +1281,8 @@ public class RegistryEntityController extends AbstractController {
                         uri = existingUri;
                     }
                     Person person = DigiLockerUtils.getPersonDetail(result, entityName);
-                    String encodedCertificate = Base64.getEncoder().encodeToString(certificate);
+
+                    Object encodedCertificate = Base64.getEncoder().encode(certificate);
                     PullURIResponse pullResponse = DigiLockerUtils.getPullUriResponse(uri, statusCode, osid, encodedCertificate, person);
                     responseString = DigiLockerUtils.convertJaxbToString(pullResponse);
                     headers.setContentType(MediaType.APPLICATION_XML);

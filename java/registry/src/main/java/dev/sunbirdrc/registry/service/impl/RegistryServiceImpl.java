@@ -306,7 +306,7 @@ public class RegistryServiceImpl implements RegistryService {
                 maskAndEmitEvent(rootNode.get(vertexLabel), vertexLabel, EventType.ADD, userId, entityId);
             }else{
                 EventInternal event = maskAndEmitEventDashBoard(rootNode.get(vertexLabel), vertexLabel, EventType.ADD, userId, entityId);
-                claimRequestClient.sendEvent(event);
+                //claimRequestClient.sendEvent(event);
             }
         }
         if (vertexLabel.equals(Schema)) {
