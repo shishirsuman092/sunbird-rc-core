@@ -45,6 +45,7 @@
 			}
 		],
 		"inviteRoles": ["anonymous"],
+		"roles": ["Regulator"],
 		"notificationTemplates": {
 			"invite": [
 				{
