@@ -287,12 +287,12 @@ public class DigiLockerUtils {
         ResponseUriStatus responseStatus = new ResponseUriStatus();
         responseStatus.setStatus(status);
         responseStatus.setTxn(txn);
-        byte[] bytes = convertObtToByte(certificate);
+        //byte[] bytes = convertObtToByte(certificate);
         responseStatus.setTs(DateUtil.getTimeStamp());
         DocDetails details = new DocDetails();
         IssuedTo issuedTo = new IssuedTo();
         issuedTo.setPersons(persons);
-        Object docContent = Base64.getEncoder().encodeToString(bytes);
+        Object docContent = certificate;
 
         details.setDocContent(docContent);
         details.setDataContent(convertJaxbToBase64XmlString(person));
