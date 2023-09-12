@@ -9,7 +9,7 @@
       "$id": "#/properties/StudentFromUP",
       "type": "object",
       "title": "StudentFromUP",
-      "required": ["name", "phoneNumber", "email", "council"],
+      "required": ["name", "phoneNumber", "email"],
       "uniqueIndexFields": ["phoneNumber"],
       "properties": {
         "name": { "type": "string" },
