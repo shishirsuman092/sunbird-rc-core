@@ -240,6 +240,9 @@ keycloak:
 keycloak-admin:
   client-id: ${sunbird_sso_admin_client_id:admin-api}
   client-secret: ${sunbird_sso_admin_client_secret:2b65f70c-bd02-4d5c-95d9-5341225aa849}
+  user_name: admin
+  token_endpoint: http://localhost:8080/auth/realms/sunbird-rc/protocol/openid-connect/token
+
 keycloak-user:
   set-default-password: ${sunbird_keycloak_user_set_password:true}
   default-password: ${sunbird_keycloak_user_password:admin@123}
