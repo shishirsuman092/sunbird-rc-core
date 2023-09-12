@@ -1,14 +1,14 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
   "type": "object",
-  "properties": { "StudentFromUP": { "$ref": "#/definitions/StudentFromUP" } },
-  "required": ["StudentFromUP"],
-  "title": "StudentFromUP",
+  "properties": { "DiplomaFromUP": { "$ref": "#/definitions/DiplomaFromUP" } },
+  "required": ["DiplomaFromUP"],
+  "title": "DiplomaFromUP",
   "definitions": {
-    "StudentFromUP": {
-      "$id": "#/properties/StudentFromUP",
+    "DiplomaFromUP": {
+      "$id": "#/properties/DiplomaFromUP",
       "type": "object",
-      "title": "StudentFromUP",
+      "title": "DiplomaFromUP",
       "required": ["name", "phoneNumber", "email", "council"],
       "uniqueIndexFields": ["phoneNumber"],
       "properties": {
@@ -123,13 +123,13 @@
     }
   },
   "_osConfig": {
-    "roles": ["StudentFromUP"],
+    "roles": ["DiplomaFromUP"],
     "attestationPolicies": [
       {
-        "name": "studentVerification",
+        "name": "studentVerificationDiploma",
         "conditions": "(ATTESTOR#$.osid#.equals(REQUESTER#$.osid#))",
         "type": "AUTOMATED",
-        "attestorPlugin": "did:internal:ClaimPluginActor?entity=StudentFromUP",
+        "attestorPlugin": "did:internal:ClaimPluginActor?entity=DiplomaFromUP",
         "attestationProperties": {
           "name": "$.name",
           "email": "$.email",

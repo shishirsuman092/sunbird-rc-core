@@ -199,7 +199,7 @@ public class RegistryEntityController extends AbstractController {
         httpPost.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + authToken);
         String requestBody = "{" +
                 "\"username\": " + "\"" + userName + "\"" + "," +
-                "\"password\": " + "\"" + password+"123" + "\"" +
+                "\"password\": " + "\"" + password + "\"" +
                 "}";
         logger.info("payload to save user info with body {} and header {}",requestBody,httpPost.getAllHeaders());
         StringEntity entity = new StringEntity(requestBody);
