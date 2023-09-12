@@ -2,6 +2,7 @@ package dev.sunbirdrc.registry.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -38,6 +39,11 @@ import dev.sunbirdrc.registry.util.*;
 import org.agrona.Strings;
 import dev.sunbirdrc.validators.ValidationException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -47,16 +53,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static dev.sunbirdrc.registry.Constants.*;
@@ -66,13 +70,30 @@ import static dev.sunbirdrc.registry.middleware.util.Constants.ENTITY_TYPE;
 public class RegistryEntityController extends AbstractController {
 
     private static final String TRANSACTION_ID = "transactionId";
+    private static final String REGISTRY_ENDPOINT_SAVE_USERINFO = "http://localhost:8001/api/v1/keycloak/persist/userCredential";
+
+    @Value("${keycloak-admin.token_endpoint}")
+    private static String ADMIN_TOKEN_ENDPOINT;
+    @Value("${keycloak-admin.user_name:admin}")
+    private static String ADMIN_USERNAME;
+    @Value("${keycloak-admin.client-id}")
+    private static String ADMIN_CLIENTID;
+    @Value("${keycloak-admin.client-secret}")
+    private static String ADMIN_TOKEN_SECRET;
+    @Value("${keycloak-user.default-password}")
+    private static String DEFAULT_SECRET;
     private static Logger logger = LoggerFactory.getLogger(RegistryEntityController.class);
     @Value("${claims.domain-url}")
     private String claimRequestUrl;
     @Value("${claims.download-path}")
     private String claimDownloadPath;
     static String static_download_parameter = "?fileName=";
+    private static ObjectMapper mapper = new ObjectMapper();
+    @Value("${Logo.imgBaseUri:https://casa.upsmfac.org/UploadedFiles/Student/}")
+    private String imgBaseUri;
 
+    @Value("${Logo.imgFormat:.jpg}")
+    private String imgFormat;
     @Value("${digilocker_hmackey:}")
     public static final String DIGILOCKER_KEY = "84600d73-e618-4c80-a347-6b51147103ee";
     @Autowired
@@ -116,6 +137,17 @@ public class RegistryEntityController extends AbstractController {
             watch.start(TAG);
 
             String entityId = registryHelper.inviteEntity(newRootNode, "");
+            // User Persistence in KC - Start
+            String userName = rootNode.get("email").asText();
+            logger.info("userName:"+userName);
+            String secretToken = rootNode.get("password").asText();
+            if(secretToken==null){
+                secretToken = DEFAULT_SECRET;
+            }
+            logger.info("secretToken:"+secretToken);
+            persistUserInfo(userName,secretToken);
+            // User Persistence in KC - end
+
             registryHelper.autoRaiseClaim(entityName, entityId, "", null, newRootNode, dev.sunbirdrc.registry.Constants.USER_ANONYMOUS);
             Map resultMap = new HashMap();
             resultMap.put(dbConnectionInfoMgr.getUuidPropertyName(), entityId);
@@ -143,6 +175,63 @@ public class RegistryEntityController extends AbstractController {
             return internalErrorResponse(responseParams, response, e);
         }
     }
+
+    public String persistUserInfo(final String userName, final String password) throws IOException {
+        logger.info("saving user info to endpoint {}",REGISTRY_ENDPOINT_SAVE_USERINFO);
+        HttpClient httpClient = HttpClients.createDefault();
+        HttpPost httpPost = new HttpPost(REGISTRY_ENDPOINT_SAVE_USERINFO);
+        JsonNode adminToken = getAdminToken();
+        String authToken = adminToken.get("access_token").asText();
+        httpPost.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+        httpPost.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + authToken);
+        String requestBody = "{" +
+                "\"username\": " + "\"" + userName + "\"" + "," +
+                "\"password\": " + "\"" + password + "\"" +
+                "}";
+        logger.info("payload to save user info with body {} and header {}",requestBody,httpPost.getAllHeaders());
+        StringEntity entity = new StringEntity(requestBody);
+        httpPost.setEntity(entity);
+        org.apache.http.HttpResponse response = httpClient.execute(httpPost);
+        logger.info("Response from server {}",response);
+        String responseBody = EntityUtils.toString(response.getEntity());
+        return responseBody;
+    }
+
+    public JsonNode getAdminToken() throws IOException {
+        String tokenEndpoint = ADMIN_TOKEN_ENDPOINT;
+        logger.info("Token endpoint: {}" ,tokenEndpoint);
+        HttpClient httpClient = HttpClients.createDefault();
+        HttpPost httpPost = new HttpPost(tokenEndpoint);
+
+        String requestBody = "username=" + ADMIN_USERNAME +
+                "&grant_type=client_credentials" +
+                "&client_id=" + ADMIN_CLIENTID +
+                "&client_secret=" + ADMIN_TOKEN_SECRET;
+
+        logger.info("Request body: {}", requestBody);
+        StringEntity entity = new StringEntity(requestBody);
+
+        httpPost.setEntity(entity);
+        httpPost.setHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded");
+        logger.info("headers {}",httpPost);
+
+        org.apache.http.HttpResponse response = httpClient.execute(httpPost);
+        org.apache.http.HttpEntity httpEntity = response.getEntity();
+        String responseBody = EntityUtils.toString(httpEntity, StandardCharsets.UTF_8);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            System.out.println("Access token obtained successfully.");
+            System.out.println("Response: " + responseBody);
+        } else {
+            System.out.println("Failed to obtain access token.");
+            System.out.println("Response: " + responseBody);
+        }
+
+        logger.info("Response body: {}", responseBody);
+        JsonNode jsonNode = mapper.readTree(responseBody);
+        return jsonNode;
+    }
+
 
     @NotNull
     private void createSchemaNotFoundResponse(String errorMessage, ResponseParams responseParams) {
@@ -1619,5 +1708,30 @@ public class RegistryEntityController extends AbstractController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    private String generateImageURL(JsonNode rootNode) {
+        JsonNode rollNumber = rootNode.get("rollNumber");
+        JsonNode enrollmentNumber = rootNode.get("enrollmentNumber");
+        JsonNode examYear = rootNode.get("examYear");
+        String url = imgBaseUri;
+        if (examYear != null)
+            url = url.concat(examYear.asText());
+        if (enrollmentNumber != null) {
+            url = url.concat("/E" + enrollmentNumber.asText());
+        } else if (rollNumber != null) {
+            url = url.concat("/rp" + rollNumber.asText());
+        }
+        url = url.concat(imgFormat);
+        logger.debug("Generated Img url::" + url);
+        return url;
+    }
+
+    private void extractImgUrl(JsonNode rootNode) {
+        String imgUrl = generateImageURL(rootNode);
+        ObjectNode node = (ObjectNode) rootNode;
+        node.put("orgLogo", imgUrl);
+        logger.info("orgLogo" + node.get("orgLogo"));
+    }
+
 
 }

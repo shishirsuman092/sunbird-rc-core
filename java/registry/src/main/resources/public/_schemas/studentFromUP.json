@@ -13,7 +13,9 @@
       "uniqueIndexFields": ["phoneNumber"],
       "properties": {
         "name": { "type": "string" },
-        "phoneNumber": { "type": "string" },
+        "phoneNumber": { "type": "string",
+          "pattern": "^[6-9]\\d{9}$"
+        },
         "email": { "type": "string" },
         "council": { "type": "string" },
         "mothersName": {"type": "string", "title": "motherName"},
