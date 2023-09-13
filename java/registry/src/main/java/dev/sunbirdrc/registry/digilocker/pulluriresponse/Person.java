@@ -1,6 +1,7 @@
 package dev.sunbirdrc.registry.digilocker.pulluriresponse;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -10,6 +11,9 @@ public class Person {
     private String dob;
     private String gender;
     private String phone;
+
+    private String finalYearRollNo;
+
 
 
     @XmlAttribute(name = "name")
@@ -48,4 +52,12 @@ public class Person {
         this.phone = phone;
     }
 
+    @XmlAttribute(name="finalYearRollNo")
+    public String getFinalYearRollNo() {
+        return finalYearRollNo;
+    }
+
+    public void setFinalYearRollNo(String finalYearRollNo) {
+        this.finalYearRollNo = finalYearRollNo;
+    }
 }

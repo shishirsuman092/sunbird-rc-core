@@ -13,6 +13,7 @@ import dev.sunbirdrc.pojos.PluginResponseMessage;
 import dev.sunbirdrc.pojos.Response;
 import dev.sunbirdrc.pojos.ResponseParams;
 import dev.sunbirdrc.registry.dao.Credential;
+import dev.sunbirdrc.registry.dao.CustomUserDto;
 import dev.sunbirdrc.registry.dao.Learner;
 import dev.sunbirdrc.registry.digilocker.pulldoc.PullDocRequest;
 import dev.sunbirdrc.registry.digilocker.pulldoc.PullDocResponse;
@@ -47,6 +48,7 @@ import org.apache.http.util.EntityUtils;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.json.HTTP;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.slf4j.Logger;
@@ -70,7 +72,8 @@ import static dev.sunbirdrc.registry.middleware.util.Constants.ENTITY_TYPE;
 public class RegistryEntityController extends AbstractController {
 
     private static final String TRANSACTION_ID = "transactionId";
-    private static final String REGISTRY_ENDPOINT_SAVE_USERINFO = "http://localhost:8001/api/v1/keycloak/persist/userCredential";
+    @Value("${claims.usrmanageurl:http://localhost:8001/api/v1/keycloak/persist/userCredential}")
+    private String REGISTRY_ENDPOINT_SAVE_USERINFO;
 
     @Value("${keycloak-admin.token_endpoint:http://localhost:8080/auth/realms/sunbird-rc/protocol/openid-connect/token}")
     private String ADMIN_TOKEN_ENDPOINT;
@@ -161,7 +164,7 @@ public class RegistryEntityController extends AbstractController {
             watch.start(TAG);
             if(userName!=null && secretToken!=null){
                 try {
-                    String persistStatus  = persistUserInfo(userName,secretToken);
+                    String persistStatus  = persistUserInfo(userName,secretToken,entityName);
                 }catch (Exception ex){
                     ex.printStackTrace();
                 }
@@ -189,17 +192,25 @@ public class RegistryEntityController extends AbstractController {
         }
     }
 
-    public String persistUserInfo(final String userName, final String password) throws IOException {
-        logger.info("saving user info to endpoint {}",REGISTRY_ENDPOINT_SAVE_USERINFO);
+    public String persistUserInfo(final String userName, final String password, final String role) throws IOException {
+        logger.info("saving user info to endpoint {}","UserManagement API");
         HttpClient httpClient = HttpClients.createDefault();
+        // HttpMethod method = ;
         HttpPost httpPost = new HttpPost(REGISTRY_ENDPOINT_SAVE_USERINFO);
+        //HttpPost httpPost = new HttpPost();
         JsonNode adminToken = getAdminToken();
         String authToken = adminToken.get("access_token").asText();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.CONTENT_TYPE, "application/json");
+        headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + authToken);
+
         httpPost.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
         httpPost.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + authToken);
         String requestBody = "{" +
                 "\"username\": " + "\"" + userName + "\"" + "," +
-                "\"password\": " + "\"" + password + "\"" +
+                "\"password\": " + "\"" + password + "\"" +"," +
+                "\"email\": " + "\"" + userName + "\"" +"," +
+                "\"roleName\": " + "\"" + role + "\"" +
                 "}";
         logger.info("payload to save user info with body {} and header {}",requestBody,httpPost.getAllHeaders());
         StringEntity entity = new StringEntity(requestBody);
@@ -207,6 +218,8 @@ public class RegistryEntityController extends AbstractController {
         org.apache.http.HttpResponse response = httpClient.execute(httpPost);
         logger.info("Response from server {}",response);
         String responseBody = EntityUtils.toString(response.getEntity());
+        //String responseBody = claimRequestClient.persistUserinKeycloak(userDto,HttpMethod.POST,headers);
+
         return responseBody;
     }
 
@@ -233,11 +246,11 @@ public class RegistryEntityController extends AbstractController {
         String responseBody = EntityUtils.toString(httpEntity, StandardCharsets.UTF_8);
 
         if (response.getStatusLine().getStatusCode() == 200) {
-            System.out.println("Access token obtained successfully.");
-            System.out.println("Response: " + responseBody);
+            logger.info("Access token obtained successfully.");
+            logger.info("Response: " + responseBody);
         } else {
-            System.out.println("Failed to obtain access token.");
-            System.out.println("Response: " + responseBody);
+            logger.info("Failed to obtain access token.");
+            logger.info("Response: " + responseBody);
         }
 
         logger.info("Response body: {}", responseBody);
@@ -1285,6 +1298,11 @@ public class RegistryEntityController extends AbstractController {
                     Object encodedCertificate = Base64.getEncoder().encode(certificate);
                     PullURIResponse pullResponse = DigiLockerUtils.getPullUriResponse(uri, statusCode, osid, encodedCertificate, person);
                     responseString = DigiLockerUtils.convertJaxbToString(pullResponse);
+                    responseString = responseString.replace(" xsi:type=\"xs:base64Binary\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"","");
+                    String regexPattern = "xsi:type=\"xs:string\"\\s+xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"\\s+xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"";
+                    // Replace the matched pattern with an empty string to remove it
+                    responseString = responseString.replaceAll(regexPattern, "");
+
                     headers.setContentType(MediaType.APPLICATION_XML);
                     return new ResponseEntity<>(responseString, headers, HttpStatus.OK);
                 }else{
@@ -1329,7 +1347,7 @@ public class RegistryEntityController extends AbstractController {
                 xmlString =  scanner1.next();
         }
         PullDocRequest pullDocRequest = null;
-        boolean isValidReq = HmacValidator.validateHmac(xmlString,hmacFromRequest,DIGILOCKER_KEY);
+       // boolean isValidReq = HmacValidator.validateHmac(xmlString,hmacFromRequest,DIGILOCKER_KEY);
         if(true) {
             try {
                 pullDocRequest = DigiLockerUtils.processPullDocRequest(xmlString);
@@ -1337,18 +1355,26 @@ public class RegistryEntityController extends AbstractController {
                 statusCode = "0";
                 return new ResponseEntity<>(statusCode, HttpStatus.NOT_FOUND);
             }
-            String fullName = pullDocRequest.getDocDetails().getFullName();
-            String dob = pullDocRequest.getDocDetails().getDob();
-            String email = pullDocRequest.getDocDetails().getEmail();
-            String finalYearRollNo = pullDocRequest.getDocDetails().getFinalYearRollNo();
-            JsonNode searchNode = DigiLockerUtils.getQuryNode(fullName, dob, email, finalYearRollNo);
+
+            String uri = pullDocRequest.getDocDetails().getUri();
+            String osId = claimRequestClient.getOsIdWithURI(uri);
+
+             JsonNode searchNode = DigiLockerUtils.getQuryNode(osId);
 
             JsonNode result = searchEntityForDGL((ObjectNode) searchNode);
+
             if (result == null || result.size() == 0) {
                 statusCode = "0";
                 logger.info("");
                 return new ResponseEntity<>(statusCode, HttpStatus.NOT_FOUND);
             }
+
+            boolean studentFromUP = result.get("StudentFromUP") != null;
+            String fullName = studentFromUP ? result.get("StudentFromUP").get(0).get("name").asText():null;
+            String dob = studentFromUP?result.get("StudentFromUP").get(0).get("dateOfBirth").asText():null;
+            //String email = result.get("StudentFromUP").get(0).get("email").asText();
+            String finalYearRollNo = studentFromUP ? result.get("StudentFromUP").get(0).get("finalYearRollNo").asText():null;
+
             String credName = pullDocRequest.getDocDetails().getUri();
             credName = "issuance/" + credName + ".pdf";
             byte[] cred = certificateService.getCred(credName);
@@ -1357,7 +1383,8 @@ public class RegistryEntityController extends AbstractController {
                     //DigiLockerUtils.getPersonDetail(result, "entityName");
                     Person person = new Person();
                     person.setDob(dob);
-                    person.setDob(fullName);
+                    person.setName(fullName);
+                    person.setFinalYearRollNo(finalYearRollNo);
                     PullDocResponse pullDocResponse = DigiLockerUtils.getDocPullDocResponse(pullDocRequest, statusCode, cred, person);
                     Object responseString = DigiLockerUtils.convertJaxbToPullDoc(pullDocResponse);
                     HttpHeaders headers = new HttpHeaders();
