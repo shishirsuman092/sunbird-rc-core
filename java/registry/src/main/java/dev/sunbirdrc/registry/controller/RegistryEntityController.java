@@ -1395,8 +1395,6 @@ public class RegistryEntityController extends AbstractController {
                     person.setFinalYearRollNo(finalYearRollNo);
                     PullDocResponse pullDocResponse = DigiLockerUtils.getDocPullDocResponse(pullDocRequest, statusCode, cred, person);
                     String responseString = DigiLockerUtils.convertJaxbToPullDoc(pullDocResponse);
-//                    responseString = responseString.replace(" xsi:type=\"xs:string\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"","");
-//                    responseString = responseString.replace(" xsi:type=\"xs:base64Binary\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"","");
                     responseString = responseString.replaceAll(" xsi:type=\"[^\"]*\" xmlns:xs=\"[^\"]*\" xmlns:xsi=\"[^\"]*\"", "");
                     HttpHeaders headers = new HttpHeaders();
                     headers.setContentType(MediaType.APPLICATION_XML);

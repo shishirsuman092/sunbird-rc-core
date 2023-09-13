@@ -7,7 +7,9 @@ public class AttributeNames {
     public static final String PROPERTY_URI = "PROPERTY_URI";
     public static final String ENTITY_ID = "ENTITY_ID";
     public static final String ENTITY = "ENTITY";
-    public static final String LOWERCASE_ENTITY = "entity";;
+    public static final String LOWERCASE_ENTITY = "entity";
+
+    public static final String LOWERCASE_ENTITY_TYPE = "entityType";;
     public static final String ATTESTOR_INFO = "attestorInfo";
 
     public static final String REQUESTOR_INFO = "reguestorInfo";

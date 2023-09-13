@@ -66,6 +66,15 @@ public class ClaimService {
         return toMap(claimsToAttestor, pageable);
     }
 
+    public Map<String, Object> findClaimsForAttestorByEntityType(String entity, String entityType, JsonNode attestorNode, Pageable pageable) {
+        List<Claim> claims = claimRepository.findByAttestorEntityContainingAndEntityContaining(entity,entityType);
+        logger.info("Found {} claims to process", claims.size());
+        List<Claim> claimsToAttestor = claims.stream()
+                .filter(claim -> claimsAuthorizer.isAuthorizedAttestor(claim, attestorNode))
+                .collect(Collectors.toList());
+        return toMapAll(claimsToAttestor, pageable);
+    }
+
     public Map<String, Object> findClaimsForAttestor1(String entity, JsonNode attestorNode, Pageable pageable) {
         List<Claim> claims = claimRepository.findByAttestorEntity(entity);
         logger.info("Found {} claims to process", claims.size());

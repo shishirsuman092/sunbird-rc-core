@@ -47,6 +47,8 @@ public class ClaimRequestClient {
     private static final String CLAIMS_PATH = "/api/v1/claims";
     private static final String FETCH_CLAIMS_PATH = "/api/v1/getClaims";
 
+    private static final String FETCH_CLAIMS_PATH_ENTITY_TYPE = "/api/v1/getClaimsEntityType";
+
     private static final String FETCH_CLAIMS_PATH_V3 = "/api/v3/getClaims";
     private static final String TEMPLATE_KEY = "/course-template-key/";
     private static final String FETCH_CLAIMS_STUDENT_PATH = "/api/v2/getClaims";
@@ -88,6 +90,15 @@ public class ClaimRequestClient {
         requestBody.set("attestorInfo", jsonNode);
         requestBody.put("entity", entityName);
         return restTemplate.postForObject(claimRequestUrl + FETCH_CLAIMS_PATH + QUERY_PARAMS, requestBody, JsonNode.class);
+    }
+
+    public JsonNode getClaims(JsonNode jsonNode, Pageable pageable, String entityName, String entityType) {
+        final String QUERY_PARAMS = "?size=" + pageable.getPageSize() + "&page="+pageable.getPageNumber();
+        ObjectNode requestBody = JsonNodeFactory.instance.objectNode();
+        requestBody.set("attestorInfo", jsonNode);
+        requestBody.put("entity", entityName);
+        requestBody.put("entityType", entityType);
+        return restTemplate.postForObject(claimRequestUrl + FETCH_CLAIMS_PATH_ENTITY_TYPE + QUERY_PARAMS, requestBody, JsonNode.class);
     }
 
     public JsonNode getStudentsClaims(JsonNode jsonNode, Pageable pageable, String entityName) {
