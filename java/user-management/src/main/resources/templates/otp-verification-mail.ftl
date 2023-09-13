@@ -1,6 +1,6 @@
 <html>
 <body>
-    <p><H3>Hi ${userFirstName} ${userLastName}</H3></p>
+    <p>Hi</p>
 
     <p>Use the following one-time password (OTP) to complete identity verification.</p>
 
