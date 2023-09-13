@@ -39,6 +39,10 @@ public class CoursesService {
     public String getCourseTemplateKey(String courseName) {
         return coursesRepository.findByCouseName(courseName);
     }
+
+    public String getCourseTemplateKey(String courseName, String requestType) {
+        return coursesRepository.findByCouseNameWithRequestType(courseName, requestType);
+    }
     public Courses createCourse(Courses course) {
         return coursesRepository.save(course);
     }

@@ -43,7 +43,7 @@ public class ClaimsController {
                                                 @RequestBody JsonNode requestBody, Pageable pageable) {
         String entity = requestBody.get(LOWERCASE_ENTITY).asText();
         JsonNode attestorNode = requestBody.get(ATTESTOR_INFO);
-        Map<String, Object> claims = claimService.findClaimsForAttestor(entity, attestorNode, pageable);
+        Map<String, Object> claims = claimService.findClaimsForAttestor1(entity, attestorNode, pageable);
         return new ResponseEntity<>(claims, HttpStatus.OK);
     }
 

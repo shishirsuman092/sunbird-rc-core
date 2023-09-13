@@ -72,6 +72,13 @@ public class CoursesController {
         return ResponseEntity.ok(course);
     }
 
+    @GetMapping("/course-template-key/{courseName}/{requestType}")
+    public ResponseEntity<String> getCourseShortNameRequestType(@PathVariable String courseName, @PathVariable String getCourseTemplateKey) {
+        courseName = courseName.replace("%20"," ");
+        String course = coursesService.getCourseTemplateKey(courseName, getCourseTemplateKey);
+        return ResponseEntity.ok(course);
+    }
+
     @PostMapping
     public ResponseEntity<Courses> createCourse(@RequestBody Courses course) {
         Courses savedCourse = coursesService.createCourse(course);

@@ -32,7 +32,7 @@
 			}
 		],
 		"inviteRoles": ["SuperAdmin","CouncilAdmin","Admin","Regulator"],
-		"roles": ["SuperAdmin","Admin","Regulator"],
+		"roles": ["SuperAdmin","Admin","Regulator","ExamBody"],
 		"notificationTemplates": {
 			"invite": [
 				{

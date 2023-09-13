@@ -22,4 +22,8 @@ public class DocumentService {
         return documentRepository.findByOsid(osid);
     }
 
+    public Document getDocumentByUri(String uri) {
+        return documentRepository.findByDocUri(uri);
+    }
+
 }

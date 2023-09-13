@@ -27,4 +27,7 @@ public class Courses {
 
     @Column(name = "shortName")
     private String shortName;
+
+    @Column(name = "requestType")
+    private String requestType;
 }

@@ -66,6 +66,15 @@ public class ClaimService {
         return toMap(claimsToAttestor, pageable);
     }
 
+    public Map<String, Object> findClaimsForAttestor1(String entity, JsonNode attestorNode, Pageable pageable) {
+        List<Claim> claims = claimRepository.findByAttestorEntity(entity);
+        logger.info("Found {} claims to process", claims.size());
+        List<Claim> claimsToAttestor = claims.stream()
+                .filter(claim -> claimsAuthorizer.isAuthorizedAttestor(claim, attestorNode))
+                .collect(Collectors.toList());
+        return toMapAll(claimsToAttestor, pageable);
+    }
+
     public ClaimWithSize findAllClaims() {
         ClaimWithSize claimWithSize = new ClaimWithSize();
         List<Claim> claims = claimRepository.findAll();
@@ -100,6 +109,20 @@ public class ClaimService {
         response.put(TOTAL_ELEMENTS, claims.size());
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), claims.size());
+        if(start > claims.size()) {
+            response.put(CONTENT, new ArrayList<>());
+            return response;
+        }
+        response.put(CONTENT, claims.subList(start, end));
+        return response;
+    }
+
+    private Map<String, Object> toMapAll(List<Claim> claims, Pageable pageable) {
+        Map<String, Object> response = new HashMap<>();
+        response.put(TOTAL_PAGES, (int)(Math.ceil(claims.size() * 1.0/pageable.getPageSize())));
+        response.put(TOTAL_ELEMENTS, claims.size());
+        int start = 0;
+        int end =  claims.size();
         if(start > claims.size()) {
             response.put(CONTENT, new ArrayList<>());
             return response;
