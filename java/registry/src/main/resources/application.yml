@@ -254,6 +254,7 @@ claims:
         #url: ${claims_url:http://10.0.2.18:8082}
   url: ${claims_url:https://registration.uphrh.in}
   #url: ${claims_url:http://localhost:8082}
+  usrmanageurl: ${claims_usrmanageurl:http://10.0.2.18:8001/api/v1/keycloak/persist/userCredential}
   domain-url: ${claims_domain-url:https://registration.uphrh.in/claim-ms}
   download-path: /api/v1/files/download
 authentication:

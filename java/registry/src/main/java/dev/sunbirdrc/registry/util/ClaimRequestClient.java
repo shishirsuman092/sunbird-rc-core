@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dev.sunbirdrc.pojos.dto.ClaimDTO;
+import dev.sunbirdrc.registry.dao.CustomUserDto;
 import dev.sunbirdrc.registry.dao.Learner;
 import dev.sunbirdrc.registry.model.Document;
 import dev.sunbirdrc.registry.model.dto.*;
@@ -38,6 +39,7 @@ public class ClaimRequestClient {
     private static final String GET_TEMPLATE_KEY = "/api/v1/courses/course-template-key/";
 
     private String DIGI_LOCKER_GET = "/api/v1/digilicker/osid/";
+    private String DIGI_LOCKER_GET_OSID = "/api/v1/digilicker/uri/";
     private String DIGI_LOCKER_SAVE = "/api/v1/digilicker";
     private static Logger logger = LoggerFactory.getLogger(ClaimRequestClient.class);
     private String claimRequestUrl;
@@ -65,8 +67,12 @@ public class ClaimRequestClient {
     private static final String MAIL_SEND_PENDING_FOREIGN_ITEM_URL = "/api/v1/sendPendingForeignItemMail/";
     private static final String MAIL_SEND_EC_PENDING_ITEM_URL = "/api/v1/sendEcPendingItemMail/";
 
-    ClaimRequestClient(@Value("${claims.url}") String claimRequestUrl, RestTemplate restTemplate) {
+    private String userManagementUrl;
+    private static String KEYCLOAK_USER_PERSIST = "/api/v1/keycloak/persist/userCredential";
+
+    ClaimRequestClient(@Value("${claims.url}") String claimRequestUrl,@Value("${claims.usrmanageurl}")String userManagementUrl, RestTemplate restTemplate) {
         this.claimRequestUrl = claimRequestUrl;
+        this.userManagementUrl = userManagementUrl;
         this.restTemplate = restTemplate;
     }
 
@@ -129,6 +135,22 @@ public class ClaimRequestClient {
         logger.info("Event has successfully published ...");
     }
 
+    public String persistUserinKeycloak(CustomUserDto userDto, HttpMethod method, HttpHeaders headers) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(userManagementUrl + KEYCLOAK_USER_PERSIST);
+        String response = String.valueOf(restTemplate.exchange(
+                builder.toUriString(), method, new HttpEntity<>(userDto), String.class, headers
+        ));
+//        String response = String.valueOf(restTemplate.exchange(
+//                userManagementUrl + KEYCLOAK_USER_PERSIST,
+//                method,
+//                new HttpEntity<>(userDto),
+//                String.class
+//        ));
+        logger.info("Event has successfully published ...");
+
+        return response;
+    }
+
     public void saveDocument(Document docs) {
         HttpMethod method = HttpMethod.POST;
         restTemplate.exchange(
@@ -142,6 +164,16 @@ public class ClaimRequestClient {
 
     public String getDocument(String osid) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(claimRequestUrl + DIGI_LOCKER_GET+osid);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("accept", "*/*");
+        ResponseEntity<String> response = restTemplate.exchange(
+                builder.toUriString(), HttpMethod.GET, null, String.class, headers
+        );        logger.info("end getDocument ...");
+        return response.getBody();
+    }
+
+    public String getOsIdWithURI(String uri) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(claimRequestUrl + DIGI_LOCKER_GET_OSID+uri);
         HttpHeaders headers = new HttpHeaders();
         headers.set("accept", "*/*");
         ResponseEntity<String> response = restTemplate.exchange(
