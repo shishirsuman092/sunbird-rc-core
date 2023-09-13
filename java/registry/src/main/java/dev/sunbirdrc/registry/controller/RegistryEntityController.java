@@ -144,6 +144,8 @@ public class RegistryEntityController extends AbstractController {
             String userName = rootNode.get("email").asText();
             logger.info("userName:"+userName);
             JsonNode password = rootNode.get("password");
+            String name = rootNode.get("name")!=null?rootNode.get("name").asText():"NA";
+
             String secretToken = null;
             if(password!=null){
                 secretToken = password.asText();
@@ -155,7 +157,7 @@ public class RegistryEntityController extends AbstractController {
 
             // User Persistence in KC - end
 
-            registryHelper.autoRaiseClaim(entityName, entityId, "", null, newRootNode, dev.sunbirdrc.registry.Constants.USER_ANONYMOUS);
+            registryHelper.autoRaiseClaim(entityName, entityId, name, null, newRootNode, dev.sunbirdrc.registry.Constants.USER_ANONYMOUS);
             Map resultMap = new HashMap();
             resultMap.put(dbConnectionInfoMgr.getUuidPropertyName(), entityId);
             result.put(entityName, resultMap);
@@ -164,7 +166,7 @@ public class RegistryEntityController extends AbstractController {
             watch.start(TAG);
             if(userName!=null && secretToken!=null){
                 try {
-                    String persistStatus  = persistUserInfo(userName,secretToken,entityName);
+                    String persistStatus  = persistUserInfo(userName,secretToken,"",entityName);
                 }catch (Exception ex){
                     ex.printStackTrace();
                 }
@@ -192,7 +194,7 @@ public class RegistryEntityController extends AbstractController {
         }
     }
 
-    public String persistUserInfo(final String userName, final String password, final String role) throws IOException {
+    public String persistUserInfo(final String userName, final String password,String name, final String role) throws IOException {
         logger.info("saving user info to endpoint {}","UserManagement API");
         HttpClient httpClient = HttpClients.createDefault();
         // HttpMethod method = ;
@@ -210,6 +212,8 @@ public class RegistryEntityController extends AbstractController {
                 "\"username\": " + "\"" + userName + "\"" + "," +
                 "\"password\": " + "\"" + password + "\"" +"," +
                 "\"email\": " + "\"" + userName + "\"" +"," +
+                "\"firstName\": " + "\"" + name + "\"" +"," +
+                "\"lastName\": " + "\"" + name + "\"" +"," +
                 "\"roleName\": " + "\"" + role + "\"" +
                 "}";
         logger.info("payload to save user info with body {} and header {}",requestBody,httpPost.getAllHeaders());
