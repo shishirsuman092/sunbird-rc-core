@@ -2,8 +2,10 @@ package dev.sunbirdrc.registry.digilocker.pulldoc;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "DocDetails")
+//@XmlType(propOrder = {"docContent", "dataContent","uid","fullName","dob","trackingId","udf1","uri","mobile","docType"})
 public class DocDetailsRs {
     private String docType;
 
@@ -97,7 +99,7 @@ public class DocDetailsRs {
     public void setUri(String uri) {
         this.uri = uri;
     }
-
+    @XmlElement(name = "DocContent")
     public Object getDocContent() {
         return docContent;
     }
@@ -105,7 +107,7 @@ public class DocDetailsRs {
     public void setDocContent(Object docContent) {
         this.docContent = docContent;
     }
-
+    @XmlElement(name = "DataContent")
     public Object getDataContent() {
         return dataContent;
     }

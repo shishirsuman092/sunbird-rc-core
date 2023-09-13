@@ -416,11 +416,11 @@ public class DigiLockerUtils {
     }
 
 
-    public static Object convertJaxbToPullDoc(PullDocResponse jaxbObject) {
+    public static String convertJaxbToPullDoc(PullDocResponse jaxbObject) {
         try {
             StringWriter writer = new StringWriter();
             JAXB.marshal(jaxbObject, writer);
-            Object objString = writer.toString();
+            String objString = writer.toString();
             return objString;
         } catch (Exception e) {
             e.printStackTrace();
