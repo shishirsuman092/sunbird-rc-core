@@ -1155,7 +1155,16 @@ public class RegistryEntityController extends AbstractController {
                 }
 
             }
-            return new ResponseEntity<>(certificateOriginal, HttpStatus.OK);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+           return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(certificateOriginal);
+            //.contentType(MediaType.APPLICATION_OCTET_STREAM)
+            //return new ResponseEntity<>(certificateOriginal, HttpStatus.OK);
         } catch (RecordNotFoundException re) {
             createSchemaNotFoundResponse(re.getMessage(), responseParams);
             Response response = new Response(Response.API_ID.GET, "ERROR", responseParams);
