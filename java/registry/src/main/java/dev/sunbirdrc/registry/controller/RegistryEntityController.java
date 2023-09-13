@@ -1156,15 +1156,14 @@ public class RegistryEntityController extends AbstractController {
 
             }
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
-            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+//            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 
-           return ResponseEntity.ok()
-                    .headers(headers)
-                    .body(certificateOriginal);
-            //.contentType(MediaType.APPLICATION_OCTET_STREAM)
-            //return new ResponseEntity<>(certificateOriginal, HttpStatus.OK);
+//           return ResponseEntity.ok()
+//                    .headers(headers)
+//                    .body(certificateOriginal);
+            return new ResponseEntity<>(certificateOriginal, HttpStatus.OK);
         } catch (RecordNotFoundException re) {
             createSchemaNotFoundResponse(re.getMessage(), responseParams);
             Response response = new Response(Response.API_ID.GET, "ERROR", responseParams);
@@ -1395,7 +1394,10 @@ public class RegistryEntityController extends AbstractController {
                     person.setName(fullName);
                     person.setFinalYearRollNo(finalYearRollNo);
                     PullDocResponse pullDocResponse = DigiLockerUtils.getDocPullDocResponse(pullDocRequest, statusCode, cred, person);
-                    Object responseString = DigiLockerUtils.convertJaxbToPullDoc(pullDocResponse);
+                    String responseString = DigiLockerUtils.convertJaxbToPullDoc(pullDocResponse);
+//                    responseString = responseString.replace(" xsi:type=\"xs:string\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"","");
+//                    responseString = responseString.replace(" xsi:type=\"xs:base64Binary\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"","");
+                    responseString = responseString.replaceAll(" xsi:type=\"[^\"]*\" xmlns:xs=\"[^\"]*\" xmlns:xsi=\"[^\"]*\"", "");
                     HttpHeaders headers = new HttpHeaders();
                     headers.setContentType(MediaType.APPLICATION_XML);
                     return new ResponseEntity<>(responseString, headers, HttpStatus.OK);

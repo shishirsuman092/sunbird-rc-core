@@ -2,9 +2,11 @@ package dev.sunbirdrc.registry.digilocker.pulldoc;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
-@XmlRootElement
+@XmlRootElement(name = "PullDocResponse")
+@XmlType(propOrder = {"responseStatus", "docDetails"})
 public class PullDocResponse implements Serializable {
 
     private ResponseStatus responseStatus;
