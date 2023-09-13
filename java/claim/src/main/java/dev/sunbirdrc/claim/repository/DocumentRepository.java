@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, Long> {
     Document findByOsid(String osid);
+
+    Document findByDocUri(String docUri);
 }

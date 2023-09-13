@@ -33,5 +33,15 @@ public class DocumentController {
             return new ResponseEntity<>("", HttpStatus.OK);
         }
     }
+
+    @GetMapping("/uri/{uri}")
+    public ResponseEntity<String> getDocumentByUri(@PathVariable String uri) {
+        Document document = documentService.getDocumentByUri(uri);
+        if (document != null) {
+            return new ResponseEntity<>(document.getOsid(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("OSID not available", HttpStatus.NOT_FOUND);
+        }
+    }
 }
 
