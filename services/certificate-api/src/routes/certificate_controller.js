@@ -138,7 +138,6 @@ async function generateRawCertificate(certificate, templateUrl, entityId, entity
     let qrData;
     //console.log('QR Code type: ', qrCodeType);
     if (qrCodeType.toUpperCase() === URL) {
-         //qrData = `${envData.certDomainUrl}/api/v1/files/download?fileName=issuance/${credentialsFileName}wc.pdf}`
          qrData = `${credentialsFileName}`;
     } else {
         const zip = new JSZip();
