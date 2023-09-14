@@ -754,7 +754,9 @@ public class RegistryEntityController extends AbstractController {
                                                 HttpServletRequest request,
                                                 @RequestHeader(required = false) String viewTemplateId) {
         ResponseParams responseParams = new ResponseParams();
-        Response response ;
+        Object certificateWebCopy = null;
+        Object certificateOriginal = null;
+        Response response;
         if (registryHelper.doesEntityOperationRequireAuthorization(entityName) && securityEnabled) {
             try {
 
@@ -764,31 +766,58 @@ public class RegistryEntityController extends AbstractController {
                     checkEntityNameInDefinitionManager(entityName);
                     registryHelper.authorizeAttestor(entityName, request);
                 } catch (RecordNotFoundException re) {
-                         createSchemaNotFoundResponse(re.getMessage(), responseParams);
-                        response = new Response(Response.API_ID.GET, "ERROR", responseParams);
-                        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+                    createSchemaNotFoundResponse(re.getMessage(), responseParams);
+                    response = new Response(Response.API_ID.GET, "ERROR", responseParams);
+                    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
                 } catch (Exception exceptionFromAuthorizeAttestor) {
                     return new ResponseEntity<>(HttpStatus.FORBIDDEN);
                 }
             }
         }
         try {
+            String checkIfAlreadyExists = "issuance/" + entityId + ".pdf";
+            certificateOriginal = certificateService.getCred(checkIfAlreadyExists);
+
             String readerUserId = getUserId(entityName, request);
             JsonNode node = registryHelper.readEntity(readerUserId, entityName, entityId, false,
                             viewTemplateManager.getViewTemplateById(viewTemplateId), false)
                     .get(entityName);
 
             String courseName = node.get("courseName").asText();
-            String templateUrlFromRequest = getTemplateUrlFromRequestFromRegType(request, entityName,courseName);
+            String templateUrlFromRequest = getTemplateUrlFromRequestFromRegType(request, entityName, courseName);
             String fileName = entityId;
-            return new ResponseEntity<>(certificateService.getCertificate(node,
-                    entityName,
-                    entityId,
-                    request.getHeader(HttpHeaders.ACCEPT),
-                    templateUrlFromRequest,
-                    JSONUtil.removeNodesByPath(node, definitionsManager.getExcludingFieldsForEntity(entityName)),
-                    fileName, false
-            ), HttpStatus.OK);
+            JsonNode signedNode = objectMapper.readTree(node.get(OSSystemFields._osSignedData.name()).asText());
+            if ((certificateOriginal == null)) {
+                String fileName1 = fileName + "webcopy";
+                certificateWebCopy = certificateService.getCertificate(signedNode,
+                        entityName,
+                        entityId,
+                        request.getHeader(HttpHeaders.ACCEPT),
+                        templateUrlFromRequest.replace(".html", "-WC.html"),
+                        JSONUtil.removeNodesByPath(node, definitionsManager.getExcludingFieldsForEntity(entityName)), fileName1, false
+                );
+                String url = null;
+                String fileUrlForQR = getFileUrl(fileName1);
+                if (certificateWebCopy != null) {
+                    url = certificateService.saveToGCS(certificateWebCopy, fileName1);
+                    logger.debug("WebCopy of Certificate:" + url);
+                }
+                certificateOriginal = certificateService.getCertificate(signedNode,
+                        entityName,
+                        entityId,
+                        request.getHeader(HttpHeaders.ACCEPT),
+                        templateUrlFromRequest,
+                        JSONUtil.removeNodesByPath(node, definitionsManager.getExcludingFieldsForEntity(entityName)), fileUrlForQR, false
+                );
+                if (certificateOriginal != null) {
+                    String originalUrl = getCredUrl(fileName, certificateOriginal);
+                    if (originalUrl != null) {
+                        shareCredentials(signedNode, originalUrl);
+                    }
+                }
+
+            }
+            return new ResponseEntity<>(certificateOriginal, HttpStatus.OK);
         } catch (Exception exception) {
             exception.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -1219,13 +1248,6 @@ public class RegistryEntityController extends AbstractController {
 
             }
 
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
-//            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-
-//           return ResponseEntity.ok()
-//                    .headers(headers)
-//                    .body(certificateOriginal);
             return new ResponseEntity<>(certificateOriginal, HttpStatus.OK);
         } catch (RecordNotFoundException re) {
             createSchemaNotFoundResponse(re.getMessage(), responseParams);
