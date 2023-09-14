@@ -1,6 +1,7 @@
 package dev.sunbirdrc.controller;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
 import dev.sunbirdrc.dto.*;
 import dev.sunbirdrc.entity.UserDetails;
 import dev.sunbirdrc.service.MailService;
@@ -24,6 +25,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.Security;
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -179,4 +181,10 @@ public class UserController {
 
         return new ResponseEntity<>("Persist successfully", HttpStatus.OK);
     }
+
+    @PostMapping(value = "/user/attribute", produces = "application/json")
+    public List getUserByAttribute(@RequestBody JsonNode body) throws SQLException {
+        return userService.getUserByAttribute(body);
+    }
+
 }

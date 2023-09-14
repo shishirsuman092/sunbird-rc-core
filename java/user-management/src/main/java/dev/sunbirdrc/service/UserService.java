@@ -1,12 +1,14 @@
 package dev.sunbirdrc.service;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
 import dev.sunbirdrc.config.KeycloakConfig;
 import dev.sunbirdrc.config.PropertiesValueMapper;
 import dev.sunbirdrc.dto.*;
 import dev.sunbirdrc.entity.UserCredential;
 import dev.sunbirdrc.entity.UserDetails;
 import dev.sunbirdrc.exception.*;
+import dev.sunbirdrc.repository.UserAttributeRepository;
 import dev.sunbirdrc.repository.UserCredentialRepository;
 import dev.sunbirdrc.repository.UserDetailsRepository;
 import dev.sunbirdrc.utils.CipherEncoder;
@@ -26,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.lang.NonNull;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,6 +38,10 @@ import org.springframework.util.StringUtils;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -70,6 +77,12 @@ public class UserService {
 
     @Autowired
     private CipherEncoder cipherEncoder;
+
+    @Autowired
+    private UserAttributeRepository userAttributeRepository;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     public UsersResource getSystemUsersResource(){
         return systemKeycloak.realm(valueMapper.getRealm()).users();
@@ -766,7 +779,6 @@ public class UserService {
         }
     }
 
-
     public boolean isUserExist(@NonNull String username) {
         Optional<UserCredential> userCredentialOptional = userCredentialRepository.findByUserName(username);
         if (userCredentialOptional.isPresent()) {
@@ -775,4 +787,95 @@ public class UserService {
             return false;
         }
     }
+
+    public List getUserByAttribute(final JsonNode body) throws SQLException {
+        String fieldName = body.get("fieldName").asText();
+        String fieldValue = body.get("fieldValue").asText();
+        int offset = body.get("offset").asInt();
+        int limit = body.get("limit").asInt();
+        LOGGER.info("Fetching user info by field {} and value {} with offset {} and limit {}",fieldName, fieldValue, offset, limit);
+        return getUserListByAttribute(fieldName,fieldValue, offset, limit);
+    }
+
+    public List getUserListByAttribute(final String fieldName, final String fieldValue, int offset, int limit) throws SQLException {
+
+        List<UserAttributeModel> userByAttribute = getUserAttribute(fieldName, fieldValue,offset,limit);
+        if(userByAttribute == null || userByAttribute.isEmpty()){
+            LOGGER.info("No records found.");
+            return Collections.EMPTY_LIST;
+        }
+        LOGGER.info("Records found {}",userByAttribute);
+        List<String> collect = userByAttribute.stream().map(UserAttributeModel::getUserId).collect(Collectors.toList());
+
+        Map<String, UserRepresentation> userRepresentationMap = getStringUserRepresentationMap(collect);
+        if(userRepresentationMap.isEmpty()){
+            LOGGER.info("No UserRepresentation records found for {}",collect);
+            return Collections.EMPTY_LIST;
+        }
+        return new ArrayList<>(userRepresentationMap.values());
+    }
+
+    public List<UserAttributeModel> getUserAttribute(String fieldName, String fieldValue, int offset, int limit) {
+        return userAttributeRepository.findUserByAttribute(fieldName, fieldValue,offset,limit);
+    }
+
+    private Map<String, UserRepresentation> getStringUserRepresentationMap(List<String> collect) throws SQLException {
+        Connection connection = Objects.requireNonNull(jdbcTemplate.getDataSource()).getConnection();
+        String formattedString = getFormattedStringFromCollection(collect);
+        Map<String, UserRepresentation> userRepresentationMap = new HashMap<>();
+        ResultSet resultSet = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(formattedString);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet != null) {
+                while (resultSet.next()) {
+                    String id = resultSet.getString("id");
+                    UserRepresentation userRepresentation = null;
+                    if (userRepresentationMap.containsKey(id)) {
+                        userRepresentation = userRepresentationMap.get(id);
+                        userRepresentation.singleAttribute(resultSet.getString("name"), resultSet.getString("value"));
+                    } else {
+                        userRepresentation = new UserRepresentation();
+                        userRepresentation.setId(id);
+                        userRepresentation.setUsername(resultSet.getString("username"));
+                        userRepresentation.setEnabled(resultSet.getBoolean("enabled"));
+                        userRepresentation.setEmail(resultSet.getString("email"));
+                        userRepresentation.setFirstName(resultSet.getString("first_name"));
+                        userRepresentation.setLastName(resultSet.getString("last_name"));
+                        userRepresentation.singleAttribute(resultSet.getString("name"), resultSet.getString("value"));
+                        userRepresentationMap.put(id, userRepresentation);
+                    }
+                }
+            }
+        } catch (Exception exception){
+            LOGGER.error("Exception while processing data from DB.",exception);
+        } finally {
+            if(resultSet != null){
+                resultSet.close();
+            }
+            if(preparedStatement != null){
+                preparedStatement.close();
+            }
+            if(connection != null){
+                connection.close();
+            }
+        }
+        LOGGER.info("userRepresentationMap {}",userRepresentationMap);
+        return userRepresentationMap;
+    }
+
+    private String getFormattedStringFromCollection(List<String> collect) {
+        StringBuffer sbf = new StringBuffer();
+        sbf.append("select ue.*,ua.name,ua.value  from user_entity ue join user_attribute ua on ua.user_id = ue.id WHERE ue.id IN (");
+        collect.stream().forEach(item -> {
+            sbf.append("'" + item + "'");
+            sbf.append(",");
+        });
+        String substring = sbf.substring(0, sbf.lastIndexOf(","));
+        substring = substring + (" )");
+        LOGGER.info("Query to be Executed {}",substring);
+        return substring;
+    }
+
 }
