@@ -211,6 +211,7 @@ public class RegistryEntityController extends AbstractController {
                 "\"password\": " + "\"" + password + "\"" +"," +
                 "\"email\": " + "\"" + userName + "\"" +"," +
                 "\"firstName\": " + "\"" + name + "\"" +"," +
+                "\"lastName\": " + "\"" + name + "\"" +"," +
                 "\"roleName\": " + "\"" + role + "\"" +
                 "}";
         logger.debug("payload to save user info with body {} and header {}",requestBody,httpPost.getAllHeaders());
@@ -1865,6 +1866,7 @@ public class RegistryEntityController extends AbstractController {
         String imgUrl = generateImageURL(rootNode);
         ObjectNode node = (ObjectNode) rootNode;
         node.put("candidatePic", imgUrl);
+        node.put("candidateSignature", imgUrl.replace("rp","rs"));
         logger.info("orgLogo" + node.get("candidatePic"));
     }
 
