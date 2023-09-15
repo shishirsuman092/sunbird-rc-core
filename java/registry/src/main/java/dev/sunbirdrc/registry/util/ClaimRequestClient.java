@@ -103,9 +103,11 @@ public class ClaimRequestClient {
 
     public JsonNode getStudentsClaims(JsonNode jsonNode, Pageable pageable, String entityName) {
         final String QUERY_PARAMS = "?size=" + pageable.getPageSize() + "&page="+pageable.getPageNumber();
+        logger.info("Call Start From StudentsClaims");
         ObjectNode requestBody = JsonNodeFactory.instance.objectNode();
         requestBody.set("attestorInfo", jsonNode);
         requestBody.put("entity", entityName);
+        logger.info("Before Clam API call for Student URL"+claimRequestUrl + FETCH_CLAIMS_STUDENT_PATH);
         return restTemplate.postForObject(claimRequestUrl + FETCH_CLAIMS_STUDENT_PATH + QUERY_PARAMS, requestBody, JsonNode.class);
     }
 

@@ -94,6 +94,7 @@ public class RegistryClaimsController extends AbstractController{
                     if(jsonNode!=null && jsonNode.size()>0) {
                         JsonNode email = jsonNode.get(0).get("email");
                         if(email != null) {
+                            logger.info("Email From Claim:"+email);
                             claims = claimRequestClient.getStudentsClaims(email, pageable, entityName1);
                             break;
                         }else{
@@ -102,6 +103,8 @@ public class RegistryClaimsController extends AbstractController{
                         }
                         if(claims!=null)
                           logger.info("Received {} claims", claims.size());
+                    }else{
+                        logger.info("JSON Node is null");
                     }
                 }else{
                     logger.info("result is null..");
