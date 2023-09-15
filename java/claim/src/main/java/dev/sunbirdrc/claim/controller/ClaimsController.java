@@ -69,11 +69,15 @@ public class ClaimsController {
     @RequestMapping(value = "/api/v2/getClaims", method = RequestMethod.POST)
     public ResponseEntity<List<Claim>> getStudentClaims(@RequestHeader HttpHeaders headers,
                                                          @RequestBody JsonNode requestBody, Pageable pageable) {
+        logger.info("Calling claim v2 getClaims");
         String entity = requestBody.get(LOWERCASE_ENTITY).asText();
         JsonNode attestorNode = requestBody.get(ATTESTOR_INFO);
         List<Claim> claims = claimService.findByRequestorName(attestorNode.asText(), pageable);
         if(claims==null){
+            logger.info("claims in null in getClaims");
             claims = new ArrayList<>();
+        }else{
+            logger.info("claims is not in getClaims Size"+claims.size());
         }
         return new ResponseEntity<>(claims, HttpStatus.OK);
     }
