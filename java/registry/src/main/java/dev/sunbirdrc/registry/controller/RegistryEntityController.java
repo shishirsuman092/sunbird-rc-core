@@ -144,16 +144,22 @@ public class RegistryEntityController extends AbstractController {
             String userName = rootNode.get("email").asText();
             logger.info("userName:"+userName);
             JsonNode password = rootNode.get("password");
+            JsonNode token = rootNode.get("secretToken");
             String name = rootNode.get("name")!=null?rootNode.get("name").asText():"NA";
 
             String secretToken = null;
-            if(password!=null){
+            if(password != null){
+                logger.info("password:"+password.asText());
                 secretToken = password.asText();
-            }
-            if(secretToken==null){
+            }else if(token!=null){
+                logger.info("token:"+token.asText());
+                secretToken = token.asText();
+            }else{
                 secretToken = DEFAULT_SECRET;
+                logger.info("DEFAULT_SECRET:"+secretToken);
             }
-            logger.info("secretToken:"+secretToken);
+
+            logger.info("secretToken-last:"+secretToken);
 
             // User Persistence in KC - end
 
