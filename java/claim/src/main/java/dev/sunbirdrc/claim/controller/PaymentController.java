@@ -20,12 +20,14 @@ public class PaymentController {
     }
 
     @GetMapping("/all")
+    @CrossOrigin (origins = "*")
     public ResponseEntity<List<Payment>> getAllPayment() {
         List<Payment> Payment = paymentService.getAllPayment();
         return ResponseEntity.ok(Payment);
     }
 
      @PostMapping
+     @CrossOrigin (origins = "*")
     public ResponseEntity<Payment> createPayment(@RequestBody Payment payment) {
         Payment savedCourse = paymentService.createPayment(payment);
         return ResponseEntity.ok(savedCourse);
