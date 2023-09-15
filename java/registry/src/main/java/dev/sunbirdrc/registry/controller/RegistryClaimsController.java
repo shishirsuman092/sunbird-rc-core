@@ -83,12 +83,13 @@ public class RegistryClaimsController extends AbstractController{
                                                HttpServletRequest request) {
         List<String> entityList = CommonUtils.getEntityName();
         ResponseEntity<Object> objectResponseEntity = null;
-        List list = new ArrayList();
         JsonNode claims = null;
         try {
             for (String entityName1:entityList) {
+                logger.info("entityName1::"+entityName1);
                 JsonNode result = registryHelper.getRequestedUserDetails(request, entityName1);
                 if(result!=null) {
+                    logger.info("result is not null..");
                     JsonNode jsonNode = result.get(entityName1);
                     if(jsonNode!=null && jsonNode.size()>0) {
                         JsonNode email = jsonNode.get(0).get("email");
@@ -97,9 +98,13 @@ public class RegistryClaimsController extends AbstractController{
                             break;
                         }else{
                             logger.info("email {} is null", email);
+                            //claims = new
                         }
-                        logger.info("Received {} claims", claims.size());
+                        if(claims!=null)
+                          logger.info("Received {} claims", claims.size());
                     }
+                }else{
+                    logger.info("result is null..");
                 }
             }
             objectResponseEntity = new ResponseEntity<>(claims, HttpStatus.OK);
