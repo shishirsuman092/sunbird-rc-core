@@ -38,8 +38,6 @@ public class RegistryClaimsController extends AbstractController{
     private final ClaimRequestClient claimRequestClient;
     private final RegistryHelper registryHelper;
 
-    @Value("${examination.enabled:false}")
-    private Boolean isExamResultEnabled;
 
     public RegistryClaimsController(ClaimRequestClient claimRequestClient,
                                     RegistryHelper registryHelper,
@@ -94,9 +92,11 @@ public class RegistryClaimsController extends AbstractController{
                     JsonNode jsonNode = result.get(entityName1);
                     if(jsonNode!=null && jsonNode.size()>0) {
                         JsonNode email = jsonNode.get(0).get("email");
-                        if(email!=null) {
+                        if(email != null) {
                             claims = claimRequestClient.getStudentsClaims(email, pageable, entityName1);
                             break;
+                        }else{
+                            logger.info("email {} is null", email);
                         }
                         logger.info("Received {} claims", claims.size());
                     }
