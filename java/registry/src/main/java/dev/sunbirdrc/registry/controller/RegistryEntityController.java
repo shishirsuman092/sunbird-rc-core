@@ -90,6 +90,9 @@ public class RegistryEntityController extends AbstractController {
     private String claimRequestUrl;
     @Value("${claims.download-path}")
     private String claimDownloadPath;
+
+    @Value("${examination.enabled:false}")
+    private Boolean isExamResultEnabled;
     static String static_download_parameter = "?fileName=";
     private static ObjectMapper mapper = new ObjectMapper();
     @Value("${Logo.imgBaseUri:https://casa.upsmfac.org/UploadedFiles/Student/}")
