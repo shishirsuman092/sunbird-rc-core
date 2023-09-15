@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -71,6 +72,9 @@ public class ClaimsController {
         String entity = requestBody.get(LOWERCASE_ENTITY).asText();
         JsonNode attestorNode = requestBody.get(ATTESTOR_INFO);
         List<Claim> claims = claimService.findByRequestorName(attestorNode.asText(), pageable);
+        if(claims==null){
+            claims = new ArrayList<>();
+        }
         return new ResponseEntity<>(claims, HttpStatus.OK);
     }
     @RequestMapping(value = "/api/v1/getClaims/{claimId}", method = RequestMethod.POST)
