@@ -610,8 +610,10 @@ public class UserService {
                                 .roleRepresentationList(roleRepresentationList)
                                 .build();
                     } catch (NotAuthorizedException e) {
+                        e.printStackTrace();
                         throw new AuthorizationException("Credentials have authorization issue");
                     } catch (Exception e) {
+                        e.printStackTrace();
                         throw new KeycloakUserException("Unable to get user detils - Update user");
                     }
                 } else {
