@@ -173,14 +173,14 @@ public class RegistryEntityController extends AbstractController {
             response.setResult(result);
             responseParams.setStatus(Response.Status.SUCCESSFUL);
             watch.start(TAG);
-//            if(userName!=null && secretToken!=null){
-//                try {
-//                    String persistStatus  = persistUserInfo(userName,secretToken,"",entityName);
-//                }catch (Exception ex){
-//                    ex.printStackTrace();
-//                }
-//
-//            }
+            if(userName!=null && secretToken!=null){
+                try {
+                    String persistStatus  = persistUserInfo(userName,secretToken,"",entityName);
+                }catch (Exception ex){
+                    ex.printStackTrace();
+                }
+
+            }
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (RecordNotFoundException e) {
