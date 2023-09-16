@@ -790,6 +790,7 @@ public class RegistryHelper {
             watch.start("RegistryController.searchEntity");
             JsonNode result = searchEntity(payload);
             watch.stop("RegistryController.searchEntity");
+            logger.info("");
             return result;
         }
         throw new Exception("Forbidden");
@@ -802,6 +803,7 @@ public class RegistryHelper {
         ObjectNode filters = JsonNodeFactory.instance.objectNode();
         filters.set(OSSystemFields.osOwner.toString(), JsonNodeFactory.instance.objectNode().put("contains", userId));
         payload.set(FILTERS, filters);
+        logger.info("In getSearchByOwnerQuery:"+payload.toPrettyString());
         return payload;
     }
 
