@@ -79,37 +79,36 @@ public class RegistryClaimsController extends AbstractController{
 
 
     @RequestMapping(value = "/api/v2/{entityName}/claims", method = RequestMethod.GET)
-    public ResponseEntity<Object> getStudentsClaims(@PathVariable String entityName, Pageable pageable,
-                                               HttpServletRequest request) {
+    public ResponseEntity<Object> getStudentsClaims(@PathVariable String entityName, @RequestParam(value = "email", required = false) String email, HttpServletRequest request, Pageable pageable) {
         List<String> entityList = CommonUtils.getEntityName();
         ResponseEntity<Object> objectResponseEntity = null;
         JsonNode claims = null;
         try {
-            for (String entityName1:entityList) {
-                logger.info("entityName1::"+entityName1);
-                JsonNode result = registryHelper.getRequestedUserDetails(request, entityName1);
-                if(result!=null) {
-                    logger.info("result is not null..");
-                    JsonNode jsonNode = result.get(entityName1);
-                    if(jsonNode!=null && jsonNode.size()>0) {
-                        JsonNode email = jsonNode.get(0).get("email");
-                        if(email != null) {
-                            logger.info("Email From Claim:"+email);
-                            claims = claimRequestClient.getStudentsClaims(email, pageable, entityName1);
-                            break;
-                        }else{
-                            logger.info("email {} is null", email);
-                            //claims = new
-                        }
-                        if(claims!=null)
-                          logger.info("Received {} claims", claims.size());
-                    }else{
-                        logger.info("JSON Node is null");
-                    }
-                }else{
-                    logger.info("result is null..");
-                }
-            }
+//            for (String entityName1:entityList) {
+//                logger.info("entityName1::"+entityName1);
+//                JsonNode result = registryHelper.getRequestedUserDetails(request, entityName1);
+ //               if(result!=null) {
+//                    logger.info("result is not null..");
+                    //JsonNode jsonNode = result.get(entityName1);
+//                    if(jsonNode!=null && jsonNode.size()>0) {
+//                        JsonNode email = jsonNode.get(0).get("email");
+//                        if(email != null) {
+//                            logger.info("Email From Claim:"+email);
+                            claims = claimRequestClient.getStudentsClaims(email, pageable);
+ //                           break;
+//                        }else{
+//                            logger.info("email {} is null", email);
+//                            //claims = new
+//                        }
+//                        if(claims!=null)
+//                          logger.info("Received {} claims", claims.size());
+//                    }else{
+//                        logger.info("JSON Node is null");
+//                    }
+//                }else{
+//                    logger.info("result is null..");
+//                }
+//            }
             objectResponseEntity = new ResponseEntity<>(claims, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Fetching claims failed {}", e.getMessage());

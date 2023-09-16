@@ -1,6 +1,7 @@
 package dev.sunbirdrc.registry.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dev.sunbirdrc.pojos.dto.ClaimDTO;
@@ -101,14 +102,19 @@ public class ClaimRequestClient {
         return restTemplate.postForObject(claimRequestUrl + FETCH_CLAIMS_PATH_ENTITY_TYPE + QUERY_PARAMS, requestBody, JsonNode.class);
     }
 
-    public JsonNode getStudentsClaims(JsonNode jsonNode, Pageable pageable, String entityName) {
+    public JsonNode getStudentsClaims(String email, Pageable pageable) {
         final String QUERY_PARAMS = "?size=" + pageable.getPageSize() + "&page="+pageable.getPageNumber();
         logger.info("Call Start From StudentsClaims");
         ObjectNode requestBody = JsonNodeFactory.instance.objectNode();
-        requestBody.set("attestorInfo", jsonNode);
-        requestBody.put("entity", entityName);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        // Create a JSON object with a string value
+        ObjectNode jsonNode = JsonNodeFactory.instance.objectNode();
+
+        jsonNode.put("attestorInfo", email);
+        //requestBody.put("entity", entityName);
         logger.info("Before Clam API call for Student URL"+claimRequestUrl + FETCH_CLAIMS_STUDENT_PATH);
-        return restTemplate.postForObject(claimRequestUrl + FETCH_CLAIMS_STUDENT_PATH + QUERY_PARAMS, requestBody, JsonNode.class);
+        return restTemplate.postForObject(claimRequestUrl + FETCH_CLAIMS_STUDENT_PATH + QUERY_PARAMS, jsonNode, JsonNode.class);
     }
 
     public JsonNode getClaim(JsonNode jsonNode, String entityName, String claimId) {
