@@ -2,6 +2,7 @@ package dev.sunbirdrc.claim.controller;
 
 import dev.sunbirdrc.claim.service.ClaimService;
 import dev.sunbirdrc.claim.service.StudentForeignVerificationService;
+import dev.sunbirdrc.claim.service.StudentGoodStandingService;
 import dev.sunbirdrc.claim.service.StudentOutsideUpService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +24,14 @@ public class OutsideStudentController {
     private StudentOutsideUpService studentOutsideUpService;
 
     @Autowired
+    private StudentGoodStandingService studentGoodStandingService;
+
+    @Autowired
     private ClaimService claimService;
 
-    @GetMapping("/foreignStudent/{id}")
+    @GetMapping("/generate/foreignStudentDetails/{id}")
     public ResponseEntity<String> getForeignStudentVerificationDetail(@PathVariable String id) {
-        String template = foreignVerificationService.generatePendingMailContent(id);
+        String template = foreignVerificationService.generateVerificationLinkContent(id);
 
         if (!StringUtils.isEmpty(template)) {
             return new ResponseEntity<>(template, HttpStatus.OK);
@@ -45,9 +49,20 @@ public class OutsideStudentController {
         return new ResponseEntity<>("Outside/Foreign student verification updated", HttpStatus.OK);
     }
 
-    @GetMapping("/outsideStudent/{id}")
+    @GetMapping("/generate/outsideStudentDetails/{id}")
     public ResponseEntity<String> getOutsideStudentVerificationDetail(@PathVariable String id) {
-        String template = studentOutsideUpService.generatePendingMailContent(id);
+        String template = studentOutsideUpService.generateVerificationLinkContent(id);
+
+        if (!StringUtils.isEmpty(template)) {
+            return new ResponseEntity<>(template, HttpStatus.OK);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/generate/studentGoodStandingDetails/{id}")
+    public ResponseEntity<String> generateStudentGoodStandingDetails(@PathVariable String id) {
+        String template = studentGoodStandingService.generateVerificationLinkContent(id);
 
         if (!StringUtils.isEmpty(template)) {
             return new ResponseEntity<>(template, HttpStatus.OK);

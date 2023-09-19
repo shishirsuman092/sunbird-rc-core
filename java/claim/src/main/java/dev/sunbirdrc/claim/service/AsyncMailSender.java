@@ -190,9 +190,9 @@ public class AsyncMailSender {
 
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
 
-            mimeMessageHelper.setSubject(propertyMapper.getForeignPendingItemSubject());
+            mimeMessageHelper.setSubject(propertyMapper.getEcPendingMailSubject());
             mimeMessageHelper.setFrom(new InternetAddress(propertyMapper.getSimpleMailMessageFrom(),
-                    "Pending action item"));
+                    manualPendingMailDTO.getEntityName() + " pending item"));
             mimeMessageHelper.setTo(manualPendingMailDTO.getOutsideEntityMailId());
             mimeMessageHelper.setText(generateManualEcPendingMailContent(manualPendingMailDTO), true);
 
@@ -216,9 +216,24 @@ public class AsyncMailSender {
 
     private String generateManualEcPendingMailContent(ManualPendingMailDTO manualPendingMailDTO) {
         String processedTemplateString = null;
+        String verificationLink = "";
+
+        if (propertyMapper.getStudentForeignEntityName().equalsIgnoreCase(manualPendingMailDTO.getEntityName())) {
+            verificationLink = propertyMapper.getClaimUrl() + "/api/v1/generate/foreignStudentDetails/"
+                    + manualPendingMailDTO.getEntityId();
+        }
+        if (propertyMapper.getStudentFromOutsideEntityName().equalsIgnoreCase(manualPendingMailDTO.getEntityName())) {
+            verificationLink = propertyMapper.getClaimUrl() + "/api/v1/generate/outsideStudentDetails/"
+                    + manualPendingMailDTO.getEntityId();
+        }
+        if (propertyMapper.getStudentGoodStandingEntityName().equalsIgnoreCase(manualPendingMailDTO.getEntityName())) {
+            verificationLink = propertyMapper.getClaimUrl() + "/api/v1/generate/studentGoodStandingDetails/"
+                    + manualPendingMailDTO.getEntityId();
+        }
 
         Map<String, Object> mailMap = new HashMap<>();
         mailMap.put("candidate", manualPendingMailDTO);
+        mailMap.put("verificationLink", verificationLink);
 
         try {
             freeMarkerConfiguration.setClassForTemplateLoading(this.getClass(), "/templates/");

@@ -22,4 +22,6 @@ public class ManualPendingMailDTO {
     private String country;
     private String state;
     private String attachment;
+    private String entityId;
+    private String entityName;
 }

@@ -29,11 +29,11 @@ public class StudentOutsideUP {
     private String nurseRegNo;
     private String nursingCollage;
     private String osid;
-    private String osOwner;
+//    private String osOwner;
     private String passingMonth;
     private String passingYear;
     private String phoneNumber;
-    private String registrationNo;
+//    private String registrationNo;
     private String registrationType;
-    private String title;
+//    private String title;
 }

@@ -22,8 +22,8 @@
         <table>
           <tr>
             <th>Name</th>
-            <th>Cred Type</th>
-            <th>Reference Number</th>
+            <th>Work Place</th>
+            <th>Fee Receipt Number</th>
             <th>Registration Number</th>
             <th>Email</th>
             <th>Verify Link</th>
@@ -31,8 +31,8 @@
           <#list candidates as candidate >
               <tr>
                 <td>${candidate.name} </td>
-                <td>${candidate.credType}</td>
-                <td>${candidate.refNo}</td>
+                <td>${candidate.workPlace}</td>
+                <td>${candidate.feeReceiptNumber}</td>
                 <td>${candidate.registrationNumber}</td>
                 <td>${candidate.emailAddress}</td>
                 <td><a href = "${candidate.verifyLink}">Verify Candidate</a></td>
