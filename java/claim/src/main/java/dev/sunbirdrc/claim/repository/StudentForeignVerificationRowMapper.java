@@ -10,32 +10,27 @@ public class StudentForeignVerificationRowMapper implements RowMapper<StudentFor
     @Override
     public StudentForeignVerification mapRow(ResultSet rs, int rowNum) throws SQLException {
         return new StudentForeignVerification(
-                rs.getString("title"),
                 rs.getString("name"),
-                rs.getString("registrationType"),
                 rs.getString("registrationNumber"),
                 rs.getString("refNo"),
                 rs.getString("phoneNumber"),
-                rs.getString("passingYear"),
-                rs.getString("passingMonth"),
-                rs.getString("osOwner"),
                 rs.getString("osid"),
-                rs.getString("nursingCollage"),
-                rs.getString("mothersName"),
-                rs.getString("joiningYear"),
-                rs.getString("joiningMonth"),
-                rs.getString("gender"),
-                rs.getString("finalYearRollNo"),
                 rs.getString("fathersName"),
-                rs.getString("examBody"),
                 rs.getString("email"),
-                rs.getString("dateOfBirth"),
                 rs.getString("date"),
-                rs.getString("courseName"),
                 rs.getString("council"),
                 rs.getString("candidatePic"),
-                rs.getString("barCode"),
-                rs.getString("aadhaarNo")
+                rs.getString("trainingCenter"),
+                rs.getString("workPlace"),
+                rs.getString("validityOfRegistration"),
+                rs.getString("dob"),
+                rs.getString("paymentStatus"),
+                rs.getString("claimType"),
+                rs.getString("feeReciptNo"),
+                rs.getString("state"),
+                rs.getString("district"),
+                rs.getString("country"),
+                rs.getString("pincode")
         );
     }
 }

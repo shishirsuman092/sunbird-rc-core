@@ -23,7 +23,7 @@
           <tr>
             <th>Name</th>
             <th>Cred Type</th>
-            <th>Registration Type</th>
+            <th>Fee Receipt Number</th>
             <th>Nurse Registration Number</th>
             <th>Email</th>
             <th>Verify Link</th>
@@ -32,7 +32,7 @@
               <tr>
                 <td>${candidate.name} </td>
                 <td>${candidate.credType}</td>
-                <td>${candidate.registrationType}</td>
+                <td>${candidate.feeReceiptNumber}</td>
                 <td>${candidate.nurseRegNo}</td>
                 <td>${candidate.emailAddress}</td>
                 <td><a href = "${candidate.verifyLink}">Verify Candidate</a></td>

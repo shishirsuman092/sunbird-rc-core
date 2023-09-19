@@ -15,7 +15,7 @@
 <body>
     <p><H3>Hi Council Admin</H3></p>
 
-    <p>Pending action item for student foreign verification. Following candidate has applied for certificate.</p>
+    <p>Pending action item for ${candidate.entityName}. Following candidate has applied for certificate.</p>
 
     <p>
     <table>
@@ -65,6 +65,13 @@
             <td>State</td>
             <td>${candidate.state}</td>
         </tr>
+
+        <#if verificationLink?has_content>
+            <tr>
+                <td>Verification Link</td>
+                <td><a href = "${verificationLink}">Verify Candidate</a></td>
+            </tr>
+        </#if>
     </table>
     </p>
 

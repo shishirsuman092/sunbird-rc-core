@@ -1,15 +1,12 @@
 package dev.sunbirdrc.claim.service;
 
 import dev.sunbirdrc.claim.config.PropertyMapper;
-import dev.sunbirdrc.claim.entity.StudentOutsideUP;
+import dev.sunbirdrc.claim.entity.StudentGoodStanding;
 import dev.sunbirdrc.claim.exception.ClaimMailException;
-import dev.sunbirdrc.claim.exception.InvalidInputException;
-import dev.sunbirdrc.claim.model.EntityType;
-import dev.sunbirdrc.claim.repository.StudentOutsideUpRowMapper;
+import dev.sunbirdrc.claim.repository.StudentGoodStandingRowMapper;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class StudentOutsideUpService {
-    private static final Logger logger = LoggerFactory.getLogger(StudentForeignVerificationService.class);
+public class StudentGoodStandingService {
+    private static final Logger logger = LoggerFactory.getLogger(StudentGoodStandingService.class);
     @Autowired
     private PropertyMapper propertyMapper;
 
@@ -39,10 +36,10 @@ public class StudentOutsideUpService {
      * @param osid
      * @return
      */
-    public List<StudentOutsideUP> findByOsid(String osid) {
+    public List<StudentGoodStanding> findByOsid(String osid) {
         try {
-            return jdbcTemplate.query("SELECT * FROM \"" + propertyMapper.getStudentOutsideVerificationTableName()
-                    + "\" where osid=?", new StudentOutsideUpRowMapper(), osid);
+            return jdbcTemplate.query("SELECT * FROM \"" + propertyMapper.getStudentGoodStandingTableName()
+                    + "\" where osid=?", new StudentGoodStandingRowMapper(), osid);
 
         } catch (IncorrectResultSizeDataAccessException e) {
             return null;
@@ -52,9 +49,17 @@ public class StudentOutsideUpService {
     /**
      * @return
      */
-    public boolean isStudentFromOutsideVerificationTableExist() {
+    public List<StudentGoodStanding> findAll() {
+        return jdbcTemplate.query("SELECT * from \"" + propertyMapper.getStudentGoodStandingTableName() + "\"",
+                new StudentGoodStandingRowMapper());
+    }
+
+    /**
+     * @return
+     */
+    public boolean isSudentGoodStandingTableExist() {
         String sqlQuery = "SELECT count(*) FROM information_schema.tables WHERE table_name = '"
-                + propertyMapper.getStudentOutsideVerificationTableName() + "'";
+                + propertyMapper.getStudentGoodStandingTableName() + "'";
 
         Integer tableCount = jdbcTemplate.queryForObject(sqlQuery, Integer.class);
 
@@ -67,18 +72,18 @@ public class StudentOutsideUpService {
      */
     public String generateVerificationLinkContent(String id) {
         String processedTemplateString = null;
-        List<StudentOutsideUP> studentOutsideUpList = findByOsid(id);
+        List<StudentGoodStanding> StudentGoodStandingList = findByOsid(id);
 
-        if (studentOutsideUpList != null && !studentOutsideUpList.isEmpty()) {
-            StudentOutsideUP studentOutsideUP = studentOutsideUpList.get(0);
+        if (StudentGoodStandingList != null && !StudentGoodStandingList.isEmpty()) {
+            StudentGoodStanding studentGoodStanding = StudentGoodStandingList.get(0);
 
             Map<String, Object> mailMap = new HashMap<>();
-            mailMap.put("candidate", studentOutsideUP);
-            mailMap.put("entityId", propertyMapper.getRegistryShardId() + "-" + studentOutsideUP.getOsid());
+            mailMap.put("candidate", studentGoodStanding);
+            mailMap.put("entityId", propertyMapper.getRegistryShardId() + "-" + studentGoodStanding.getOsid());
 
             try {
                 freeMarkerConfiguration.setClassForTemplateLoading(this.getClass(), "/templates/");
-                Template template = freeMarkerConfiguration.getTemplate("outside-up-student-candidate-details.ftl");
+                Template template = freeMarkerConfiguration.getTemplate("student-good-standing-candidate-details.ftl");
                 processedTemplateString = FreeMarkerTemplateUtils.processTemplateIntoString(template, mailMap);
 
             } catch (TemplateException e) {
@@ -91,25 +96,6 @@ public class StudentOutsideUpService {
         }
 
         return processedTemplateString;
-    }
-
-    /**
-     * @param entityType
-     * @param entityId
-     * @return
-     */
-    public String generateVerifyLinkForForeignOutsideStudent(String entityType, String entityId) {
-        if (StringUtils.isEmpty(entityType) || StringUtils.isEmpty(entityId)) {
-            throw new InvalidInputException("Parameters are invalid");
-        }
-
-        if (EntityType.FOREIGN.name().equalsIgnoreCase(entityType)) {
-            return propertyMapper.getClaimUrl() + "/api/v1/generate/foreignStudentDetails/" + entityId;
-        } else if (EntityType.OUTSIDE.name().equalsIgnoreCase(entityType)) {
-            return propertyMapper.getClaimUrl() + "/api/v1/generate/outsideStudentDetails/" + entityId;
-        } else {
-            throw new InvalidInputException("Invalid entity type");
-        }
     }
 
 }

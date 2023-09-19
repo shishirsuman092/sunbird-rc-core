@@ -70,7 +70,7 @@ public class StudentForeignVerificationService {
      * @param id
      * @return
      */
-    public String generatePendingMailContent(String id) {
+    public String generateVerificationLinkContent(String id) {
         String processedTemplateString = null;
         List<StudentForeignVerification> studentForeignVerificationList = findByOsid(id);
 
