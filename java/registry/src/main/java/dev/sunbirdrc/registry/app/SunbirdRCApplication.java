@@ -60,7 +60,7 @@ public class SunbirdRCApplication {
         list.add("*");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        //config.setAllowCredentials(true);
+          config.setAllowCredentials(true);
           config.addAllowedOrigin(corsAllowedOrigin);
           config.addAllowedOrigin("*");
           config.setAllowedOrigins(list);
