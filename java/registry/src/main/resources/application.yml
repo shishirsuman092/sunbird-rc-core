@@ -161,7 +161,8 @@ database:
       uri: ${connectionInfo_uri:jdbc:postgresql://10.0.2.18:5432/upsmf}
 
       username: ${connectionInfo_username:postgres}
-      password: ${connectionInfo_password:mysupersecret}
+      password: ${connectionInfo_password:yoursupersecret}
+
       maxPoolSize: ${connectionInfo_maxPoolSize:200}
 
       # Any other shard information follows...
@@ -178,14 +179,14 @@ database:
 cassandra:
   graphFactory: org.janusgraph.core.JanusGraphFactory
   backend: "cql"
-  hostname: ${cassandra_host:localhost}
+  hostname: ${cassandra_host:10.0.2.18}
   keyspace: ${cassandra_keyspace:registry_db}
   db.cache.size: ${cassandra_db_cache_size:0.25}
   # wait time in milliseconds to clean the cache
   db.cache.clean.wait: ${cassandra_db_cache_clean_wait:60}
   index:
     storage.backend: ${cassandr_index_storage:elasticsearch}
-    hostname: ${cassandra_index_hostname:localhost}
+    hostname: ${cassandra_index_hostname:10.0.2.18}
 
 # File for framing the entity while reading
 frame:
@@ -193,15 +194,15 @@ frame:
 
 encryption:
   enabled: ${encryption_enabled:false}
-  base: ${encryption_base:http://localhost:8013}
-  uri: ${encryption_uri:http://localhost:8013/encrypt}
+  base: ${encryption_base:http://10.0.2.18:8013}
+  uri: ${encryption_uri:http://10.0.2.18:8013/encrypt}
   batch:
-    uri: ${encryption_batch_uri:http://localhost:8013/encrypt/obj}
+    uri: ${encryption_batch_uri:http://10.0.2.18:8013/encrypt/obj}
 
 decryption:
-  uri: ${decryption_uri:http://localhost:8013/decrypt}
+  uri: ${decryption_uri:http://10.0.2.18:8013/decrypt}
   batch:
-    uri: ${decryption_batch_uri:http://localhost:8013/decrypt/obj}
+    uri: ${decryption_batch_uri:http://10.0.2.18:8013/decrypt/obj}
 
 signature:
   enabled: ${signature_enabled:true}
@@ -238,7 +239,7 @@ keycloak:
   #publicKey:  ${sunbird_sso_publickey:pk}
   auth-server-url: ${sunbird_sso_url:http://10.0.2.18:8080/auth}
   realm: ${sunbird_sso_realm:sunbird-rc}
-  resource: ${sunbird_sso_client_id:client}
+  resource: ${sunbird_sso_client_id:registry-frontend}
 keycloak-admin:
   client-id: ${sunbird_sso_admin_client_id:admin-api}
   client-secret: ${sunbird_sso_admin_client_secret:QF5op6Hb3Y9mY1rU0IycdjmD7j3Bvzkh}
@@ -259,6 +260,8 @@ keycloak-user:
 claims:
   #url: ${claims_url:https://registration.uphrh.in}
   url: ${claims_url:http://10.0.2.18:8082}
+        #url: ${claims_url:http://10.0.2.18:8082}
+  #url: ${claims_url:http://localhost:8082}
   usrmanageurl: ${claims_usrmanageurl:http://10.0.2.18:8001/api/v1/keycloak/persist/userCredential}
   domain-url: ${claims_domain-url:https://registration.uphrh.in/claim-ms}
   download-path: /api/v1/files/download
@@ -322,18 +325,18 @@ elastic:
     # elastic-search can be enable and disable through this flag
     enabled: ${elastic_search_enabled:true}
     # elastic-search connection info
-    connection_url: ${elastic_search_connection_url:localhost:9200}
+    connection_url: ${elastic_search_connection_url:10.0.2.18:9200}
     add_shard_prefix: ${elastic_search_add_shard_prefix:true}
     #if authentication is enabled
     auth_enabled: ${elastic_search_auth_enabled:false}
     elastic_username: ${elastic_search_username:elastic}
-    elastic_password: ${elastic_search_password:elastic}
+    elastic_password: ${elastic_search_password:}
     scheme: ${elastic_search_scheme:http}
 filestorage:
-  url: ${filestorage_connection_url:http://localhost:9000}
-  accesskey: ${filestorage_access_key:XXXXX}
-  secretkey: ${filestorage_secret_key:XXXXX}
-  bucketname: ${filestorage_bucket_key:dummy}
+  url: ${filestorage_connection_url:http://10.0.2.18:9000}
+  accesskey: ${filestorage_access_key:admin}
+  secretkey: ${filestorage_secret_key:12345678}
+  bucketname: ${filestorage_bucket_key:issuance}
 
 
 
