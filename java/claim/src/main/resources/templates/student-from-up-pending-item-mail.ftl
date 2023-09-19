@@ -22,7 +22,7 @@
         <table>
           <tr>
             <th>Name</th>
-            <th>Cred Type</th>
+            <th>Fee Receipt Number</th>
             <th>Course Name</th>
             <th>Email</th>
             <th>Exam Body</th>
@@ -30,9 +30,9 @@
           <#list candidates as candidate >
               <tr>
                 <td>${candidate.name} </td>
-                <td>${candidate.credType}</td>
+                <td>${candidate.feeReceiptNumber}</td>
                 <td>${candidate.courseName}</td>
-                <td>${candidate.courseName}</td>
+                <td>${candidate.emailAddress}</td>
                 <td>${candidate.examBody}</td>
               </tr>
           </#list>

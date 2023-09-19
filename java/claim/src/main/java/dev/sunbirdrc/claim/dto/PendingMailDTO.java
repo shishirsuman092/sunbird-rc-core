@@ -25,5 +25,7 @@ public class PendingMailDTO {
     private String courseName;
     private String workPlace;
     private String examBody;
+    private String feeReceiptNumber;
+    private String certificateNumber;
 
 }

@@ -98,6 +98,15 @@
         </#if>
     </tr>
     <tr>
+    	<td>Professional Qualification</td>
+
+    	<#if candidate.professionalQualification?has_content>
+          <td>${candidate.professionalQualification}</td>
+        <#else>
+          <td> </td>
+        </#if>
+    </tr>
+    <tr>
     	<td>Training Center</td>
 
     	<#if candidate.trainingCenter?has_content>
@@ -116,24 +125,6 @@
         </#if>
     </tr>
     <tr>
-    	<td>Validity of Registration</td>
-
-    	<#if candidate.validityOfRegistration?has_content>
-          <td>${candidate.validityOfRegistration}</td>
-        <#else>
-          <td> </td>
-        </#if>
-    </tr>
-    <tr>
-    	<td>DOB</td>
-
-    	<#if candidate.dob?has_content>
-          <td>${candidate.dob}</td>
-        <#else>
-          <td> </td>
-        </#if>
-    </tr>
-    <tr>
     	<td>Payment Status</td>
 
     	<#if candidate.paymentStatus?has_content>
@@ -147,15 +138,6 @@
 
     	<#if candidate.claimType?has_content>
           <td>${candidate.claimType}</td>
-        <#else>
-          <td> </td>
-        </#if>
-    </tr>
-    <tr>
-    	<td>Pin Code</td>
-
-    	<#if candidate.pincode?has_content>
-          <td>${candidate.pincode}</td>
         <#else>
           <td> </td>
         </#if>

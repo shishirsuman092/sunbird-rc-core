@@ -191,7 +191,7 @@ public class EmailService
         return processedTemplateString;
     }
 
-    public void autoSendPendingItemMail(String entityName) {
+    public void autoSendPendingItemMail(@NonNull String entityName) {
         if (!regulatorService.isRegulatorTableExist()) {
             logger.error(">>>>>>>>>>> Unable to find regulator table in database: No further process will be occurred");
             return;
@@ -206,6 +206,7 @@ public class EmailService
 
                 List<Claim> councilClaims = allClaimList.stream()
                         .filter(claim -> councilName.equalsIgnoreCase(getCouncilName(claim.getPropertyData())))
+                        .filter(claim -> entityName.equalsIgnoreCase(claim.getEntity()))
                         .collect(Collectors.toList());
 
                 List<PendingMailDTO> pendingMailDTOList = collectEntityDetailsForPendingItem(councilClaims, entityName);
@@ -245,20 +246,23 @@ public class EmailService
                 String propertyData = claim.getPropertyData();
                 ObjectMapper objectMapper = new ObjectMapper();
                 JsonNode jsonNode = objectMapper.readTree(propertyData);
-                String entityId = claim.getEntityId().replace(propertyMapper.getRegistryShardId() + "-", "");
+                String entityId = claim.getEntityId().replaceFirst(propertyMapper.getRegistryShardId() + "-", "");
 
                 PendingMailDTO pendingMailDTO = new PendingMailDTO();
-                pendingMailDTO.setCredType(jsonNode.get("credType") != null ? jsonNode.get("credType").asText() : "");
+//                pendingMailDTO.setCredType(jsonNode.get("credType") != null ? jsonNode.get("credType").asText() : "");
                 pendingMailDTO.setEmailAddress(jsonNode.get("email") != null ? jsonNode.get("email").asText() : "");
                 pendingMailDTO.setName(jsonNode.get("name") != null ? jsonNode.get("name").asText() : "");
 
 
                 if (propertyMapper.getStudentForeignEntityName().equalsIgnoreCase(entityName)) {
-                    pendingMailDTO.setRefNo(jsonNode.get("refNo") != null ? jsonNode.get("refNo").asText() : "");
+                    pendingMailDTO.setWorkPlace(jsonNode.get("workPlace") != null
+                            ? jsonNode.get("workPlace").asText() : "");
+                    pendingMailDTO.setRefNo(jsonNode.get("refNo") != null
+                            ? jsonNode.get("refNo").asText() : "");
                     pendingMailDTO.setRegistrationNumber(jsonNode.get("registrationNumber") != null
                             ? jsonNode.get("registrationNumber").asText() : "");
 
-                    pendingMailDTO.setVerifyLink(propertyMapper.getClaimUrl() + "/api/v1/foreignStudent/" + entityId);
+                    pendingMailDTO.setVerifyLink(propertyMapper.getClaimUrl() + "/api/v1/generate/foreignStudentDetails/" + entityId);
                 }
 
                 if (propertyMapper.getStudentFromOutsideEntityName().equalsIgnoreCase(entityName)) {
@@ -266,17 +270,32 @@ public class EmailService
                             ? jsonNode.get("nurseRegNo").asText() : "");
                     pendingMailDTO.setRegistrationType(jsonNode.get("registrationType") != null
                             ? jsonNode.get("registrationType").asText() : "");
+                    pendingMailDTO.setCredType(jsonNode.get("credType") != null
+                            ? jsonNode.get("credType").asText() : "");
+                    pendingMailDTO.setFeeReceiptNumber(jsonNode.get("feeReciptNo") != null
+                            ? jsonNode.get("feeReciptNo").asText() : "");
 
-                    pendingMailDTO.setVerifyLink(propertyMapper.getClaimUrl() + "/api/v1/outsideStudent/" + entityId);
+                    pendingMailDTO.setVerifyLink(propertyMapper.getClaimUrl() + "/api/v1/generate/outsideStudentDetails/" + entityId);
                 }
 
                 if (propertyMapper.getStudentFromUpEntityName().equalsIgnoreCase(entityName)) {
-                    pendingMailDTO.setCourseName(jsonNode.get("courseName") != null ? jsonNode.get("courseName").asText() : "");
-                    pendingMailDTO.setExamBody(jsonNode.get("examBody") != null ? jsonNode.get("examBody").asText() : "");
+                    pendingMailDTO.setCourseName(jsonNode.get("courseName") != null
+                            ? jsonNode.get("courseName").asText() : "");
+                    pendingMailDTO.setExamBody(jsonNode.get("examBody") != null
+                            ? jsonNode.get("examBody").asText() : "");
+                    pendingMailDTO.setFeeReceiptNumber(jsonNode.get("feeReciptNo") != null
+                            ? jsonNode.get("feeReciptNo").asText() : "");
                 }
 
                 if (propertyMapper.getStudentGoodStandingEntityName().equalsIgnoreCase(entityName)) {
-                    pendingMailDTO.setCourseName(jsonNode.get("workPlace") != null ? jsonNode.get("workPlace").asText() : "");
+                    pendingMailDTO.setWorkPlace(jsonNode.get("workPlace") != null
+                            ? jsonNode.get("workPlace").asText() : "");
+                    pendingMailDTO.setRegistrationNumber(jsonNode.get("registrationNumber") != null
+                            ? jsonNode.get("registrationNumber").asText() : "");
+                    pendingMailDTO.setFeeReceiptNumber(jsonNode.get("feeReciptNo") != null
+                            ? jsonNode.get("feeReciptNo").asText() : "");
+
+                    pendingMailDTO.setVerifyLink(propertyMapper.getClaimUrl() + "/api/v1/generate/studentGoodStandingDetails/" + entityId);
                 }
 
                 pendingMailDTOList.add(pendingMailDTO);

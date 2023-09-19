@@ -26,16 +26,6 @@
 <table>
     <caption><h2>Candidate Details</h2></caption>
         <tr>
-            <td>Title</td>
-
-            <#if candidate.title?has_content>
-              <td>${candidate.title}</td>
-            <#else>
-              <td> </td>
-            </#if>
-
-        </tr>
-        <tr>
             <td>Name</td>
 
             <#if candidate.name?has_content>
@@ -67,15 +57,6 @@
 
             <#if candidate.council?has_content>
               <td>${candidate.council}</td>
-            <#else>
-              <td> </td>
-            </#if>
-        </tr>
-        <tr>
-            <td>Course Name</td>
-
-            <#if candidate.courseName?has_content>
-              <td>${candidate.courseName}</td>
             <#else>
               <td> </td>
             </#if>
@@ -229,15 +210,6 @@
 
             <#if candidate.phoneNumber?has_content>
               <td>${candidate.phoneNumber}</td>
-            <#else>
-              <td> </td>
-            </#if>
-        </tr>
-        <tr>
-            <td>Registration No</td>
-
-            <#if candidate.registrationNo?has_content>
-              <td>${candidate.registrationNo}</td>
             <#else>
               <td> </td>
             </#if>

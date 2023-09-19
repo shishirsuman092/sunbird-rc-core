@@ -3,6 +3,7 @@ package dev.sunbirdrc.claim.quartz;
 import dev.sunbirdrc.claim.config.PropertyMapper;
 import dev.sunbirdrc.claim.service.EmailService;
 import dev.sunbirdrc.claim.service.StudentForeignVerificationService;
+import dev.sunbirdrc.claim.service.StudentGoodStandingService;
 import dev.sunbirdrc.claim.service.StudentOutsideUpService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
@@ -25,6 +26,9 @@ public class MailingJobExecutor extends QuartzJobBean {
 
     @Autowired
     private StudentOutsideUpService studentOutsideUpService;
+
+    @Autowired
+    private StudentGoodStandingService studentGoodStandingService;
 
     @Autowired
     private PropertyMapper propertyMapper;
@@ -50,8 +54,12 @@ public class MailingJobExecutor extends QuartzJobBean {
         log.info(">>>>>>>>>>>>>>> Sending auto mail to student from up pending item");
         emailService.autoSendPendingItemMail(propertyMapper.getStudentFromUpEntityName());
 
-        log.info(">>>>>>>>>>>>>>> Sending auto mail to student good standing pending item");
-        emailService.autoSendPendingItemMail(propertyMapper.getStudentGoodStandingEntityName());
+        if (studentGoodStandingService.isSudentGoodStandingTableExist()) {
+            log.info(">>>>>>>>>>>>>>> Sending auto mail to student good standing pending item");
+            emailService.autoSendPendingItemMail(propertyMapper.getStudentGoodStandingEntityName());
+        } else {
+            log.error(">>>>>>>>>> Unable to find student good standing table - Further process will not be executed");
+        }
 
 
         log.info(">>>>>>>>>>>> Mail for foreign council has been completed  :: " + new Date(System.currentTimeMillis()) + " <<<<<<<<<<<<<<<<");
