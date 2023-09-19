@@ -34,6 +34,9 @@ public class PropertyMapper {
     @Value("${student.outside.verification.table.name}")
     private String studentOutsideVerificationTableName;
 
+    @Value("${student.good.standing.table.name}")
+    private String studentGoodStandingTableName;
+
     @Value("${claim.url}")
     private String claimUrl;
 
@@ -51,4 +54,7 @@ public class PropertyMapper {
 
     @Value("${student.good.standing.entity.name}")
     private String studentGoodStandingEntityName;
+
+    @Value("${ec.pending.mail.subject}")
+    private String ecPendingMailSubject;
 }

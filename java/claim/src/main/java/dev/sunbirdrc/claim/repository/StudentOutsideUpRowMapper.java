@@ -32,13 +32,13 @@ public class StudentOutsideUpRowMapper implements RowMapper<StudentOutsideUP> {
                 rs.getString("nurseRegNo"),
                 rs.getString("nursingCollage"),
                 rs.getString("osid"),
-                rs.getString("osOwner"),
+//                rs.getString("osOwner"),
                 rs.getString("passingMonth"),
                 rs.getString("passingYear"),
                 rs.getString("phoneNumber"),
-                rs.getString("registrationNo"),
-                rs.getString("registrationType"),
-                rs.getString("title")
+//                rs.getString("registrationNo"),
+                rs.getString("registrationType")
+//                rs.getString("title")
         );
     }
 }
