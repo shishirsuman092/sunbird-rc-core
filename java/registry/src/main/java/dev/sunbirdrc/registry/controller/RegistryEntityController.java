@@ -1369,6 +1369,8 @@ public class RegistryEntityController extends AbstractController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
+        entityName = updateEntityName(req.getDocDetails().getCandidateType());
         JsonNode result = searchEntity(searchNode, entityName);
         JsonNode jsonNode = result.get(entityName);
         String osid = null;
@@ -1422,6 +1424,34 @@ public class RegistryEntityController extends AbstractController {
             statusCode = "0";
             return new ResponseEntity<>(statusCode, HttpStatus.NOT_FOUND);
         }
+    }
+
+    private String updateEntityName(String candidateType) {
+        String entityName = "StudentFromUP";
+
+        switch (candidateType) {
+            case "From UP":
+                // Code to handle "From UP" status
+                entityName = "StudentFromUP";
+                break;
+
+            case "Outside UP":
+                // Code to handle "Outside UP" status
+                entityName = "StudentOutsideUP";
+                break;
+
+            case "Good Standing":
+                // Code to handle "Good Standing" status
+                entityName = "StudentGoodstanding";
+                break;
+
+            default:
+                // Code to handle any other status
+                entityName = "StudentFromUP";
+                break;
+        }
+
+        return entityName;
     }
 
     /**

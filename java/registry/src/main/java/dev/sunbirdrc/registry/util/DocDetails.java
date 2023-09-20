@@ -12,6 +12,16 @@ public class DocDetails {
     private String finalYearRollNo;
     private String docType;
 
+    public String getCandidateType() {
+        return candidateType;
+    }
+
+    public void setCandidateType(String candidateType) {
+        this.candidateType = candidateType;
+    }
+
+    private String candidateType;
+
     public String getDob() {
         return dob;
     }

@@ -152,6 +152,8 @@ public class DigiLockerUtils {
         String rollNo = docDetailsElement.getElementsByTagName("finalYearRollNo").item(0).getTextContent();
         String digiLockerId = docDetailsElement.getElementsByTagName("DigiLockerId").item(0).getTextContent();
         String docType = docDetailsElement.getElementsByTagName("DocType").item(0).getTextContent();
+        //candidateType
+        String candidateType = docDetailsElement.getElementsByTagName("candidateType").item(0).getTextContent();
 
         docDetails.setDigiLockerId(digiLockerId);
         docDetails.setDob(dob);
@@ -160,6 +162,7 @@ public class DigiLockerUtils {
         docDetails.setFinalYearRollNo(rollNo);
         docDetails.setuID(uid);
         docDetails.setDocType(docType);
+        docDetails.setCandidateType(candidateType);
         request.setDocDetails(docDetails);
 
         logger.info("DigiLockerId: " + digiLockerId);
