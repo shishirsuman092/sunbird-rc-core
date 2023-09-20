@@ -120,7 +120,8 @@
         "candidateSignature": {"type": "string","title": "candidateSignature"},
         "validityUpto": {"type": "string","title": "validityUpto"},
         "requestType": {"type": "string","title": "requestType"},
-        "feeReciptNo": {"type": "string","title": "feeReciptNo"}
+        "feeReciptNo": {"type": "string","title": "feeReciptNo"},
+        "courseType": {"type": "string","title": "courseType"}
       }
     }
   },
@@ -183,7 +184,8 @@
           "candidateSignature": "$.candidateSignature",
           "validityUpto": "$.validityUpto",
           "requestType": "$.requestType",
-          "feeReciptNo": "$.feeReciptNo"
+          "feeReciptNo": "$.feeReciptNo",
+          "courseType": "$.courseType"
         },
         "credentialTemplate": {
           "@context": [
@@ -415,7 +417,7 @@
                   "name": "schema:Text"
                 }
               },
-             "university": {
+              "university": {
                 "@id": "https://github.com/sunbird-specs/vc-specs#university",
                 "@context": {
                   "name": "schema:Text"
@@ -427,7 +429,6 @@
                   "name": "schema:Text"
                 }
               },
-
               "validityUpto": {
                 "@id": "https://github.com/sunbird-specs/vc-specs#validityUpto",
                 "@context": {
@@ -436,6 +437,12 @@
               },
               "requestType": {
                 "@id": "https://github.com/sunbird-specs/vc-specs#requestType",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "courseType": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#courseType",
                 "@context": {
                   "name": "schema:Text"
                 }
@@ -486,7 +493,8 @@
             "university": "{{university}}",
             "candidateSignature": "{{candidateSignature}}",
             "validityUpto": "{{validityUpto}}",
-            "requestType": "{{requestType}}"
+            "requestType": "{{requestType}}",
+            "courseType": "{{courseType}}"
           },
           "issuer": "did:web:sunbirdrc.dev/vc/skill"
         }
