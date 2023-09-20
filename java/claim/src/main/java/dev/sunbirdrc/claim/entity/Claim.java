@@ -66,6 +66,17 @@ public class Claim {
     @Column
     private String outsideStudentStatus;
 
+    @Column
+    private String followUpStatus;
+
+    public String getFollowUpStatus() {
+        return followUpStatus;
+    }
+
+    public void setFollowUpStatus(String followUpStatus) {
+        this.followUpStatus = followUpStatus;
+    }
+
     public String getOutsideStudentStatus() {
         return outsideStudentStatus;
     }

@@ -1,5 +1,6 @@
 package dev.sunbirdrc.claim.controller;
 
+import dev.sunbirdrc.claim.model.ClaimStatus;
 import dev.sunbirdrc.claim.service.ClaimService;
 import dev.sunbirdrc.claim.service.StudentForeignVerificationService;
 import dev.sunbirdrc.claim.service.StudentGoodStandingService;
@@ -40,15 +41,6 @@ public class OutsideStudentController {
         }
     }
 
-    @GetMapping("/outsideStudent/verify/{id}/{status}")
-    public ResponseEntity<String> verifyForeignStudentVerification(@PathVariable String id,
-                                                                   @PathVariable String status) {
-
-        claimService.updateOutsideStudentStatus(id, status);
-
-        return new ResponseEntity<>("Outside/Foreign student verification updated", HttpStatus.OK);
-    }
-
     @GetMapping("/generate/outsideStudentDetails/{id}")
     public ResponseEntity<String> getOutsideStudentVerificationDetail(@PathVariable String id) {
         String template = studentOutsideUpService.generateVerificationLinkContent(id);
@@ -69,6 +61,24 @@ public class OutsideStudentController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/outsideStudent/verify/{id}/{status}")
+    public ResponseEntity<String> verifyOutsideStudentClaim(@PathVariable String id,
+                                                                   @PathVariable ClaimStatus status) {
+
+        claimService.updateOutsideStudentStatus(id, status);
+
+        return new ResponseEntity<>("Outside/Foreign/GoodStanding student verification updated", HttpStatus.OK);
+    }
+
+    @GetMapping("/update/internal/followUp/{id}/{status}")
+    public ResponseEntity<String> updateInternalFollowUpStatus(@PathVariable String id,
+                                                                   @PathVariable String status) {
+
+        claimService.updateInternalFollowUpStatus(id, status);
+
+        return new ResponseEntity<>("Follow up status updated successfully", HttpStatus.OK);
     }
 
     @GetMapping("/generateVerifyLink/{entityType}/{entityId}")

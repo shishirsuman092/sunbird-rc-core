@@ -103,10 +103,20 @@ public class StudentOutsideUpService {
             throw new InvalidInputException("Parameters are invalid");
         }
 
-        if (EntityType.FOREIGN.name().equalsIgnoreCase(entityType)) {
+        if (StringUtils.isEmpty(entityId)) {
+            throw new ClaimMailException("Entity id is missing");
+        }
+
+        if (entityId.length() > 2 && '-' == entityId.charAt(1)) {
+            entityId = entityId.substring(2, entityId.length());
+        }
+
+        if (EntityType.StudentForeignVerification.name().equalsIgnoreCase(entityType)) {
             return propertyMapper.getClaimUrl() + "/api/v1/generate/foreignStudentDetails/" + entityId;
-        } else if (EntityType.OUTSIDE.name().equalsIgnoreCase(entityType)) {
+        } else if (EntityType.StudentOutsideUP.name().equalsIgnoreCase(entityType)) {
             return propertyMapper.getClaimUrl() + "/api/v1/generate/outsideStudentDetails/" + entityId;
+        } else if (EntityType.StudentGoodstanding.name().equalsIgnoreCase(entityType)) {
+            return propertyMapper.getClaimUrl() + "/api/v1/generate/studentGoodStandingDetails/" + entityId;
         } else {
             throw new InvalidInputException("Invalid entity type");
         }
