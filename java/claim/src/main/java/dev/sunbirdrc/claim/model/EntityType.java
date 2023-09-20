@@ -1,6 +1,8 @@
 package dev.sunbirdrc.claim.model;
 
 public enum EntityType {
-    FOREIGN,
-    OUTSIDE
+    StudentForeignVerification,
+    StudentOutsideUP,
+    StudentGoodstanding,
+    StudentFromUP
 }

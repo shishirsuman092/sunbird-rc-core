@@ -193,8 +193,14 @@
         <tr>
         <td>
             <input type=button style="height: 40px; width: 90px;"
-            onClick="location.href='http://localhost:8082/api/v1/outsideStudent/verify/${entityId}/Completed'"
-             value='Completed'>
+            onClick="location.href='http://localhost:8082/api/v1/outsideStudent/verify/${entityId}/APPROVED'"
+             value='Approve'>
+        </td>
+
+        <td>
+            <input type=button style="height: 40px; width: 90px;"
+            onClick="location.href='http://localhost:8082/api/v1/outsideStudent/verify/${entityId}/REJECTED'"
+             value='Reject'>
         </td>
         </tr>
     </table>

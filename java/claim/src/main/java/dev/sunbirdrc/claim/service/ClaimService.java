@@ -199,19 +199,34 @@ public class ClaimService {
      * @param entityId
      * @param status
      */
-    public void updateOutsideStudentStatus(String entityId, String status) {
+    public void updateOutsideStudentStatus(String entityId, ClaimStatus status) {
         if (!StringUtils.isEmpty(entityId) && status != null) {
             List<Claim> claimList = claimRepository.findByEntityId(entityId);
 
             if (claimList != null && !claimList.isEmpty()) {
                 Claim claim = claimList.get(0);
 
-                if ("Completed".equalsIgnoreCase(claim.getOutsideStudentStatus())) {
-                    throw new ClaimAlreadyProcessedException("Claim is already completed");
+                if (ClaimStatus.APPROVED.name().equalsIgnoreCase(claim.getOutsideStudentStatus())) {
+                    throw new ClaimAlreadyProcessedException("Claim is already approved");
                 } else {
-                    claim.setOutsideStudentStatus(status);
+                    claim.setOutsideStudentStatus(status.name());
                     claimRepository.save(claim);
                 }
+            }
+        } else {
+            throw new InvalidInputException("Entity id or status is not valid");
+        }
+    }
+
+    public void updateInternalFollowUpStatus(String entityId, String status) {
+        if (!StringUtils.isEmpty(entityId) && status != null) {
+            List<Claim> claimList = claimRepository.findByEntityId(entityId);
+
+            if (claimList != null && !claimList.isEmpty()) {
+                Claim claim = claimList.get(0);
+
+                claim.setFollowUpStatus(status);
+                claimRepository.save(claim);
             }
         } else {
             throw new InvalidInputException("Entity id or status is not valid");
