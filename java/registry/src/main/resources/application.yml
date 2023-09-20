@@ -29,6 +29,8 @@ notification:
   async:
     enabled: ${notification_async_enabled:false}
   topic: ${notification_topic:notify}
+  sms:
+    enabled: false
 
 invite:
   required_validation_enabled: ${invite_required_validation_enabled:true}
@@ -160,6 +162,7 @@ database:
 
       username: ${connectionInfo_username:postgres}
       password: ${connectionInfo_password:yoursupersecret}
+
       maxPoolSize: ${connectionInfo_maxPoolSize:200}
 
       # Any other shard information follows...
@@ -255,8 +258,9 @@ keycloak-user:
   # email details should be configured in keycloak realm settings
   email-actions: ${keycloack_user_email_actions:}
 claims:
+  #url: ${claims_url:https://registration.uphrh.in}
+  url: ${claims_url:http://10.0.2.18:8082}
         #url: ${claims_url:http://10.0.2.18:8082}
-  url: ${claims_url:https://registration.uphrh.in}
   #url: ${claims_url:http://localhost:8082}
   usrmanageurl: ${claims_usrmanageurl:http://10.0.2.18:8001/api/v1/keycloak/persist/userCredential}
   domain-url: ${claims_domain-url:https://registration.uphrh.in/claim-ms}
@@ -434,7 +438,7 @@ authentication:
   enabled: ${authentication_enabled:true}
   publicKey:  ${authentication_publickey:MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqe1lVD9jnQWQce62e2Q44tACqBIt5UZyGzCegxax2gddj4xotY5BDxaxuJRGKDLRpm8lPNHxX8dce8SUVAMBfk85rL+Bxv1mjspKo7Q5qsFm9TGcvE4e/4xhgpMjw6dCFt8+S87jvRjmDHjakGMooOls1kjppQiklSEZ0lW3Crqet4RNjb1FNJ+2Jg26frm8i2cpb2wRnmLDuQ9sAnHCxAD2rGxSGLXhKABptbMeTVx25eh+PVISjc78uOhAnMwOHKApVBGnVCfcUoVYqfkX8XcPQU9ybmAi27vp9xZqMfh6I56Tl4fsWYBgf8ZMl0UWyRR3PNmo/0kxon1d3zqFnwIDAQAB}
   realm:  ${authentication_realm:PartnerRegistry}
-  url:  ${authentication_url:http://localhost:8443/auth/}
+  url:  ${authentication_url:http://10.0.2.18:8443/auth/}
 
 keycloak:
   sso:
@@ -493,5 +497,5 @@ elastic:
     # elastic-search can be enable and disable through this flag
     enabled: ${elastic_search_enabled:true}
     # elastic-search connection info
-    connection_url: ${elastic_search_connection_url:localhost:9200}
+    connection_url: ${elastic_search_connection_url:10.0.2.18:9200}
 
