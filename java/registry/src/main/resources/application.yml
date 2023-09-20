@@ -69,6 +69,8 @@ registry:
     port: ${redis_port:6379}
   digilocker:
     hmackey: ${digilocker_hmackey:vTV3Jl81kXDOca70TT2+P/YAb5DXnS+DDr/ArlFhow0=}
+  examination:
+    enabled: false
 
 workflow:
   enabled: ${workflow.enable:true}

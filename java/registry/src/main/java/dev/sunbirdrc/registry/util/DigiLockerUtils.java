@@ -280,6 +280,20 @@ public class DigiLockerUtils {
         return objectNode;
     }
 
+    public static ObjectNode getJsonQueryForExamData(String finalYearRollNo, String courseName) {
+        ;
+        JsonNode jsonNode = null;
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode objectNode = objectMapper.createObjectNode();;
+        try {
+            jsonNode = getJsonQueryForExamData1(finalYearRollNo, courseName)  ;
+            jsonNode.fields().forEachRemaining(entry -> objectNode.set(entry.getKey(), entry.getValue()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return objectNode;
+    }
+
 
     public static PullURIResponse getPullUriResponse(String certUri, String status, String txn, Object certificate, Person person) {
         List<Person> personList = new ArrayList();
@@ -450,6 +464,34 @@ public class DigiLockerUtils {
     public static String convertXmlToBase64(String xmlData) {
         byte[] bytes = xmlData.getBytes(StandardCharsets.UTF_8);
         return Base64.getEncoder().encodeToString(bytes);
+    }
+
+    public static JsonNode getJsonQueryForExamData1(String rollNumber, String courseName) {
+        String queryNode = "{\n" +
+                "    \"filters\": {\n" +
+                "        \"finalYearRollNo\": {\n" +
+                "            \"eq\": \"" +rollNumber+
+                "\"\n" +
+                "        },\n" +
+                "        \"courseName\": {\n" +
+                "            \"eq\": \"+courseName+\"\n" +
+                "        }\n" +
+                "    },\n" +
+                "    \"limit\": 1,\n" +
+                "    \"offset\": 0\n" +
+                "}";
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper();
+        JsonFactory factory = mapper.getFactory();
+        JsonNode actualObj = null;
+        try {
+            JsonParser parser = factory.createParser(queryNode);
+            actualObj = mapper.readTree(parser);
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+        return actualObj;
+
     }
 
     public byte[] generateHMAC(byte[] rawData, String key) throws NoSuchAlgorithmException, InvalidKeyException {

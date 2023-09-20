@@ -72,6 +72,7 @@ import static dev.sunbirdrc.registry.middleware.util.Constants.ENTITY_TYPE;
 public class RegistryEntityController extends AbstractController {
 
     private static final String TRANSACTION_ID = "transactionId";
+    public static final String EXAMINATION_DATA = "ExaminationData";
     @Value("${claims.usrmanageurl:http://localhost:8001/api/v1/keycloak/persist/userCredential}")
     private String REGISTRY_ENDPOINT_SAVE_USERINFO;
 
@@ -455,7 +456,18 @@ public class RegistryEntityController extends AbstractController {
                 objectNode.put("validityUpto", DigiLockerUtils.getValidityDate());
             }
         }
-
+//        if(isExamResultEnabled){
+//            String rollNumber = objectNode.get("finalYearRollNo").asText();
+//            String courseName = objectNode.get("courseName").asText();
+//            ObjectNode searchNode = DigiLockerUtils.getJsonQueryForExamData(rollNumber, courseName);
+//            JsonNode examinationDataResult = searchEntity(searchNode, entityName);
+//            JsonNode jsonNode = examinationDataResult.get(EXAMINATION_DATA);
+//            // Search Exam Data - ExaminationData
+//            if(jsonNode!=null && jsonNode.get("")!=null){
+//
+//            }
+//            String finalResult = null;
+//        }
         newRootNode.set(entityName, rootNode);
         try {
             checkEntityNameInDefinitionManager(entityName);
