@@ -64,38 +64,25 @@ public class ClaimsController {
         return new ResponseEntity<>(claims, HttpStatus.OK);
     }
 
-
-
     @RequestMapping(value = "/api/v2/getClaims", method = RequestMethod.POST)
-    public ResponseEntity<List<ClaimWithNotesDTO>> getStudentClaims(@RequestHeader HttpHeaders headers,
+    public ResponseEntity<List<Claim>> getStudentClaims(@RequestHeader HttpHeaders headers,
                                                          @RequestBody JsonNode requestBody, Pageable pageable) {
         logger.info("Calling claim v2 getClaims");
-        List <ClaimWithNotesDTO> claimWithNotesDTOList = new ArrayList<>();
         JsonNode attestorNode = requestBody.get(ATTESTOR_INFO);
         List<Claim> claims = claimService.findByRequestorName(attestorNode.asText(), pageable);
-        if(claims!=null){
-            for (Claim claim:claims) {
-                ClaimWithNotesDTO claimWithNotesDTO = claimService.generateNotesForTheClaim(claim);
-                claimWithNotesDTOList.add(claimWithNotesDTO);
-            }
-        }
-        return new ResponseEntity<>(claimWithNotesDTOList, HttpStatus.OK);
+        return new ResponseEntity<>(claims, HttpStatus.OK);
     }
     @RequestMapping(value = "/api/v1/getClaims/{claimId}", method = RequestMethod.POST)
     public ResponseEntity<ClaimWithNotesDTO> getClaimById(@RequestHeader HttpHeaders headers, @PathVariable String claimId,
                                               @RequestBody JsonNode requestBody) {
         JsonNode attestorNode = requestBody.get(ATTESTOR_INFO);
         Optional<Claim> claim = claimService.findById(claimId);
+        ClaimWithNotesDTO claimWithNotesDTO = claimService.generateNotesForTheClaim(claim.get());
+
         if (!claim.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        if (claimsAuthorizer.isAuthorizedRequestor(claim.get(), attestorNode) ||
-                claimsAuthorizer.isAuthorizedAttestor(claim.get(), attestorNode)) {
-            ClaimWithNotesDTO claimWithNotesDTO = claimService.generateNotesForTheClaim(claim.get());
-            return new ResponseEntity<>(claimWithNotesDTO, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+        return new ResponseEntity<>(claimWithNotesDTO, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/api/v3/getClaims/{claimId}", method = RequestMethod.POST)
