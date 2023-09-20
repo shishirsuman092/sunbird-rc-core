@@ -141,7 +141,10 @@
           "title": "paymentStatus"
         },
         "claimType": {"type": "string","title": "claimType"},
-        "feeReciptNo": {"type": "string","title": "feeReciptNo"}
+        "feeReciptNo": {"type": "string","title": "feeReciptNo"},
+        "candidatePic": {"type": "string","title": "candidatePic"},
+        "joiningDate": {"type": "string","title": "joiningDate"},
+        "courseDate": {"type": "string","title": "courseDate"}
       }
     }
   },
@@ -174,7 +177,10 @@
           "state":"$.state",
           "district":  "$.district",
           "country":   "$.country",
-          "pincode":  "$.pincode"
+          "pincode":  "$.pincode",
+          "candidatePic":  "$.candidatePic",
+          "joiningDate":  "$.joiningDate",
+          "courseDate":  "$.courseDate"
         },
         "credentialTemplate": {
           "@context": [
@@ -310,6 +316,24 @@
                 "@context": {
                   "name": "schema:Text"
                 }
+              },
+              "candidatePic": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#candidatePic",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "joiningDate": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#joiningDate",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "courseDate": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#courseDate",
+                "@context": {
+                  "name": "schema:Text"
+                }
               }
             }
           ],
@@ -334,7 +358,10 @@
             "state":"{{state}}",
             "district":  "{{district}}",
             "country":   "{{country}}",
-            "pincode":  "{{pincode}}"
+            "pincode":  "{{pincode}}",
+            "candidatePic":  "{{candidatePic}}",
+            "joiningDate":  "{{joiningDate}}",
+            "courseDate":  "{{courseDate}}"
           },
           "issuer": "did:web:sunbirdrc.dev/vc/skill"
         }
