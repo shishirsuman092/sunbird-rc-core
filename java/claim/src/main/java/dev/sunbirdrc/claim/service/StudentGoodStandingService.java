@@ -80,6 +80,7 @@ public class StudentGoodStandingService {
             Map<String, Object> mailMap = new HashMap<>();
             mailMap.put("candidate", studentGoodStanding);
             mailMap.put("entityId", propertyMapper.getRegistryShardId() + "-" + studentGoodStanding.getOsid());
+            mailMap.put("claimUrl", propertyMapper.getClaimUrl());
 
             try {
                 freeMarkerConfiguration.setClassForTemplateLoading(this.getClass(), "/templates/");
