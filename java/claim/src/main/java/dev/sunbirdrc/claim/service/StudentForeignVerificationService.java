@@ -80,6 +80,7 @@ public class StudentForeignVerificationService {
             Map<String, Object> mailMap = new HashMap<>();
             mailMap.put("candidate", studentForeignVerification);
             mailMap.put("entityId", propertyMapper.getRegistryShardId() + "-" + studentForeignVerification.getOsid());
+            mailMap.put("claimUrl", propertyMapper.getClaimUrl());
 
             try {
                 freeMarkerConfiguration.setClassForTemplateLoading(this.getClass(), "/templates/");
