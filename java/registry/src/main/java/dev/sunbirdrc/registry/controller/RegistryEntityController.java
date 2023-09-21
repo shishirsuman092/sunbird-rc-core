@@ -386,11 +386,19 @@ public class RegistryEntityController extends AbstractController {
         Response response = new Response(Response.API_ID.UPDATE, "OK", responseParams);
         ((ObjectNode) rootNode).put(uuidPropertyName, entityId);
         ObjectNode objectNode = (ObjectNode) rootNode;
-        if(entityName.equals("StudentFromUP")){
+        if(entityName.equals("StudentFromUP") || entityName.equals("StudentOutsideUP")){
             objectNode.put("certificateNumber",String.valueOf(claimRequestClient.getCertificateNumber()));
-            if(objectNode.get("university")==null)
+
+            JsonNode university = objectNode.get("university");
+            if(university== null || (university !=null && university.asText()==null)){
                 objectNode.put("university","NA");
-            if(objectNode.get("validityUpto")==null) {
+                logger.info("value for university is null");
+            } else {
+                logger.info("value for university is ::"+university.asText());
+            }
+
+            JsonNode validityUpto = objectNode.get("validityUpto");
+            if(validityUpto== null || (validityUpto !=null && validityUpto.asText()==null)) {
                 objectNode.put("validityUpto", DigiLockerUtils.getValidityDate());
             }
         }
@@ -449,9 +457,16 @@ public class RegistryEntityController extends AbstractController {
         ObjectNode objectNode = (ObjectNode) rootNode;
         if(entityName.equals("StudentFromUP") || entityName.equals("StudentOutsideUP")){
             objectNode.put("certificateNumber",String.valueOf(claimRequestClient.getCertificateNumber()));
-            if(objectNode.get("university")==null)
+            JsonNode university = objectNode.get("university");
+            if(university== null || (university !=null && university.asText()==null)){
                 objectNode.put("university","NA");
-            if(objectNode.get("validityUpto")==null) {
+                logger.info("value for university is null");
+            }else {
+                logger.info("value for university is ::"+university.asText());
+            }
+            //validityUpto
+            JsonNode validityUpto = objectNode.get("validityUpto");
+            if(validityUpto== null || (validityUpto !=null && validityUpto.asText()==null)) {
                 objectNode.put("validityUpto", DigiLockerUtils.getValidityDate());
             }
         }
