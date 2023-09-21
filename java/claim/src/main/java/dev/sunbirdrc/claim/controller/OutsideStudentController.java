@@ -1,5 +1,6 @@
 package dev.sunbirdrc.claim.controller;
 
+import com.google.gson.Gson;
 import dev.sunbirdrc.claim.model.ClaimStatus;
 import dev.sunbirdrc.claim.service.ClaimService;
 import dev.sunbirdrc.claim.service.StudentForeignVerificationService;
@@ -10,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -48,6 +52,7 @@ public class OutsideStudentController {
             return ResponseEntity.notFound().build();
         }
     }
+
     @CrossOrigin (origins = "*")
     @GetMapping("/generate/studentGoodStandingDetails/{id}")
     public ResponseEntity<String> generateStudentGoodStandingDetails(@PathVariable String id) {
@@ -79,12 +84,13 @@ public class OutsideStudentController {
     }
     @CrossOrigin (origins = "*")
     @GetMapping("/generateVerifyLink/{entityType}/{entityId}")
-    public ResponseEntity<String> generateVerifyLink(@PathVariable String entityType, @PathVariable String entityId) {
-
+    public ResponseEntity<Object> generateVerifyLink(@PathVariable String entityType, @PathVariable String entityId) {
         String verifyLink = studentOutsideUpService.generateVerifyLinkForForeignOutsideStudent(entityType, entityId);
-
         if (!StringUtils.isEmpty(verifyLink)) {
-            return new ResponseEntity<>(verifyLink, HttpStatus.OK);
+            Map<String, String> map = new HashMap<>();
+            map.put("verifyLink", verifyLink);
+
+            return new ResponseEntity<>(new Gson().toJson(map), HttpStatus.OK);
         } else {
             return ResponseEntity.notFound().build();
         }
