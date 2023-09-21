@@ -42,10 +42,6 @@
             <td>${candidate.examBody}</td>
         </tr>
         <tr>
-            <td>Diploma Number</td>
-            <td>${candidate.diplomaNumber}</td>
-        </tr>
-        <tr>
             <td>Nursing Collage</td>
             <td>${candidate.nursingCollage}</td>
         </tr>

@@ -75,6 +75,7 @@ public class StudentOutsideUpService {
             Map<String, Object> mailMap = new HashMap<>();
             mailMap.put("candidate", studentOutsideUP);
             mailMap.put("entityId", propertyMapper.getRegistryShardId() + "-" + studentOutsideUP.getOsid());
+            mailMap.put("claimUrl", propertyMapper.getClaimUrl());
 
             try {
                 freeMarkerConfiguration.setClassForTemplateLoading(this.getClass(), "/templates/");
