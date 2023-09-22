@@ -1,7 +1,6 @@
 package dev.sunbirdrc.claim.service;
 
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.*;
 import dev.sunbirdrc.claim.dto.FileDto;
 import dev.sunbirdrc.claim.exception.GCPFileUploadException;
 import dev.sunbirdrc.claim.utils.GCPBucketUtil;
@@ -130,4 +129,31 @@ public class FileServiceImpl implements FileService {
 
         return mediaType;
     }
-}
+
+    public static void getFilePathReadOnly(String objectName) {
+        // Replace with your GCS bucket name and the file to upload
+        String bucketName = "issuance";
+        String filePath = "/";
+        // Initialize GCS client
+        Storage storage = StorageOptions.getDefaultInstance().getService();
+
+        // Define the ACL for the object to make it publicly readable
+        Acl acl = Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER);
+        List aclList = new ArrayList();
+        aclList.add(acl);
+        // Define the BlobInfo with the object name, bucket name, and ACL
+        BlobInfo blobInfo = BlobInfo.newBuilder(bucketName, objectName).setAcl(aclList).build();
+
+        // Upload the file to GCS
+       // Blob blob = storage.create(blobInfo, java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(filePath)));
+
+        //System.out.println("File uploaded to GCS with public-read ACL.");
+        //System.out.println("Public URL: " + blob.getMediaLink());
+    }
+
+
+
+
+
+
+        }

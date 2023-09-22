@@ -210,7 +210,8 @@ public String saveforDGL(Object certificate, String entityId) {
         }
 
         List<String> fileUrlList = fileDtoList.stream()
-                .map(fileDto -> claimRequestUrl  + claimDownloadPath + static_download_parameter + fileDto.getFileName())
+                //.map(fileDto -> claimRequestUrl  + claimDownloadPath + static_download_parameter + fileDto.getFileName())
+                .map(fileDto -> fileDto.getFileUrl())
                 .collect(Collectors.toList());
 
         return fileUrlList;

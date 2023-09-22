@@ -2,10 +2,7 @@
 package dev.sunbirdrc.claim.utils;
 
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.Bucket;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.storage.*;
 import dev.sunbirdrc.claim.dto.FileDto;
 import dev.sunbirdrc.claim.exception.BadRequestException;
 import dev.sunbirdrc.claim.exception.FileWriteException;
@@ -25,6 +22,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -63,16 +62,22 @@ public class GCPBucketUtil {
 
             Bucket bucket = storage.get(gcpBucketId,Storage.BucketGetOption.fields());
 
+            Acl acl = Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER);
+            List aclList = new ArrayList();
+            aclList.add(acl);
+
             Blob blob = bucket.create(gcpDirectoryName + "/" + fileName, fileData, contentType);
             LOGGER.debug("Storing GCS file:"+fileName);
             validity=validity > 30 ? 30 : validity;
-            URL url =  blob.signUrl(validity, TimeUnit.DAYS,Storage.SignUrlOption.withV4Signature());
-            String fileUrl = url.toString();
-            LOGGER.debug("File url of GCS: "+fileUrl);
+            //URL url =  blob.signUrl(validity, TimeUnit.DAYS,Storage.SignUrlOption.withV4Signature());
+            String link = blob.getMediaLink();
+            //String fileUrl = url.toString();
+            String url2 = "https://storage.googleapis.com/dev-public-upsmf/issuance/"+fileName;
+            LOGGER.debug("File url of GCS: "+link);
 
             if(blob != null){
                 LOGGER.debug("File successfully uploaded to GCS");
-                return new FileDto(blob.getName(), fileUrl);
+                return new FileDto(blob.getName(), url2);
             }
 
         }catch (GCPFileUploadException e){
