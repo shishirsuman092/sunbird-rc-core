@@ -1582,8 +1582,15 @@ public class RegistryEntityController extends AbstractController {
         try {
             List<String> fileUrlList = certificateService.uploadMultiEntityDocFiles(files, entityName, entityId);
             StringBuffer fileString = new StringBuffer();
-            for (String str :fileUrlList  ) {
-                fileString.append(str+",");
+            if(fileUrlList!=null && fileUrlList.size() > 1){
+                for (String str :fileUrlList  ) {
+                    fileString.append(str+",");
+                }
+            }
+            else if(fileUrlList!=null && fileUrlList.size()==1) {
+                for (String str :fileUrlList  ) {
+                    fileString.append(str);
+                }
             }
 
             Response response = new Response(Response.API_ID.CREATE, HttpStatus.OK.name(), responseParams);
