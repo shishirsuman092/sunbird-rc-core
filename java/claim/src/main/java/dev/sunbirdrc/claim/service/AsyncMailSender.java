@@ -9,6 +9,7 @@ import dev.sunbirdrc.claim.exception.ClaimMailException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,10 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -203,8 +207,10 @@ public class AsyncMailSender {
             if (manualPendingMailDTO.getDocProofs() != null && manualPendingMailDTO.getDocProofs().length > 0) {
 
                 for (int i = 0; i < manualPendingMailDTO.getDocProofs().length; i++) {
-                    mimeMessageHelper.addAttachment("DocProof_" + i,
-                            fileService.downloadFile(manualPendingMailDTO.getDocProofs()[i]));
+                    mimeMessageHelper.addAttachment("DocProof_" + i, getByteArray(manualPendingMailDTO.getDocProofs()[i]));
+
+//                    mimeMessageHelper.addAttachment("DocProof_" + i,
+//                            fileService.downloadFile(manualPendingMailDTO.getDocProofs()[i]));
                 }
             }
 
@@ -213,6 +219,32 @@ public class AsyncMailSender {
             logger.error("Exception while sending mail: ", e);
             throw new ClaimMailException("Exception while composing and sending mail for EC pending item");
         }
+    }
+
+    /**
+     * @param urlString
+     * @return
+     * @throws IOException
+     */
+    private ByteArrayResource getByteArray(String urlString) throws IOException {
+        ByteArrayResource byteArrayResource = null;
+        InputStream is = null;
+
+        try {
+            is = new URL(urlString).openStream();
+            byteArrayResource = new ByteArrayResource(IOUtils.toByteArray(is));
+        }
+        catch (IOException e) {
+            System.err.printf ("Failed while reading bytes from %s: %s", urlString, e.getMessage());
+            e.printStackTrace ();
+        }
+        finally {
+            if (is != null) {
+                is.close();
+            }
+        }
+
+        return byteArrayResource;
     }
 
     private String generateManualEcPendingMailContent(ManualPendingMailDTO manualPendingMailDTO) {
