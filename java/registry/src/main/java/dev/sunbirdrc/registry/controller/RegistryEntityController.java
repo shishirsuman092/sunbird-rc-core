@@ -1235,9 +1235,14 @@ public class RegistryEntityController extends AbstractController {
                         .get(entityName);
                 JsonNode node = jsonNode.get(attestationName);
                 String fileName = getFileNameOfCredentials(node);
-                String courseName = jsonNode.get("courseName").asText();
+            JsonNode courseName1 = jsonNode.get("courseName");
+            String courseName = null;
+            if(courseName1!=null){
+                courseName = courseName1.asText();
+
+            }
                 String requestType = jsonNode.get("requestType") !=null ? jsonNode.get("requestType").asText():null;
-            if((certificateOriginal == null) || (courseName.contains("Correction") || courseName.contains("Duplicate")|| courseName.contains("Reissue")) )
+            if((certificateOriginal == null) || (courseName!=null && (courseName.contains("Correction") || courseName.contains("Duplicate") || courseName.contains("Reissue"))) )
             {
                 boolean wc = false;
                 JsonNode attestationNode = getAttestationSignedData(attestationId, node);
