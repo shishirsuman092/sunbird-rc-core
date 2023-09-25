@@ -1407,6 +1407,9 @@ public class RegistryEntityController extends AbstractController {
         }
 
         entityName = updateEntityName(req.getDocDetails().getCandidateType());
+        if(entityName.equalsIgnoreCase("StudentGoodstanding")){
+            searchNode = DigiLockerUtils.queryForGoodStanding(req.getDocDetails());
+        }
         JsonNode result = searchEntity(searchNode, entityName);
         JsonNode jsonNode = result.get(entityName);
         String osid = null;

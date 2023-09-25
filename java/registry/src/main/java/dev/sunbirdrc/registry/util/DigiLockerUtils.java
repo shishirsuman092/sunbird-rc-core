@@ -279,6 +279,20 @@ public class DigiLockerUtils {
         return objectNode;
     }
 
+    public static ObjectNode queryForGoodStanding(dev.sunbirdrc.registry.util.DocDetails docDetails) {
+        ;
+        JsonNode jsonNode = null;
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode objectNode = objectMapper.createObjectNode();;
+        try {
+            jsonNode =  getSearchNodeForGS(docDetails.getName(),docDetails.getDob(), docDetails.getEmail());
+            jsonNode.fields().forEachRemaining(entry -> objectNode.set(entry.getKey(), entry.getValue()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return objectNode;
+    }
+
 
     public static PullURIResponse getPullUriResponse(String certUri, String status, String txn, Object certificate, Person person) {
         List<Person> personList = new ArrayList();
@@ -357,6 +371,38 @@ public class DigiLockerUtils {
         return actualObj;
     }
 
+
+    private static JsonNode getSearchNodeForGS(String name,String dateOfBirth, String email){
+        dateOfBirth = convertDate(dateOfBirth);
+        String q1 = "{\n" +
+                "    \"filters\": {\n" +
+                "        \"name\": {\n" +
+                "            \"eq\": \"" + name +
+                "\"\n" +
+                "        },\n" +
+                "        \"dob\": {\n" +
+                "            \"eq\": \"" +dateOfBirth +
+                "\"\n" +
+                "        },\n" +
+                "        \"email\": {\n" +
+                "            \"eq\": \"" +email+
+                "\"\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper();
+        JsonFactory factory = mapper.getFactory();
+        JsonNode actualObj = null;
+        try {
+            JsonParser parser = factory.createParser(q1);
+            actualObj = mapper.readTree(parser);
+            // ((ObjectNode) actualObj.get("filters")).put("email",email);
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+        return actualObj;
+    }
 
     public static JsonNode getQuryNode(String osid){
 
