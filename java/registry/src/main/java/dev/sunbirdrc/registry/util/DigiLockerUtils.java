@@ -529,4 +529,13 @@ public class DigiLockerUtils {
         return futureDateString;
     }
 
+    public static String getCurrentDate() {
+        // Get the current date
+        LocalDate currentDate = LocalDate.now();
+        // Format the dates as strings using a DateTimeFormatter
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String futureDateString = currentDate.format(formatter);
+        return futureDateString;
+    }
+
 }

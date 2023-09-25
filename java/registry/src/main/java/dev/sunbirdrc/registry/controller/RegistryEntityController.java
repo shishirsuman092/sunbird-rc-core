@@ -386,13 +386,9 @@ public class RegistryEntityController extends AbstractController {
         Response response = new Response(Response.API_ID.UPDATE, "OK", responseParams);
         ((ObjectNode) rootNode).put(uuidPropertyName, entityId);
         ObjectNode objectNode = (ObjectNode) rootNode;
-        if(entityName.equals("StudentFromUP") || entityName.equals("StudentOutsideUP")){
-            objectNode.put("certificateNumber",String.valueOf(claimRequestClient.getCertificateNumber()));
-            JsonNode validityUpto = objectNode.get("validityUpto");
-            if(validityUpto== null || (validityUpto !=null && validityUpto.asText()==null)) {
-                objectNode.put("validityUpto", DigiLockerUtils.getValidityDate());
-            }
-        }
+       // if(entityName.equals("StudentFromUP") || entityName.equals("StudentOutsideUP")){
+
+        //}
         ObjectNode newRootNode = objectMapper.createObjectNode();
         newRootNode.set(entityName, rootNode);
 
@@ -402,12 +398,25 @@ public class RegistryEntityController extends AbstractController {
             watch.start(tag);
             JsonNode existingNode = registryHelper.readEntity(newRootNode, userId);
             ObjectNode objectNode2 = (ObjectNode) existingNode;
+            JsonNode certificateNumber = objectNode2.get(entityName).get("certificateNumber");
+            if(certificateNumber==null)
+               objectNode.put("certificateNumber",String.valueOf(claimRequestClient.getCertificateNumber()));
             JsonNode university = objectNode2.get(entityName).get("university");
             if(university == null || (university !=null && university.asText()==null)){
                 objectNode2.put("university","NA");
                 logger.info("value for university is null");
             } else {
                 logger.info("value for university is ::"+university.asText());
+            }
+
+            JsonNode validityUpto = objectNode2.get(entityName).get("validityUpto");
+            if(validityUpto== null || (validityUpto !=null && validityUpto.asText()==null)) {
+                objectNode2.put("validityUpto", DigiLockerUtils.getValidityDate());
+            }
+
+            JsonNode dateNode = objectNode2.get(entityName).get("nurseRegDate");
+            if(dateNode== null || (dateNode !=null && dateNode.asText()==null)) {
+                objectNode2.put("nurseRegDate", DigiLockerUtils.getCurrentDate());
             }
 
             String emailId = registryHelper.fetchEmailIdFromToken(request, entityName);
@@ -455,21 +464,28 @@ public class RegistryEntityController extends AbstractController {
         Map<String, Object> result = new HashMap<>();
         ObjectNode newRootNode = objectMapper.createObjectNode();
         ObjectNode objectNode = (ObjectNode) rootNode;
-        if(entityName.equals("StudentFromUP") || entityName.equals("StudentOutsideUP")){
-            objectNode.put("certificateNumber",String.valueOf(claimRequestClient.getCertificateNumber()));
-            JsonNode university = objectNode.get("university");
-            if(university== null || (university !=null && university.asText()==null)){
-                objectNode.put("university","NA");
-                logger.info("value for university is null");
-            }else {
-                logger.info("value for university is ::"+university.asText());
-            }
-            //validityUpto
-            JsonNode validityUpto = objectNode.get("validityUpto");
-            if(validityUpto== null || (validityUpto !=null && validityUpto.asText()==null)) {
-                objectNode.put("validityUpto", DigiLockerUtils.getValidityDate());
-            }
+        //       if(entityName.equals("StudentFromUP") || entityName.equals("StudentOutsideUP")){
+        JsonNode certNo = objectNode.get("certificateNumber");
+        if(certNo==null)
+         objectNode.put("certificateNumber", String.valueOf(claimRequestClient.getCertificateNumber()));
+        JsonNode university = objectNode.get("university");
+        if (university == null || (university != null && university.asText() == null)) {
+            objectNode.put("university", "NA");
+            logger.info("value for university is null");
+        } else {
+            logger.info("value for university is ::" + university.asText());
         }
+        //validityUpto objectNode2.get(entityName).get
+        JsonNode validityUpto = objectNode.get("validityUpto");
+        if (validityUpto == null || (validityUpto != null && validityUpto.asText() == null)) {
+            objectNode.put("validityUpto", DigiLockerUtils.getValidityDate());
+        }
+        //nurseRegDate
+        JsonNode nurseRegDate = objectNode.get("nurseRegDate");
+        if (validityUpto == null || (validityUpto != null && validityUpto.asText() == null)) {
+            objectNode.put("nurseRegDate", DigiLockerUtils.getCurrentDate());
+        }
+        //       }
 
         newRootNode.set(entityName, rootNode);
         try {
@@ -491,7 +507,7 @@ public class RegistryEntityController extends AbstractController {
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (RecordNotFoundException e) {
-             createSchemaNotFoundResponse(e.getMessage(), responseParams);
+            createSchemaNotFoundResponse(e.getMessage(), responseParams);
             response = new Response(Response.API_ID.POST, "ERROR", responseParams);
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         } catch (MiddlewareHaltException e) {

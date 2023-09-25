@@ -144,7 +144,8 @@
         "feeReciptNo": {"type": "string","title": "feeReciptNo"},
         "candidatePic": {"type": "string","title": "candidatePic"},
         "joiningDate": {"type": "string","title": "joiningDate"},
-        "courseDate": {"type": "string","title": "courseDate"}
+        "courseDate": {"type": "string","title": "courseDate"},
+        "nurseRegDate": {"type": "string", "title": "nurseRegDate"}
       }
     }
   },
@@ -180,7 +181,8 @@
           "pincode":  "$.pincode",
           "candidatePic":  "$.candidatePic",
           "joiningDate":  "$.joiningDate",
-          "courseDate":  "$.courseDate"
+          "courseDate":  "$.courseDate",
+          "nurseRegDate": "$.nurseRegDate"
         },
         "credentialTemplate": {
           "@context": [
@@ -334,6 +336,12 @@
                 "@context": {
                   "name": "schema:Text"
                 }
+              },
+              "nurseRegDate": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#nurseRegDate",
+                "@context": {
+                  "name": "schema:Text"
+                }
               }
             }
           ],
@@ -361,7 +369,8 @@
             "pincode":  "{{pincode}}",
             "candidatePic":  "{{candidatePic}}",
             "joiningDate":  "{{joiningDate}}",
-            "courseDate":  "{{courseDate}}"
+            "courseDate":  "{{courseDate}}",
+            "nurseRegDate":  "{{nurseRegDate}}"
           },
           "issuer": "did:web:sunbirdrc.dev/vc/skill"
         }

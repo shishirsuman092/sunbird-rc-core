@@ -112,15 +112,20 @@
           "type": "string",
           "title": "workPlace"
         },
-        "date": {
-          "$id": "#/properties/date",
+        "nurseRegDate": {
+          "$id": "#/properties/nurseRegDate",
           "type": "string",
-          "title": "date"
+          "title": "nurseRegDate"
         },
         "refNo": {
           "$id": "#/properties/refNo",
           "type": "string",
           "title": "refNo"
+        },
+        "certificateNumber": {
+          "$id": "#/properties/certificateNumber",
+          "type": "string",
+          "title": "certificateNumber"
         },
         "validityOfRegistration": {
           "$id": "#/properties/validityOfRegistration",
@@ -174,7 +179,8 @@
           "workPlace": "$.workPlace",
           "council": "$.council",
           "refNo": "$.refNo",
-          "date": "$.date",
+          "certificateNumber": "$.certificateNumber",
+          "nurseRegDate": "$.nurseRegDate",
           "validityOfRegistration": "$.validityOfRegistration",
           "dob": "$.dob",
           "docproof": "$.docproof",
@@ -303,8 +309,14 @@
                   "name": "schema:Text"
                 }
               },
-              "date": {
-                "@id": "https://github.com/sunbird-specs/vc-specs#date",
+              "certificateNumber": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#certificateNumber",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "nurseRegDate": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#nurseRegDate",
                 "@context": {
                   "name": "schema:Text"
                 }
@@ -351,7 +363,8 @@
             "professionalQualification": "{{professionalQualification}}",
             "trainingCenter": "{{trainingCenter}}",
             "refNo": "{{refNo}}",
-            "date": "{{date}}",
+            "certificateNumber": "{{certificateNumber}}",
+            "nurseRegDate": "{{nurseRegDate}}",
             "registrationNumber": "{{registrationNumber}}",
             "workPlace": "{{workPlace}}",
             "docproof": "{{docproof}}",
