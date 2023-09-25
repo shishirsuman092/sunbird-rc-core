@@ -145,7 +145,6 @@ public class DigiLockerUtils {
         Element rootElement = document.getDocumentElement();
         Element docDetailsElement = (Element) rootElement.getElementsByTagName("DocDetails").item(0);
         // Get the values of URI and DigiLockerId elements
-        String uid = docDetailsElement.getElementsByTagName("UID").item(0).getTextContent();
         String name = docDetailsElement.getElementsByTagName("FullName").item(0).getTextContent();
         String dob = docDetailsElement.getElementsByTagName("DOB").item(0).getTextContent();
         String email = docDetailsElement.getElementsByTagName("email").item(0).getTextContent();
@@ -160,7 +159,7 @@ public class DigiLockerUtils {
         docDetails.setName(name);
         docDetails.setEmail(email);
         docDetails.setFinalYearRollNo(rollNo);
-        docDetails.setuID(uid);
+        //docDetails.setuID(uid);
         docDetails.setDocType(docType);
         docDetails.setCandidateType(candidateType);
         request.setDocDetails(docDetails);
