@@ -26,10 +26,6 @@
             <td>${candidate.name}</td>
         </tr>
         <tr>
-            <td>Gender</td>
-            <td>${candidate.gender}</td>
-        </tr>
-        <tr>
             <td>Email</td>
             <td>${candidate.email}</td>
         </tr>
@@ -44,14 +40,6 @@
         <tr>
             <td>Nursing Collage</td>
             <td>${candidate.nursingCollage}</td>
-        </tr>
-        <tr>
-            <td>Course State</td>
-            <td>${candidate.courseState}</td>
-        </tr>
-        <tr>
-            <td>Course Council</td>
-            <td>${candidate.courseCouncil}</td>
         </tr>
         <tr>
             <td>Country</td>
