@@ -13,7 +13,7 @@ public class StudentOutsideUP {
     private String candidatePic;
     private String council;
     private String courseName;
-    private String courseState;
+    private String state;
     private String date;
     private String dateOfBirth;
     private String email;

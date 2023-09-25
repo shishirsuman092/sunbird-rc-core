@@ -62,10 +62,10 @@
             </#if>
         </tr>
         <tr>
-            <td>Course State</td>
+            <td>State</td>
 
-            <#if candidate.courseState?has_content>
-              <td>${candidate.courseState}</td>
+            <#if candidate.state?has_content>
+              <td>${candidate.state}</td>
             <#else>
               <td> </td>
             </#if>
@@ -170,10 +170,10 @@
             </#if>
         </tr>
         <tr>
-            <td>Nurse Registration No</td>
+            <td>Registration No</td>
 
-            <#if candidate.nurseRegNo?has_content>
-              <td>${candidate.nurseRegNo}</td>
+            <#if candidate.finalYearRollNo?has_content>
+              <td>${candidate.finalYearRollNo}</td>
             <#else>
               <td> </td>
             </#if>

@@ -208,6 +208,8 @@ public class ClaimService {
 
                 if (ClaimStatus.APPROVED.name().equalsIgnoreCase(claim.getOutsideStudentStatus())) {
                     throw new ClaimAlreadyProcessedException("Claim is already approved");
+                }if (ClaimStatus.REJECTED.name().equalsIgnoreCase(claim.getOutsideStudentStatus())) {
+                    throw new ClaimAlreadyProcessedException("Claim is already rejected");
                 } else {
                     claim.setOutsideStudentStatus(status.name());
                     claimRepository.save(claim);

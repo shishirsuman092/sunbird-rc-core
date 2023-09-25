@@ -16,7 +16,7 @@ public class StudentOutsideUpRowMapper implements RowMapper<StudentOutsideUP> {
                 rs.getString("candidatePic"),
                 rs.getString("council"),
                 rs.getString("courseName"),
-                rs.getString("courseState"),
+                rs.getString("state"),
                 rs.getString("date"),
                 rs.getString("dateOfBirth"),
                 rs.getString("email"),
