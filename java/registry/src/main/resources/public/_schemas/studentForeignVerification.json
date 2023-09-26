@@ -151,7 +151,12 @@
           "title": "paymentStatus"
         },
         "claimType": {"type": "string","title": "claimType"},
-        "feeReciptNo": {"type": "string","title": "feeReciptNo"}
+        "feeReciptNo": {"type": "string","title": "feeReciptNo"},
+        "date": {"type": "string","title": "date"},
+        "university":{"type": "string","title": "university"},
+        "validityUpto":{"type": "string","title": "validityUpto"},
+        "maidenName":{"type": "string","title": "maidenName"},
+        "marriedName":{"type": "string","title": "marriedName"}
       }
     }
   },
@@ -190,7 +195,12 @@
           "state":"$.state",
           "district":  "$.district",
           "country":   "$.country",
-          "pincode":  "$.pincode"
+          "pincode":  "$.pincode",
+          "date":  "$.date",
+          "university":"$.university",
+          "validityUpto":"$.validityUpto",
+          "maidenName":"$.maidenName",
+          "marriedName": "$.marriedName"
         },
         "credentialTemplate": {
           "@context": [
@@ -344,6 +354,36 @@
                 "@context": {
                   "name": "schema:Text"
                 }
+              },
+              "date": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#date",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "university": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#university",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "validityUpto": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#validityUpto",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "maidenName": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#maidenName",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "marriedName": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#marriedName",
+                "@context": {
+                  "name": "schema:Text"
+                }
               }
             }
           ],
@@ -373,7 +413,10 @@
             "state":"{{state}}",
             "district":  "{{district}}",
             "country":   "{{country}}",
-            "pincode":  "{{pincode}}"
+            "pincode":  "{{pincode}}",
+            "date":  "{{date}}",
+            "university":  "{{university}}",
+            "validityUpto":  "{{validityUpto}}"
           },
           "issuer": "did:web:sunbirdrc.dev/vc/skill"
         }

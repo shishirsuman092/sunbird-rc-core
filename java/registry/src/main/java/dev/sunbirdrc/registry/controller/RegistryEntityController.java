@@ -410,16 +410,12 @@ public class RegistryEntityController extends AbstractController {
             } else {
                 logger.info("value for university is ::"+university.asText());
             }
-
             JsonNode validityUpto = objectNode2.get(entityName).get("validityUpto");
             if(validityUpto== null || (validityUpto !=null && validityUpto.asText()==null)) {
                 objectNode2.put("validityUpto", DigiLockerUtils.getValidityDate());
             }
+            objectNode2.put("nurseRegDate", DigiLockerUtils.getCurrentDate());
 
-            //JsonNode dateNode = objectNode2.get(entityName).get("nurseRegDate");
-            //if(dateNode== null || (dateNode !=null && dateNode.asText()==null)) {
-                objectNode2.put("nurseRegDate", DigiLockerUtils.getCurrentDate());
-            //}
 
             String emailId = registryHelper.fetchEmailIdFromToken(request, entityName);
             registryHelper.updateEntityAndState(existingNode, newRootNode, userId);

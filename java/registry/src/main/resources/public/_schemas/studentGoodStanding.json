@@ -224,7 +224,7 @@
               }
             },
               "fathersName": {
-                "@id": "https://github.com/sunbird-specs/vc-specs#marriedName",
+                "@id": "https://github.com/sunbird-specs/vc-specs#fathersName",
                 "@context": {
                   "name": "schema:Text"
                 }
@@ -236,7 +236,7 @@
                 }
               },
               "presentAddress": {
-                "@id": "https://github.com/sunbird-specs/vc-specs#marriedName",
+                "@id": "https://github.com/sunbird-specs/vc-specs#presentAddress",
                 "@context": {
                   "name": "schema:Text"
                 }
