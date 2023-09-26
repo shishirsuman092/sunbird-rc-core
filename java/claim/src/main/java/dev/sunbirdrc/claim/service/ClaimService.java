@@ -1,6 +1,7 @@
 package dev.sunbirdrc.claim.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import dev.sunbirdrc.claim.dto.ClaimRequestDTO;
 import dev.sunbirdrc.claim.dto.ClaimWithNotesDTO;
 import dev.sunbirdrc.claim.dto.ClaimWithSize;
 import dev.sunbirdrc.claim.entity.Claim;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -84,9 +86,41 @@ public class ClaimService {
         return toMapAll(claimsToAttestor, pageable);
     }
 
-    public ClaimWithSize findAllClaims() {
+    public ClaimWithSize findAllClaims(ClaimRequestDTO claimRequestDTO) {
         ClaimWithSize claimWithSize = new ClaimWithSize();
-        List<Claim> claims = claimRepository.findAll();
+        List<Claim> claims = new ArrayList<>();
+
+
+        if (StringUtils.isEmpty(claimRequestDTO.getEntity()) && claimRequestDTO.getStartDate() == null
+                && claimRequestDTO.getEndDate() == null) {
+            claims = claimRepository.findAll();
+
+        }else if (!StringUtils.isEmpty(claimRequestDTO.getEntity()) && claimRequestDTO.getStartDate() != null
+                && claimRequestDTO.getEndDate() != null) {
+            Date endDate = claimRequestDTO.getEndDate();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(endDate);
+            calendar.add(Calendar.DATE, 1);
+            endDate = calendar.getTime();
+
+            claims = claimRepository.findByCreatedAtWithEntity(claimRequestDTO.getStartDate(),
+                    endDate, claimRequestDTO.getEntity());
+
+        } else if (StringUtils.isEmpty(claimRequestDTO.getEntity()) && claimRequestDTO.getStartDate() != null
+                && claimRequestDTO.getEndDate() != null) {
+            Date endDate = claimRequestDTO.getEndDate();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(endDate);
+            calendar.add(Calendar.DATE, 1);
+            endDate = calendar.getTime();
+
+            claims = claimRepository.findByCreatedAtRange(claimRequestDTO.getStartDate(), endDate);
+
+        } else if (!StringUtils.isEmpty(claimRequestDTO.getEntity()) && claimRequestDTO.getStartDate() == null
+                && claimRequestDTO.getEndDate() == null) {
+            claims = claimRepository.findByEntity(claimRequestDTO.getEntity());
+        }
+
         claimWithSize.setTotalClaim(claims.size());
         Long totalOpenClaims = claims.stream()
                 .filter(claim -> "OPEN".equals(claim.getStatus()))
