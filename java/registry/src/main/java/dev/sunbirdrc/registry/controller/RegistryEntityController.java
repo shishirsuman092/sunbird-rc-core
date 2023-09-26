@@ -397,7 +397,9 @@ public class RegistryEntityController extends AbstractController {
             String tag = "RegistryController.update " + entityName;
             watch.start(tag);
             JsonNode existingNode = registryHelper.readEntity(newRootNode, userId);
+
             ObjectNode objectNode2 = (ObjectNode) existingNode;
+
             JsonNode certificateNumber = objectNode2.get(entityName).get("certificateNumber");
             if(certificateNumber==null)
                objectNode.put("certificateNumber",String.valueOf(claimRequestClient.getCertificateNumber()));
@@ -414,10 +416,10 @@ public class RegistryEntityController extends AbstractController {
                 objectNode2.put("validityUpto", DigiLockerUtils.getValidityDate());
             }
 
-            JsonNode dateNode = objectNode2.get(entityName).get("nurseRegDate");
-            if(dateNode== null || (dateNode !=null && dateNode.asText()==null)) {
+            //JsonNode dateNode = objectNode2.get(entityName).get("nurseRegDate");
+            //if(dateNode== null || (dateNode !=null && dateNode.asText()==null)) {
                 objectNode2.put("nurseRegDate", DigiLockerUtils.getCurrentDate());
-            }
+            //}
 
             String emailId = registryHelper.fetchEmailIdFromToken(request, entityName);
             registryHelper.updateEntityAndState(existingNode, newRootNode, userId);
@@ -475,18 +477,9 @@ public class RegistryEntityController extends AbstractController {
         } else {
             logger.info("value for university is ::" + university.asText());
         }
-        //validityUpto objectNode2.get(entityName).get
-        JsonNode validityUpto = objectNode.get("validityUpto");
-        if (validityUpto == null || (validityUpto != null && validityUpto.asText() == null)) {
-            objectNode.put("validityUpto", DigiLockerUtils.getValidityDate());
-        }
-        //nurseRegDate
-        JsonNode nurseRegDate = objectNode.get("nurseRegDate");
-        if (validityUpto == null || (validityUpto != null && validityUpto.asText() == null)) {
-            objectNode.put("nurseRegDate", DigiLockerUtils.getCurrentDate());
-        }
-        //       }
-
+        objectNode.put("validityUpto", DigiLockerUtils.getValidityDate());
+            //nurseRegDate
+        objectNode.put("nurseRegDate", DigiLockerUtils.getCurrentDate());
         newRootNode.set(entityName, rootNode);
         try {
             checkEntityNameInDefinitionManager(entityName);
@@ -544,9 +537,9 @@ public class RegistryEntityController extends AbstractController {
             objectNode.put("certificateNumber",String.valueOf(claimRequestClient.getCertificateNumber()));
             if(objectNode.get("university")==null)
                 objectNode.put("university","NA");
-            if(objectNode.get("validityUpto")==null) {
+            //if(objectNode.get("validityUpto")==null) {
                 objectNode.put("validityUpto", DigiLockerUtils.getValidityDate());
-            }
+            //}
         //}
         extractImgUrl(rootNode);
         newRootNode.set(entityName, rootNode);
@@ -830,15 +823,17 @@ public class RegistryEntityController extends AbstractController {
             JsonNode signedNode = objectMapper.readTree(node.get(OSSystemFields._osSignedData.name()).asText());
             if ((certificateOriginal == null)) {
                 String fileName1 = fileName + "webcopy";
+                String url = "https://storage.googleapis.com/dev-public-upsmf/issuance/"+fileName1+".pdf";
                 certificateWebCopy = certificateService.getCertificate(signedNode,
                         entityName,
                         entityId,
                         request.getHeader(HttpHeaders.ACCEPT),
                         templateUrlFromRequest.replace(".html", "-WC.html"),
-                        JSONUtil.removeNodesByPath(node, definitionsManager.getExcludingFieldsForEntity(entityName)), fileName1, false
+                        JSONUtil.removeNodesByPath(node, definitionsManager.getExcludingFieldsForEntity(entityName)), url, false
                 );
-                String url = null;
-                String fileUrlForQR = getFileUrl(fileName1);
+
+                String fileUrlForQR = url;
+                //getFileUrl(fileName1);
                 if (certificateWebCopy != null) {
                     url = certificateService.saveToGCS(certificateWebCopy, fileName1);
                     logger.debug("WebCopy of Certificate:" + url);
@@ -848,7 +843,7 @@ public class RegistryEntityController extends AbstractController {
                         entityId,
                         request.getHeader(HttpHeaders.ACCEPT),
                         templateUrlFromRequest,
-                        JSONUtil.removeNodesByPath(node, definitionsManager.getExcludingFieldsForEntity(entityName)), fileUrlForQR, false
+                        JSONUtil.removeNodesByPath(node, definitionsManager.getExcludingFieldsForEntity(entityName)), url, false
                 );
                 if (certificateOriginal != null) {
                     String originalUrl = getCredUrl(fileName, certificateOriginal);
@@ -1305,7 +1300,7 @@ public class RegistryEntityController extends AbstractController {
             }
         } catch (AttestationNotFoundException e) {
             logger.error(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -1439,7 +1434,7 @@ public class RegistryEntityController extends AbstractController {
                     }
                     Person person = DigiLockerUtils.getPersonDetail(result, entityName);
 
-                    Object encodedCertificate = Base64.getEncoder().encode(certificate);
+                    byte[] encodedCertificate = Base64.getEncoder().encode(certificate);
                     PullURIResponse pullResponse = DigiLockerUtils.getPullUriResponse(uri, statusCode, osid, encodedCertificate, person);
                     responseString = DigiLockerUtils.convertJaxbToString(pullResponse);
                     responseString = responseString.replace(" xsi:type=\"xs:base64Binary\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"","");
@@ -1550,6 +1545,7 @@ public class RegistryEntityController extends AbstractController {
             String credName = pullDocRequest.getDocDetails().getUri();
             credName = "issuance/" + credName + ".pdf";
             byte[] cred = certificateService.getCred(credName);
+            byte[] cert = Base64.getEncoder().encode(cred);
             if (cred != null) {
                 try {
                     //DigiLockerUtils.getPersonDetail(result, "entityName");
@@ -1557,7 +1553,7 @@ public class RegistryEntityController extends AbstractController {
                     person.setDob(dob);
                     person.setName(fullName);
                     person.setFinalYearRollNo(finalYearRollNo);
-                    PullDocResponse pullDocResponse = DigiLockerUtils.getDocPullDocResponse(pullDocRequest, statusCode, cred, person);
+                    PullDocResponse pullDocResponse = DigiLockerUtils.getDocPullDocResponse(pullDocRequest, statusCode, cert, person);
                     String responseString = DigiLockerUtils.convertJaxbToPullDoc(pullDocResponse);
                     responseString = responseString.replaceAll(" xsi:type=\"[^\"]*\" xmlns:xs=\"[^\"]*\" xmlns:xsi=\"[^\"]*\"", "");
                     HttpHeaders headers = new HttpHeaders();
@@ -1675,7 +1671,7 @@ public class RegistryEntityController extends AbstractController {
             fileName.append(name);
         }
 
-        return fileName.toString();
+        return fileName!=null?fileName.toString():"";
     }
 
     private void trackCred(JsonNode node, String fileName) {

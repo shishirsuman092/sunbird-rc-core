@@ -293,7 +293,7 @@ public class RegistryHelper {
         configurator.setIncludeEncryptedProp(includePrivateFields);
         resultNode = readService.getEntity(shard, userId, recordId.getUuid(), entityType, configurator);
         if (!isOwner(resultNode.get(entityType), userId)) {
-//            throw new Exception("Unauthorized");
+              throw new Exception("Unauthorized");
             //TODO: return public fields
         }
         if (viewTemplate != null) {

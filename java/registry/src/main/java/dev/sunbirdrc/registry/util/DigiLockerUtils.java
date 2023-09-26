@@ -294,7 +294,7 @@ public class DigiLockerUtils {
     }
 
 
-    public static PullURIResponse getPullUriResponse(String certUri, String status, String txn, Object certificate, Person person) {
+    public static PullURIResponse getPullUriResponse(String certUri, String status, String txn, byte[] certificate, Person person) {
         List<Person> personList = new ArrayList();
         personList.add(person);
         Persons persons = new Persons();
@@ -309,7 +309,6 @@ public class DigiLockerUtils {
         IssuedTo issuedTo = new IssuedTo();
         issuedTo.setPersons(persons);
         Object docContent = certificate;
-
         details.setDocContent(docContent);
         details.setDataContent(convertJaxbToBase64XmlString(person));
         details.setIssuedTo(issuedTo);
@@ -444,7 +443,7 @@ public class DigiLockerUtils {
         docDetails.setDataContent(content);
         docDetails.setDigiLockerId(pullDocRequest.getDocDetails().getDigiLockerId());
         //docDetails.setDocContent(bytes);
-        docDetails.setDocContent(Base64.getEncoder().encode(bytes));
+        docDetails.setDocContent(bytes);
         resp.setDocDetails(docDetails);
         return resp;
     }
