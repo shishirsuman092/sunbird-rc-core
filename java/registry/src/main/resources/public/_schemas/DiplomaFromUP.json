@@ -119,8 +119,6 @@
   },
   "_osConfig": {
     "roles": ["StudentFromUP"],
-    "ownershipAttributes": [],
-    "roles": [],
     "inviteRoles": [
       "anonymous"
     ],

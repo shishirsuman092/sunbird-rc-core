@@ -121,7 +121,8 @@
         "validityUpto": {"type": "string","title": "validityUpto"},
         "requestType": {"type": "string","title": "requestType"},
         "feeReciptNo": {"type": "string","title": "feeReciptNo"},
-        "courseType": {"type": "string","title": "courseType"}
+        "courseType": {"type": "string","title": "courseType"},
+        "nurseRegDate": {"type": "string","title": "nurseRegDate"}
       }
     }
   },
@@ -136,7 +137,7 @@
       }
     ],
     "inviteRoles": ["anonymous"],
-    "roles": ["StudentFromUP"],
+    "roles": ["StudentFromUP","Regulator"],
     "attestationPolicies": [
       {
         "name": "studentVerification",

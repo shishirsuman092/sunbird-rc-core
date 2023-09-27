@@ -118,13 +118,14 @@
         "candidateSignature": {"type": "string","default": "NA","title": "candidateSignature"},
         "validityUpto": {"type": "string","default": "NA","title": "validityUpto"},
         "requestType": {"type": "string","title": "requestType"},
-        "feeReciptNo": {"type": "string","title": "feeReciptNo"}
+        "feeReciptNo": {"type": "string","title": "feeReciptNo"},
+        "nurseRegDate": {"type": "string","title": "nurseRegDate"}
       }
     }
   },
   "_osConfig": {
     "inviteRoles": ["anonymous"],
-    "roles": ["StudentOutsideUP","StudentFromUP"],
+    "roles": ["StudentOutsideUP","StudentFromUP","Regulator"],
     "attestationPolicies": [
       {
         "name": "studentVerification",

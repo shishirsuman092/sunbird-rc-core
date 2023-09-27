@@ -19,36 +19,33 @@
         "email",
         "council"
       ],
-      "uniqueIndexFields": [
-        "phoneNumber"
-      ],
       "properties": {
         "name": {
           "$id": "#/properties/name",
           "type": "string",
-          "title": "name"
+          "title": "Name"
         },
         "marriedName": {
           "$id": "#/properties/marriedName",
           "type": "string",
-          "title": "marriedName"
+          "title": "Married Name"
         },
         "maidenName": {
           "$id": "#/properties/maidenName",
           "type": "string",
-          "title": "maidenName"
+          "title": "Maiden Name"
         },
         "fathersName": {
           "$id": "#/properties/fathersName",
           "type": "string",
-          "title": "fathersName"
+          "title": "Father's Name"
         },
         "presentAddress": {
           "$id": "#/properties/presentAddress",
           "type": "string",
-          "title": "presentAddress"
+          "title": "Present Address"
         },
-        "state": { "type": "string", "title": "State","enum": [
+        "state": { "$id": "#/properties/state", "type": "string", "title": "State","enum": [
           "Andaman and Nicobar Islands",
           "Andhra Pradesh",
           "Arunachal Pradesh",
@@ -87,18 +84,18 @@
           "Uttarakhand",
           "West Bengal"
         ] },
-        "district": {"type": "string", "title": "district"},
-        "country": {"type": "string",  "title": "country"},
-        "pincode": {"type": "string", "title": "pincode"},
+        "district": {"$id": "#/properties/district", "type": "string", "title": "District"},
+        "country": {"$id": "#/properties/country", "type": "string",  "title": "Country"},
+        "pincode": {"$id": "#/properties/pincode", "type": "string", "title": "Pincode"},
         "phoneNumber": {
           "$id": "#/properties/phoneNumber",
           "type": "string",
-          "title": "phoneNumber"
+          "title": "Phone Number"
         },
         "email": {
           "$id": "#/properties/email",
           "type": "string",
-          "title": "email"
+          "title": "Email"
         },
         "professionalQualification": {
           "$id": "#/properties/professionalQualification",
@@ -110,47 +107,48 @@
             "Nurse",
             "B.SC.Nursing"
           ],
-          "title": "professionalQualification"
+          "title": "Professional Qualification"
         },
         "trainingCenter": {
           "$id": "#/properties/trainingCenter",
           "type": "string",
-          "title": "trainingCenter"
+          "title": "Training Center"
         },
         "registrationNumber": {
           "$id": "#/properties/registrationNumber",
           "type": "string",
-          "title": "registrationNumber"
+          "title": "Registration Number"
         },
         "council": {
           "$id": "#/properties/council",
           "type": "string",
-          "title": "council"
+          "title": "Council"
         },
         "workPlace": {
           "$id": "#/properties/workPlace",
           "type": "string",
-          "title": "workPlace"
+          "title": "Work Place"
         },
         "docproof": {
-              "type": "string", "title": "All Document Proof"
+          "$id": "#/properties/docproof", "type": "string", "title": "All Document Proof"
         },
         "paymentStatus": {
           "$id": "#/properties/paymentStatus",
           "type": "string",
-          "title": "paymentStatus"
+          "title": "Payment Status"
         },
-        "claimType": {"type": "string","title": "claimType"},
-        "feeReciptNo": {"type": "string","title": "feeReciptNo"},
-        "candidatePic": {"type": "string","title": "candidatePic"},
-        "joiningDate": {"type": "string","title": "joiningDate"},
-        "courseDate": {"type": "string","title": "courseDate"},
-        "nurseRegDate": {"type": "string", "title": "nurseRegDate"}
+        "claimType": {"$id": "#/properties/claimType", "type": "string","title": "Claim Type"},
+        "feeReciptNo": {"$id": "#/properties/feeReciptNo", "type": "string","title": "Fee Receipt Number"},
+        "candidatePic": {"$id": "#/properties/candidatePic", "type": "string","title": "Candidate Pic"},
+        "joiningDate": {"$id": "#/properties/joiningDate", "type": "string","title": "Joining Date"},
+        "courseDate": {"$id": "#/properties/courseDate", "type": "string","title": "Course Date"},
+        "nurseRegDate": {"$id": "#/properties/nurseRegDate", "type": "string", "title": "nurseRegDate"}
       }
     }
   },
   "_osConfig": {
     "roles": ["StudentFromUP","Regulator"],
+    "uniqueIndexFields": ["phoneNumber"],
     "attestationPolicies": [
       {
         "name": "studentGoodstandingVerification",
@@ -211,17 +209,17 @@
                 }
               },
               "maidenName": {
-              "@id": "https://github.com/sunbird-specs/vc-specs#maidenName",
-              "@context": {
-                "name": "schema:Text"
-              }
-            },
+                "@id": "https://github.com/sunbird-specs/vc-specs#maidenName",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
               "marriedName": {
-              "@id": "https://github.com/sunbird-specs/vc-specs#marriedName",
-              "@context": {
-                "name": "schema:Text"
-              }
-            },
+                "@id": "https://github.com/sunbird-specs/vc-specs#marriedName",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
               "fathersName": {
                 "@id": "https://github.com/sunbird-specs/vc-specs#fathersName",
                 "@context": {
