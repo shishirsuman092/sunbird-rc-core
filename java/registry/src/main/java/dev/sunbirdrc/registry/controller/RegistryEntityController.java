@@ -386,9 +386,11 @@ public class RegistryEntityController extends AbstractController {
         Response response = new Response(Response.API_ID.UPDATE, "OK", responseParams);
         ((ObjectNode) rootNode).put(uuidPropertyName, entityId);
         ObjectNode objectNode = (ObjectNode) rootNode;
-       // if(entityName.equals("StudentFromUP") || entityName.equals("StudentOutsideUP")){
-
-        //}
+        String vCertNo = String.valueOf(claimRequestClient.getCertificateNumber());
+        objectNode.put("certificateNumber", vCertNo);
+        objectNode.put("certificateNo", vCertNo);
+        objectNode.put("validityUpto", DigiLockerUtils.getValidityDate());
+        objectNode.put("nurseRegDate", DigiLockerUtils.getCurrentDate());
         ObjectNode newRootNode = objectMapper.createObjectNode();
         newRootNode.set(entityName, rootNode);
 
@@ -397,9 +399,6 @@ public class RegistryEntityController extends AbstractController {
             String tag = "RegistryController.update " + entityName;
             watch.start(tag);
             JsonNode existingNode = registryHelper.readEntity(newRootNode, userId);
-
-            //if(certificateNumber==null)
-            objectNode.put("certificateNumber",String.valueOf(claimRequestClient.getCertificateNumber()));
             JsonNode university = existingNode.get(entityName).get("university");
             if(university == null || (university !=null && university.asText()==null)){
                 objectNode.put("university","NA");
@@ -407,8 +406,7 @@ public class RegistryEntityController extends AbstractController {
             } else {
                 logger.info("value for university is ::"+university.asText());
             }
-            objectNode.put("validityUpto", DigiLockerUtils.getValidityDate());
-            objectNode.put("nurseRegDate", DigiLockerUtils.getCurrentDate());
+
             String emailId = registryHelper.fetchEmailIdFromToken(request, entityName);
             registryHelper.updateEntityAndState(existingNode, newRootNode, userId);
             if (existingNode.get(entityName).has(OSSystemFields._osSignedData.name())) {
@@ -463,7 +461,6 @@ public class RegistryEntityController extends AbstractController {
             logger.info("value for university is ::" + university.asText());
         }
         objectNode.put("validityUpto", DigiLockerUtils.getValidityDate());
-            //nurseRegDate
         objectNode.put("nurseRegDate", DigiLockerUtils.getCurrentDate());
         newRootNode.set(entityName, rootNode);
         try {
