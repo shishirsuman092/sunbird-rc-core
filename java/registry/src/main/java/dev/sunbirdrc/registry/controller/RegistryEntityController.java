@@ -454,7 +454,7 @@ public class RegistryEntityController extends AbstractController {
         ObjectNode objectNode = (ObjectNode) rootNode;
         objectNode.put("certificateNumber", String.valueOf(claimRequestClient.getCertificateNumber()));
         JsonNode university = objectNode.get("university");
-        if (university == null || (university != null && (university.asText() == null || university.asText().equalsIgnoreCase("NA")))) {
+        if (university == null || (university != null && (university.asText() == null || !university.asText().equalsIgnoreCase("NA")))) {
             objectNode.put("university", "NA");
             logger.info("value for university is null");
         } else {
