@@ -1051,7 +1051,7 @@ public class RegistryHelper {
 
     //TODO: add cache
     public List<AttestationPolicy> getAttestationPolicies(String entityName) {
-        List<AttestationPolicy> dbAttestationPolicies = getAttestationsFromRegistry(entityName);
+        List<AttestationPolicy> dbAttestationPolicies = new ArrayList<>();
         List<AttestationPolicy> schemaAttestationPolicies = definitionsManager.getDefinition(entityName).getOsSchemaConfiguration().getAttestationPolicies();
         return ListUtils.union(dbAttestationPolicies, schemaAttestationPolicies);
     }

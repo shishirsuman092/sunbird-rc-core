@@ -401,8 +401,8 @@ public class RegistryEntityController extends AbstractController {
             ObjectNode objectNode2 = (ObjectNode) existingNode;
 
             JsonNode certificateNumber = objectNode2.get(entityName).get("certificateNumber");
-            if(certificateNumber==null)
-               objectNode.put("certificateNumber",String.valueOf(claimRequestClient.getCertificateNumber()));
+            //if(certificateNumber==null)
+            objectNode.put("certificateNumber",String.valueOf(claimRequestClient.getCertificateNumber()));
             JsonNode university = objectNode2.get(entityName).get("university");
             if(university == null || (university !=null && university.asText()==null)){
                 objectNode2.put("university","NA");
@@ -462,12 +462,9 @@ public class RegistryEntityController extends AbstractController {
         Map<String, Object> result = new HashMap<>();
         ObjectNode newRootNode = objectMapper.createObjectNode();
         ObjectNode objectNode = (ObjectNode) rootNode;
-        //       if(entityName.equals("StudentFromUP") || entityName.equals("StudentOutsideUP")){
-        JsonNode certNo = objectNode.get("certificateNumber");
-        if(certNo==null)
-         objectNode.put("certificateNumber", String.valueOf(claimRequestClient.getCertificateNumber()));
+        objectNode.put("certificateNumber", String.valueOf(claimRequestClient.getCertificateNumber()));
         JsonNode university = objectNode.get("university");
-        if (university == null || (university != null && university.asText() == null)) {
+        if (university == null || (university != null && (university.asText() == null || university.asText().equalsIgnoreCase("NA")))) {
             objectNode.put("university", "NA");
             logger.info("value for university is null");
         } else {

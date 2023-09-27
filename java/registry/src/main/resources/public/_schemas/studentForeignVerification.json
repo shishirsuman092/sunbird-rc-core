@@ -161,12 +161,8 @@
     }
   },
   "_osConfig": {
-    "inviteRoles": [
-      "anonymous"
-    ],
     "roles": [
-      "StudentFromUP"
-    ],
+      "StudentFromUP", "Regulator"],
     "attestationPolicies": [
       {
         "name": "StudentForeignVerify",
