@@ -398,25 +398,17 @@ public class RegistryEntityController extends AbstractController {
             watch.start(tag);
             JsonNode existingNode = registryHelper.readEntity(newRootNode, userId);
 
-            ObjectNode objectNode2 = (ObjectNode) existingNode;
-
-            JsonNode certificateNumber = objectNode2.get(entityName).get("certificateNumber");
             //if(certificateNumber==null)
             objectNode.put("certificateNumber",String.valueOf(claimRequestClient.getCertificateNumber()));
-            JsonNode university = objectNode2.get(entityName).get("university");
+            JsonNode university = existingNode.get(entityName).get("university");
             if(university == null || (university !=null && university.asText()==null)){
-                objectNode2.put("university","NA");
+                objectNode.put("university","NA");
                 logger.info("value for university is null");
             } else {
                 logger.info("value for university is ::"+university.asText());
             }
-            JsonNode validityUpto = objectNode2.get(entityName).get("validityUpto");
-            if(validityUpto== null || (validityUpto !=null && validityUpto.asText()==null)) {
-                objectNode2.put("validityUpto", DigiLockerUtils.getValidityDate());
-            }
-            objectNode2.put("nurseRegDate", DigiLockerUtils.getCurrentDate());
-
-
+            objectNode.put("validityUpto", DigiLockerUtils.getValidityDate());
+            objectNode.put("nurseRegDate", DigiLockerUtils.getCurrentDate());
             String emailId = registryHelper.fetchEmailIdFromToken(request, entityName);
             registryHelper.updateEntityAndState(existingNode, newRootNode, userId);
             if (existingNode.get(entityName).has(OSSystemFields._osSignedData.name())) {
