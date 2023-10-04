@@ -423,7 +423,8 @@
             "pincode":  "{{pincode}}",
             "date":  "{{date}}",
             "university":  "{{university}}",
-            "validityUpto":  "{{validityUpto}}"
+            "validityUpto":  "{{validityUpto}}",
+            "dob": "{{dob}}"
           },
           "issuer": "did:web:sunbirdrc.dev/vc/skill"
         }
