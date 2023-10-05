@@ -399,13 +399,13 @@ public class RegistryEntityController extends AbstractController {
             String tag = "RegistryController.update " + entityName;
             watch.start(tag);
             JsonNode existingNode = registryHelper.readEntity(newRootNode, userId);
-            JsonNode university = existingNode.get(entityName).get("university");
-            if(university == null || (university !=null && university.asText()==null)){
-                objectNode.put("university","NA");
-                logger.info("value for university is null");
-            } else {
-                logger.info("value for university is ::"+university.asText());
-            }
+//            JsonNode university = existingNode.get(entityName).get("university");
+//            if(university == null || (university !=null && university.asText()==null)){
+//                objectNode.put("university","NA");
+//                logger.info("value for university is null");
+//            } else {
+//                logger.info("value for university is ::"+university.asText());
+//            }
 
             String emailId = registryHelper.fetchEmailIdFromToken(request, entityName);
             registryHelper.updateEntityAndState(existingNode, newRootNode, userId);
