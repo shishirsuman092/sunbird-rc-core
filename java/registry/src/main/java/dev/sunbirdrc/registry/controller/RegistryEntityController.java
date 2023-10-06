@@ -399,6 +399,14 @@ public class RegistryEntityController extends AbstractController {
             String tag = "RegistryController.update " + entityName;
             watch.start(tag);
             JsonNode existingNode = registryHelper.readEntity(newRootNode, userId);
+
+            try {
+                JsonNode university = existingNode.get(entityName).get("university");
+                logger.info(">>>>>>>>>>>>>>>>>>>> university : " + university.asText());
+            } catch (Exception e) {
+                logger.error("Error while fetching university: ", e);
+            }
+
 //            JsonNode university = existingNode.get(entityName).get("university");
 //            if(university == null || (university !=null && university.asText()==null)){
 //                objectNode.put("university","NA");
@@ -453,13 +461,15 @@ public class RegistryEntityController extends AbstractController {
         ObjectNode newRootNode = objectMapper.createObjectNode();
         ObjectNode objectNode = (ObjectNode) rootNode;
         objectNode.put("certificateNumber", String.valueOf(claimRequestClient.getCertificateNumber()));
-        JsonNode university = objectNode.get("university");
-        if (university == null || (university != null && (university.asText() == null || !university.asText().equalsIgnoreCase("NA")))) {
-            objectNode.put("university", "NA");
-            logger.info("value for university is null");
-        } else {
-            logger.info("value for university is ::" + university.asText());
-        }
+
+//        JsonNode university = objectNode.get("university");
+//        if (university == null || (university != null && (university.asText() == null || !university.asText().equalsIgnoreCase("NA")))) {
+//            objectNode.put("university", "NA");
+//            logger.info("value for university is null");
+//        } else {
+//            logger.info("value for university is ::" + university.asText());
+//        }
+
         objectNode.put("validityUpto", DigiLockerUtils.getValidityDate());
         objectNode.put("nurseRegDate", DigiLockerUtils.getCurrentDate());
         newRootNode.set(entityName, rootNode);
