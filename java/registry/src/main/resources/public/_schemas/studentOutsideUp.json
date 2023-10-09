@@ -119,7 +119,9 @@
         "validityUpto": {"type": "string","default": "NA","title": "validityUpto"},
         "requestType": {"type": "string","title": "requestType"},
         "feeReciptNo": {"type": "string","title": "feeReciptNo"},
-        "nurseRegDate": {"type": "string","title": "nurseRegDate"}
+        "nurseRegDate": {"type": "string","title": "nurseRegDate"},
+        "marriedName": {"type": "string", "title": "Married Name"},
+        "qualification": {"type": "string", "title": "qualification"}
       }
     }
   },
@@ -173,7 +175,9 @@
           "candidateSignature": "$.candidateSignature",
           "validityUpto": "$.validityUpto",
           "requestType": "$.requestType",
-          "feeReciptNo": "$.feeReciptNo"
+          "feeReciptNo": "$.feeReciptNo",
+          "marriedName": "$.marriedName",
+          "qualification": "$.qualification"
         },
         "credentialTemplate": {
           "@context": [
@@ -428,8 +432,19 @@
                 "@context": {
                   "name": "schema:Text"
                 }
+              },
+              "marriedName": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#marriedName",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "qualification": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#qualification",
+                "@context": {
+                  "name": "schema:Text"
+                }
               }
-
             }
           ],
           "type": ["VerifiableCredential"],
@@ -476,7 +491,9 @@
             "university": "{{university}}",
             "candidateSignature": "{{candidateSignature}}",
             "validityUpto": "{{validityUpto}}",
-            "requestType": "{{requestType}}"
+            "requestType": "{{requestType}}",
+            "marriedName": "{{marriedName}}",
+            "qualification": "{{qualification}}"
           },
           "issuer": "did:web:sunbirdrc.dev/vc/skill"
         }

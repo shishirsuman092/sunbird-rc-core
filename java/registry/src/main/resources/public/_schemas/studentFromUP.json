@@ -124,7 +124,7 @@
         "courseType": {"type": "string","title": "courseType"},
         "nurseRegDate": {"type": "string","title": "nurseRegDate"},
         "marriedName": {"type": "string", "title": "Married Name"},
-        "qualification": {"type": "string", "title": "qulification"}
+        "qualification": {"type": "string", "title": "qualification"}
       }
     }
   },
