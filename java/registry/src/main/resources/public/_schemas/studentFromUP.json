@@ -22,7 +22,7 @@
         "fathersName": { "type": "string","title": "fatherName"},
         "dateOfBirth": {"type": "string", "title": "dateOfBirth"},
         "aadhaarNo": {"type": "string",  "title": "aadhaarNo"},
-        "gender": {"type": "string", "title": "gender", "enum": ["male", "female"]},
+        "gender": {"type": "string", "title": "gender", "enum": ["male", "female", "Others"]},
         "address": {"type": "string", "title": "address"},
         "state": { "type": "string", "title": "State","enum": [
           "Andaman and Nicobar Islands",

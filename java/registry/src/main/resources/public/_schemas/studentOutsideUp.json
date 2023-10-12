@@ -20,7 +20,7 @@
         "fathersName": { "type": "string","title": "fatherName"},
         "dateOfBirth": {"type": "string", "title": "dateOfBirth"},
         "aadhaarNo": {"type": "string",  "title": "aadhaarNo"},
-        "gender": {"type": "string", "title": "gender", "enum": ["male", "female"]},
+        "gender": {"type": "string", "title": "gender", "enum": ["male", "female", "Others"]},
         "address": {"type": "string", "title": "address"},
         "state": { "type": "string", "title": "State","enum": [
           "Andaman and Nicobar Islands",
@@ -547,7 +547,7 @@
       "MBBS_CORRECTION_PERMANANT": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/COORECTION-permanent.html",
       "GOODTANDING_UPMC": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/GOODSTANDING2.html",
       "MBBS_PERMANANT_REG_FOREIGN": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/MBBS-permanent-foreign.html",
-      "MBBS_PERMANANT_REG_FOREIGN_OTHER_COUNCIL ": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/MBBS-Permanent-Registration-FORGIN-OTHER-COUNCIL-REGISTERD.html",
+      "MBBS_PERMANANT_REG_FOREIGN_OTHER_COUNCIL": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/MBBS-Permanent-Registration-FORGIN-OTHER-COUNCIL-REGISTERD.html",
       "MBBS_PERMANANT_REG_OTHER_THAN_UP": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/MBBS-permanent-R.html",
       "MBBS_PERMANANT_REG_UP": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/MBBS-Permanent-Registration-Certificate-UP.html",
       "MBBS_PROVISIONAL_FOREIGN": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/MBBS-provisional.html",
