@@ -218,7 +218,8 @@
       "GNM_REG-UPNC":"https://raw.githubusercontent.com/kumarpawantarento/templates/main/name-change.html",
       "NOC_UPNC":"https://raw.githubusercontent.com/kumarpawantarento/templates/main/NOC-0001.html",
       "NPCC_REG":"https://raw.githubusercontent.com/kumarpawantarento/templates/main/NPCC-r.html",
-      "PHYCHIATRIC_DIPLOMA":"https://raw.githubusercontent.com/kumarpawantarento/templates/main/PSYCH.html"
+      "PHYCHIATRIC_DIPLOMA":"https://raw.githubusercontent.com/kumarpawantarento/templates/main/PSYCH.html",
+      "NOC": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/NOC.html"
     }
   }
 }
