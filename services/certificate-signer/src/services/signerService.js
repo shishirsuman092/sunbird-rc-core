@@ -130,18 +130,7 @@ async function signJSON(certificate) {
     signed = await vc.issue({
         credential: certificate, suite: suite, purpose: purpose, documentLoader: customLoader, compactProof: false
     });
-
-    console.info("Updating course name ......");
-
-    if (typeof certificate?.courseName === "string") {
-        console.info("original course name: " + certificate?.courseName);
-
-        if (certificate?.courseName.includes("&amp;")) {
-            certificate.courseName.replace("&amp;", "&");
-        }
-        console.info("Updated course name: " + certificate?.courseName);
-    }
-
+    
     console.info("Signed cert " + JSON.stringify(signed));
     return signed;
 }
