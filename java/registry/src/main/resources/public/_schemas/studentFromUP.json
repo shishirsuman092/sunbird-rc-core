@@ -124,7 +124,8 @@
         "courseType": {"type": "string","title": "courseType"},
         "nurseRegDate": {"type": "string","title": "nurseRegDate"},
         "marriedName": {"type": "string", "title": "Married Name"},
-        "qualification": {"type": "string", "title": "qualification"}
+        "qualification": {"type": "string", "title": "qualification"},
+        "refNo": {"type": "string", "title": "refNo"}
       }
     }
   },
@@ -190,7 +191,8 @@
           "feeReciptNo": "$.feeReciptNo",
           "courseType": "$.courseType",
           "marriedName": "$.marriedName",
-          "qualification": "$.qualification"
+          "qualification": "$.qualification",
+          "refNo": "$.refNo"
         },
         "credentialTemplate": {
           "@context": [
@@ -463,6 +465,12 @@
                 "@context": {
                   "name": "schema:Text"
                 }
+              },
+              "refNo": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#refNo",
+                "@context": {
+                  "name": "schema:Text"
+                }
               }
             }
           ],
@@ -513,7 +521,8 @@
             "requestType": "{{requestType}}",
             "courseType": "{{courseType}}",
             "marriedName": "{{marriedName}}",
-            "qualification": "{{qualification}}"
+            "qualification": "{{qualification}}",
+            "refNo": "{{refNo}}"
           },
           "issuer": "did:web:sunbirdrc.dev/vc/skill"
         }
