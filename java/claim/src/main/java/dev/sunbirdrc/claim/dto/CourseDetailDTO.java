@@ -19,9 +19,9 @@ public class CourseDetailDTO {
     private String activityName;
 
     @JsonProperty("isGoodStanding")
-    private Boolean isGoodStanding;
+    private Boolean goodStanding;
 
     @JsonProperty("isForeignVerification")
-    private Boolean isForeignVerification;
+    private Boolean foreignVerification;
 
 }

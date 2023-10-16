@@ -14,8 +14,11 @@ import java.util.Optional;
 public interface CourseDetailsRepository extends JpaRepository<CourseDetails, Long> {
     List<CourseDetails> findByCouncilNameAndCourseNameAndActivityName(String councilName, String courseName, String activityName);
 
-    @Query("SELECT cd.courseName FROM CourseDetails cd WHERE cd.councilName = :courseName and cd.courseName = :courseName " +
-            "and cd.activityName = :activityName and cd.isGoodStanding = :isGoodStanding and cd.isForeignVerification = :isForeignVerification")
-    List<CourseDetails> findCourseKey(String councilName, String courseName, String activityName, Boolean isGoodStanding, Boolean isForeignVerification);
+    @Query("SELECT cd.courseName FROM CourseDetails cd WHERE cd.councilName = :councilName " +
+            "and cd.courseName = :courseName and cd.activityName = :activityName " +
+            "and cd.isGoodStanding = :isGoodStanding and cd.isForeignVerification = :isForeignVerification " +
+            "and cd.status = :status limit 1")
+    Optional<String> findCourseKey(String councilName, String courseName, String activityName,
+                                      Boolean isGoodStanding, Boolean isForeignVerification, Boolean status);
 }
 

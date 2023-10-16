@@ -27,13 +27,13 @@ public class CourseDetails {
     private String activityName;
 
     @Column(name = "isGoodStanding")
-    private boolean goodStanding;
+    private Boolean goodStanding;
 
     @Column(name = "isForeignVerification")
-    private boolean foreignVerification;
+    private Boolean foreignVerification;
 
     @Column(name = "status")
-    private boolean status;
+    private Boolean status;
 
     @Column(name = "courseKey")
     private String courseKey;

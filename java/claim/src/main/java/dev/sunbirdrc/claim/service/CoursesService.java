@@ -1,7 +1,10 @@
 package dev.sunbirdrc.claim.service;
 
+import dev.sunbirdrc.claim.dto.CourseDetailDTO;
 import dev.sunbirdrc.claim.entity.Courses;
+import dev.sunbirdrc.claim.repository.CourseDetailsRepository;
 import dev.sunbirdrc.claim.repository.CoursesRepository;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +15,9 @@ import java.util.Optional;
 public class CoursesService {
 
     private CoursesRepository coursesRepository;
+
+    @Autowired
+    private CourseDetailsRepository courseDetailsRepository;
 
     @Autowired
     public CoursesService(CoursesRepository coursesRepository) {
@@ -45,6 +51,18 @@ public class CoursesService {
     }
     public Courses createCourse(Courses course) {
         return coursesRepository.save(course);
+    }
+
+    public String getCourseKey(CourseDetailDTO courseDetailDTO) {
+        if (courseDetailDTO != null && StringUtils.isEmpty(courseDetailDTO.getCouncilName())
+                && StringUtils.isEmpty(courseDetailDTO.getCourseName())
+                && StringUtils.isEmpty(courseDetailDTO.getActivityName()) && courseDetailDTO.getGoodStanding() != null
+                && courseDetailDTO.getForeignVerification() != null) {
+
+
+        }
+
+        return null;
     }
 
 
