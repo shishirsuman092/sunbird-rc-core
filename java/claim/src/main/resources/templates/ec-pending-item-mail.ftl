@@ -34,10 +34,6 @@
             <td>${candidate.council}</td>
         </tr>
         <tr>
-            <td>Exam Body</td>
-            <td>${candidate.examBody}</td>
-        </tr>
-        <tr>
             <td>Nursing Collage</td>
             <td>${candidate.nursingCollage}</td>
         </tr>
