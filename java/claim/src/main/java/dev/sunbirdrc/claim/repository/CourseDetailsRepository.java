@@ -16,9 +16,9 @@ public interface CourseDetailsRepository extends JpaRepository<CourseDetails, Lo
 
     @Query("SELECT cd.courseName FROM CourseDetails cd WHERE cd.councilName = :councilName " +
             "and cd.courseName = :courseName and cd.activityName = :activityName " +
-            "and cd.isGoodStanding = :isGoodStanding and cd.isForeignVerification = :isForeignVerification " +
+            "and cd.goodStanding = :goodStanding and cd.foreignVerification = :foreignVerification " +
             "and cd.status = :status limit 1")
     Optional<String> findCourseKey(String councilName, String courseName, String activityName,
-                                      Boolean isGoodStanding, Boolean isForeignVerification, Boolean status);
+                                      Boolean goodStanding, Boolean foreignVerification, Boolean status);
 }
 
