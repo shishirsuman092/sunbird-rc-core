@@ -559,7 +559,8 @@
       "MBBS_PERMANANT_REG_FOREIGN_OTHER_COUNCIL": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/MBBS-Permanent-Registration-FORGIN-OTHER-COUNCIL-REGISTERD.html",
       "MBBS_PERMANANT_REG_OTHER_THAN_UP": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/MBBS-permanent-R.html",
       "MBBS_PERMANANT_REG_UP": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/MBBS-Permanent-Registration-Certificate-UP.html",
-      "MBBS_PROVISIONAL_FOREIGN": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/MBBS-provisional.html",
+      "MBBS_PROVISIONAL": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/MBBS-provisional.html",
+      "MBBS_PROVISIONAL_FOREIGN": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/MBBS-provisional-foreign.html",
       "MBBS_MATRIMONY_NAME_CHANGE": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/Matrimonial-name-change.html",
       "MD_RADIODIAGNOSIS": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/Matrimony-Name-Change.additional.html",
       "NOC_UPMC": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/NOC-medical.html",
@@ -576,6 +577,9 @@
       "NOC_UPNC":"https://raw.githubusercontent.com/kumarpawantarento/templates/main/NOC-0001.html",
       "NPCC_REG":"https://raw.githubusercontent.com/kumarpawantarento/templates/main/NPCC-r.html",
       "PBBSC_REG_UPNC":"https://raw.githubusercontent.com/kumarpawantarento/templates/main/MSC-r.html",
-      "PHYCHIATRIC_DIPLOMA":"https://raw.githubusercontent.com/kumarpawantarento/templates/main/PSYCH.html"    }
+      "PHYCHIATRIC_DIPLOMA":"https://raw.githubusercontent.com/kumarpawantarento/templates/main/PSYCH.html",
+      "MBBS_CORRECTION_PROVISIONAL":"https://raw.githubusercontent.com/kumarpawantarento/templates/main/MBBS-provisional.html",
+      "POST_DIPLOMA_PHYCHIATRIC_REG":"https://raw.githubusercontent.com/kumarpawantarento/templates/main/BABY-D.html"
+    }
   }
 }
