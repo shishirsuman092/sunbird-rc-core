@@ -86,7 +86,7 @@ public class CoursesController {
         return ResponseEntity.ok(savedCourse);
     }
 
-    @GetMapping("/course-template-key")
+    @PostMapping("/course-template-key")
     public ResponseEntity<String> getCourseShortNameRequestType(@RequestBody CourseDetailDTO courseDetailDTO) {
         String course = coursesService.getCourseKey(courseDetailDTO);
         return ResponseEntity.ok(course);

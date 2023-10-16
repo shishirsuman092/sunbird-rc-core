@@ -4,6 +4,7 @@ import dev.sunbirdrc.claim.dto.CourseDetailDTO;
 import dev.sunbirdrc.claim.entity.Courses;
 import dev.sunbirdrc.claim.exception.InvalidInputException;
 import dev.sunbirdrc.claim.exception.ResourceNotFoundException;
+import dev.sunbirdrc.claim.model.EntityType;
 import dev.sunbirdrc.claim.repository.CourseDetailsRepository;
 import dev.sunbirdrc.claim.repository.CoursesRepository;
 import org.apache.commons.lang.StringUtils;
@@ -60,13 +61,32 @@ public class CoursesService {
      * @return
      */
     public String getCourseKey(CourseDetailDTO courseDetailDTO) {
-        if (courseDetailDTO != null && StringUtils.isEmpty(courseDetailDTO.getCouncilName())
-                && StringUtils.isEmpty(courseDetailDTO.getCourseName())
-                && StringUtils.isEmpty(courseDetailDTO.getActivityName()) ) {
+        if (courseDetailDTO != null && !StringUtils.isEmpty(courseDetailDTO.getCouncilName())
+                && courseDetailDTO.getCategory() != null) {
+            Optional<String> courseKey = Optional.empty();
 
-            Optional<String> courseKey = courseDetailsRepository.findCourseKey(courseDetailDTO.getCouncilName(),
-                    courseDetailDTO.getCourseName(), courseDetailDTO.getActivityName(),
-                    courseDetailDTO.getGoodStanding(), courseDetailDTO.getForeignVerification(), true);
+            if (EntityType.StudentForeignVerification.equals(courseDetailDTO.getCategory())) {
+                courseKey = courseDetailsRepository.findCourseKeyByCouncilAndCategory(courseDetailDTO.getCouncilName(),
+                        courseDetailDTO.getCategory().name());
+
+            } else if (EntityType.StudentGoodstanding.equals(courseDetailDTO.getCategory())) {
+                courseKey = courseDetailsRepository.findCourseKeyByCouncilAndCategory(courseDetailDTO.getCouncilName(),
+                        courseDetailDTO.getCategory().name());
+
+            } else if (EntityType.StudentFromUP.equals(courseDetailDTO.getCategory())
+                    || EntityType.StudentOutsideUP.equals(courseDetailDTO.getCategory())) {
+
+                if (!StringUtils.isEmpty(courseDetailDTO.getCourseName())
+                        && !StringUtils.isEmpty(courseDetailDTO.getActivityName())
+                        && !StringUtils.isEmpty(courseDetailDTO.getCourseType())) {
+
+                    courseKey = courseDetailsRepository.findCourseKeyForGeneralCategory(courseDetailDTO.getCouncilName(),
+                            courseDetailDTO.getCourseName(), courseDetailDTO.getActivityName(), courseDetailDTO.getCategory().name());
+                }else {
+                    throw new InvalidInputException("Invalid input exception while getting course key from " +
+                            "general(UP & outside) category");
+                }
+            }
 
             if (courseKey.isPresent()) {
                 return courseKey.get();
@@ -74,7 +94,7 @@ public class CoursesService {
                 throw new ResourceNotFoundException("Unable to fine course key in DB");
             }
         } else {
-            throw new InvalidInputException("Invalid exception while getting course key");
+            throw new InvalidInputException("Invalid input exception while getting course key");
         }
     }
 
