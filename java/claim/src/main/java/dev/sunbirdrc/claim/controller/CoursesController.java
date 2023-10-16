@@ -1,5 +1,6 @@
 package dev.sunbirdrc.claim.controller;
 
+import dev.sunbirdrc.claim.dto.CourseDetailDTO;
 import dev.sunbirdrc.claim.entity.Courses;
 import dev.sunbirdrc.claim.service.CoursesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,4 +85,11 @@ public class CoursesController {
         Courses savedCourse = coursesService.createCourse(course);
         return ResponseEntity.ok(savedCourse);
     }
+
+    @GetMapping("/course-template-key")
+    public ResponseEntity<String> getCourseShortNameRequestType(@RequestBody CourseDetailDTO courseDetailDTO) {
+        String course = coursesService.getCourseKey(courseDetailDTO);
+        return ResponseEntity.ok(course);
+    }
+
 }

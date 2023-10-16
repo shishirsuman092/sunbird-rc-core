@@ -2,6 +2,8 @@ package dev.sunbirdrc.claim.service;
 
 import dev.sunbirdrc.claim.dto.CourseDetailDTO;
 import dev.sunbirdrc.claim.entity.Courses;
+import dev.sunbirdrc.claim.exception.InvalidInputException;
+import dev.sunbirdrc.claim.exception.ResourceNotFoundException;
 import dev.sunbirdrc.claim.repository.CourseDetailsRepository;
 import dev.sunbirdrc.claim.repository.CoursesRepository;
 import org.apache.commons.lang.StringUtils;
@@ -53,16 +55,27 @@ public class CoursesService {
         return coursesRepository.save(course);
     }
 
+    /**
+     * @param courseDetailDTO
+     * @return
+     */
     public String getCourseKey(CourseDetailDTO courseDetailDTO) {
         if (courseDetailDTO != null && StringUtils.isEmpty(courseDetailDTO.getCouncilName())
                 && StringUtils.isEmpty(courseDetailDTO.getCourseName())
-                && StringUtils.isEmpty(courseDetailDTO.getActivityName()) && courseDetailDTO.getGoodStanding() != null
-                && courseDetailDTO.getForeignVerification() != null) {
+                && StringUtils.isEmpty(courseDetailDTO.getActivityName()) ) {
 
+            Optional<String> courseKey = courseDetailsRepository.findCourseKey(courseDetailDTO.getCouncilName(),
+                    courseDetailDTO.getCourseName(), courseDetailDTO.getActivityName(),
+                    courseDetailDTO.getGoodStanding(), courseDetailDTO.getForeignVerification(), true);
 
+            if (courseKey.isPresent()) {
+                return courseKey.get();
+            } else {
+                throw new ResourceNotFoundException("Unable to fine course key in DB");
+            }
+        } else {
+            throw new InvalidInputException("Invalid exception while getting course key");
         }
-
-        return null;
     }
 
 
