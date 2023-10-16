@@ -1,9 +1,12 @@
 package dev.sunbirdrc.claim.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dev.sunbirdrc.claim.model.EntityType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.Column;
 
 @Data
 @AllArgsConstructor
@@ -18,10 +21,9 @@ public class CourseDetailDTO {
     @JsonProperty("activityName")
     private String activityName;
 
-    @JsonProperty("isGoodStanding")
-    private Boolean goodStanding;
+    @JsonProperty("category")
+    private EntityType category;
 
-    @JsonProperty("isForeignVerification")
-    private Boolean foreignVerification;
-
+    @JsonProperty("courseType")
+    private String courseType;
 }
