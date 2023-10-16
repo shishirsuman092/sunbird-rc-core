@@ -48,8 +48,10 @@ const generateCredentials = async (data, credentialTemplate = "") => {
     let renderedTemplate = template(data);
     //TODO: find better ways to escape literals
     renderedTemplate = renderedTemplate.replaceAll("\\", "\\\\");
+
     const credentialData = JSON.parse(renderedTemplate);
     console.log("Sending", credentialData);
+
     return await signJSON(credentialData);
 };
 
@@ -128,6 +130,7 @@ async function signJSON(certificate) {
     signed = await vc.issue({
         credential: certificate, suite: suite, purpose: purpose, documentLoader: customLoader, compactProof: false
     });
+    
     console.info("Signed cert " + JSON.stringify(signed));
     return signed;
 }

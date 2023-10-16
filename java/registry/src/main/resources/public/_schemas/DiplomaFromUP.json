@@ -113,7 +113,8 @@
         "candidateSignature": {"type": "string","title": "candidateSignature"},
         "validityUpto": {"type": "string","title": "validityUpto"},
         "requestType": {"type": "string","title": "requestType"},
-        "feeReciptNo": {"type": "string","title": "feeReciptNo"}
+        "feeReciptNo": {"type": "string","title": "feeReciptNo"},
+        "refNo": {"type": "string","title": "refNo"}
       }
     }
   },
@@ -175,7 +176,8 @@
         "university": "{{university}}",
         "candidateSignature": "{{candidateSignature}}",
         "validityUpto": "{{validityUpto}}",
-        "requestType": "{{requestType}}"
+        "requestType": "{{requestType}}",
+        "refNo": "{{refNo}}"
       },
       "issuer": "did:web:sunbirdrc.dev/vc/skill"
     },
@@ -218,7 +220,8 @@
       "GNM_REG-UPNC":"https://raw.githubusercontent.com/kumarpawantarento/templates/main/name-change.html",
       "NOC_UPNC":"https://raw.githubusercontent.com/kumarpawantarento/templates/main/NOC-0001.html",
       "NPCC_REG":"https://raw.githubusercontent.com/kumarpawantarento/templates/main/NPCC-r.html",
-      "PHYCHIATRIC_DIPLOMA":"https://raw.githubusercontent.com/kumarpawantarento/templates/main/PSYCH.html"
+      "PHYCHIATRIC_DIPLOMA":"https://raw.githubusercontent.com/kumarpawantarento/templates/main/PSYCH.html",
+      "NOC": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/NOC.html"
     }
   }
 }

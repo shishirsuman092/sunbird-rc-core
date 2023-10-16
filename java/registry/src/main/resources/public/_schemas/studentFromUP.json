@@ -124,7 +124,8 @@
         "courseType": {"type": "string","title": "courseType"},
         "nurseRegDate": {"type": "string","title": "nurseRegDate"},
         "marriedName": {"type": "string", "title": "Married Name"},
-        "qualification": {"type": "string", "title": "qualification"}
+        "qualification": {"type": "string", "title": "qualification"},
+        "refNo": {"type": "string", "title": "refNo"}
       }
     }
   },
@@ -190,7 +191,8 @@
           "feeReciptNo": "$.feeReciptNo",
           "courseType": "$.courseType",
           "marriedName": "$.marriedName",
-          "qualification": "$.qualification"
+          "qualification": "$.qualification",
+          "refNo": "$.refNo"
         },
         "credentialTemplate": {
           "@context": [
@@ -463,6 +465,12 @@
                 "@context": {
                   "name": "schema:Text"
                 }
+              },
+              "refNo": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#refNo",
+                "@context": {
+                  "name": "schema:Text"
+                }
               }
             }
           ],
@@ -513,7 +521,8 @@
             "requestType": "{{requestType}}",
             "courseType": "{{courseType}}",
             "marriedName": "{{marriedName}}",
-            "qualification": "{{qualification}}"
+            "qualification": "{{qualification}}",
+            "refNo": "{{refNo}}"
           },
           "issuer": "did:web:sunbirdrc.dev/vc/skill"
         }
@@ -570,7 +579,8 @@
       "MBBS_PERMANANT_REG_FOREIGN_OTHER_COUNCIL": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/MBBS-Permanent-Registration-FORGIN-OTHER-COUNCIL-REGISTERD.html",
       "MBBS_PERMANANT_REG_OTHER_THAN_UP": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/MBBS-permanent-R.html",
       "MBBS_PERMANANT_REG_UP": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/MBBS-Permanent-Registration-Certificate-UP.html",
-      "MBBS_PROVISIONAL_FOREIGN": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/MBBS-provisional.html",
+      "MBBS_PROVISIONAL": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/MBBS-provisional.html",
+      "MBBS_PROVISIONAL_FOREIGN": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/MBBS-provisional-foreign.html",
       "MBBS_MATRIMONY_NAME_CHANGE": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/Matrimonial-name-change.html",
       "MD_RADIODIAGNOSIS": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/Matrimony-Name-Change.additional.html",
       "NOC_UPMC": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/NOC-medical.html",
