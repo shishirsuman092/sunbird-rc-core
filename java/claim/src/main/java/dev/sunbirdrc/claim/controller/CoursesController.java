@@ -96,7 +96,7 @@ public class CoursesController {
         return ResponseEntity.ok(course);
     }
 
-    @PostMapping("/name")
+    @PostMapping("/names")
     public ResponseEntity<List<String>> getCourseNameByCouncilAndEntityAndCourseType(@RequestBody CourseDetailDTO courseDetailDTO) {
         List<String> coursesByCouncilName = courseDetailsService.findByCoursesByCouncilName(courseDetailDTO);
         return ResponseEntity.ok(coursesByCouncilName);
