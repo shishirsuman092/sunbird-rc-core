@@ -40,8 +40,14 @@ public class CourseDetailsService {
         // validate request
         validateActivityByCouncilNameAndCourseNamePayload(courseDetailDTO);
         // fetch record from DB
-        List<String> activityNames = courseDetailsRepository.findAllByCourseName(courseDetailDTO.getCouncilName(), courseDetailDTO.getCourseName(),
-                courseDetailDTO.getEntityName().name(), courseDetailDTO.getCourseType());
+        List<String> activityNames = Collections.emptyList();
+        if(courseDetailDTO.getCourseType() == null || courseDetailDTO.getCourseType().isBlank()) {
+            activityNames = courseDetailsRepository.findAllByCourseNameAndEntity(courseDetailDTO.getCouncilName(), courseDetailDTO.getCourseName(),
+                   courseDetailDTO.getEntityName().name());
+        } else {
+            activityNames = courseDetailsRepository.findAllByCourseName(courseDetailDTO.getCouncilName(), courseDetailDTO.getCourseName(),
+                    courseDetailDTO.getEntityName().name(), courseDetailDTO.getCourseType());
+        }
         if(activityNames != null && !activityNames.isEmpty()) {
             return activityNames;
         }
