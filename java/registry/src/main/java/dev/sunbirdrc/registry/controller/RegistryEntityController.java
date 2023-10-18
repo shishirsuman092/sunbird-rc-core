@@ -13,7 +13,6 @@ import dev.sunbirdrc.pojos.PluginResponseMessage;
 import dev.sunbirdrc.pojos.Response;
 import dev.sunbirdrc.pojos.ResponseParams;
 import dev.sunbirdrc.registry.dao.Credential;
-import dev.sunbirdrc.registry.dao.CustomUserDto;
 import dev.sunbirdrc.registry.dao.Learner;
 import dev.sunbirdrc.registry.digilocker.pulldoc.PullDocRequest;
 import dev.sunbirdrc.registry.digilocker.pulldoc.PullDocResponse;
@@ -29,6 +28,7 @@ import dev.sunbirdrc.registry.middleware.util.Constants;
 import dev.sunbirdrc.registry.middleware.util.JSONUtil;
 import dev.sunbirdrc.registry.middleware.util.OSSystemFields;
 import dev.sunbirdrc.registry.model.Document;
+import dev.sunbirdrc.registry.model.dto.CourseDetailDTO;
 import dev.sunbirdrc.registry.model.dto.MailDto;
 import dev.sunbirdrc.registry.model.dto.ManualPendingMailDTO;
 import dev.sunbirdrc.registry.service.FileStorageService;
@@ -48,7 +48,6 @@ import org.apache.http.util.EntityUtils;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.json.HTTP;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.slf4j.Logger;
@@ -889,6 +888,46 @@ public class RegistryEntityController extends AbstractController {
         return null;
     }
 
+    /**
+     * @param request
+     * @param entityName
+     * @param courseName
+     * @return
+     */
+    private String getTemplateUrlFromRequest(HttpServletRequest request, @NotNull CourseDetailDTO courseDetailDTO) {
+        String template = Template;
+
+        if ("StudentForeignVerification".equalsIgnoreCase(courseDetailDTO.getEntityName())) {
+            return "https://raw.githubusercontent.com/kumarpawantarento/templates/main/Foreign-certificate.html";
+        }
+
+        if (externalTemplatesEnabled && !StringUtils.isEmpty(request.getHeader(template))) {
+            return request.getHeader(template);
+        }
+
+        String templateKey = claimRequestClient.getCourseTemplateKey(courseDetailDTO);
+
+        logger.info("template key for courseName::"+courseDetailDTO.getCourseName() + ":" + templateKey);
+
+        if (definitionsManager.getCertificateTemplates(courseDetailDTO.getEntityName()) != null && definitionsManager.getCertificateTemplates(courseDetailDTO.getEntityName()).size() > 0) {
+            String templateUri = definitionsManager.getCertificateTemplates(courseDetailDTO.getEntityName()).getOrDefault(templateKey, null);
+            if (!StringUtils.isEmpty(templateUri)) {
+                try {
+                    if (templateUri.startsWith(MINIO_URI_PREFIX)) {
+                        return fileStorageService.getSignedUrl(templateUri.substring(MINIO_URI_PREFIX.length()));
+                    } else if (templateUri.startsWith(HTTP_URI_PREFIX) || templateUri.startsWith(HTTPS_URI_PREFIX)) {
+                        return templateUri;
+                    }
+                } catch (Exception e) {
+                    logger.error("Exception while parsing certificate templates DID urls", e);
+                    return null;
+                }
+            }
+
+        }
+        return null;
+    }
+
     private String getTemplateUrlFromRequest(HttpServletRequest request, String entityName) {
         if (externalTemplatesEnabled && !StringUtils.isEmpty(request.getHeader(Template))) {
             return request.getHeader(Template);
@@ -1250,6 +1289,103 @@ public class RegistryEntityController extends AbstractController {
                 boolean wc = false;
                 JsonNode attestationNode = getAttestationSignedData(attestationId, node);
                 String templateUrlFromRequest = getTemplateUrlFromRequestFromRegType(request, entityName,courseName);
+                String fileName1 = fileName + "webcopy";
+                certificateWebCopy = certificateService.getCertificate(attestationNode,
+                        entityName,
+                        entityId,
+                        request.getHeader(HttpHeaders.ACCEPT),
+                        templateUrlFromRequest.replace(".html","-WC.html"),
+                        getAttestationNode(attestationId, node),
+                        fileName1, wc
+                );
+                String url = null;
+                String fileUrlForQR = getFileUrl(fileName1);
+                if(certificateWebCopy != null){
+                    url = certificateService.saveToGCS(certificateWebCopy, fileName1);
+                    logger.debug("WebCopy of Certificate:"+url);
+                }
+                certificateOriginal = certificateService.getCertificate(attestationNode,
+                        entityName,
+                        entityId,
+                        request.getHeader(HttpHeaders.ACCEPT),
+                        templateUrlFromRequest,
+                        getAttestationNode(attestationId, node),
+                        fileUrlForQR, false);
+                if(certificateOriginal!=null){
+                    String originalUrl = getCredUrl(fileName, certificateOriginal);
+                    if(originalUrl != null){
+                        shareCredentials(jsonNode, originalUrl);
+                    }
+                }
+
+            }
+
+            return new ResponseEntity<>(certificateOriginal, HttpStatus.OK);
+        } catch (RecordNotFoundException re) {
+            createSchemaNotFoundResponse(re.getMessage(), responseParams);
+            Response response = new Response(Response.API_ID.GET, "ERROR", responseParams);
+            try {
+                return new ResponseEntity<>(objectMapper.writeValueAsString(response), HttpStatus.NOT_FOUND);
+            } catch (JsonProcessingException e) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (AttestationNotFoundException e) {
+            logger.error(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * @param request
+     * @param entityName
+     * @param entityId
+     * @param attestationName
+     * @param attestationId
+     * @param activity
+     * @return
+     */
+    @GetMapping(value = "/api/v3/{entityName}/{entityId}/attestation/{attestationName}/{attestationId}/{activity}",
+            produces = {MediaType.APPLICATION_PDF_VALUE, MediaType.TEXT_HTML_VALUE, Constants.SVG_MEDIA_TYPE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Object> getAttestationCertificateGCSByActivity(HttpServletRequest request, @PathVariable String entityName, @PathVariable String entityId,
+                                                               @PathVariable String attestationName, @PathVariable String attestationId,
+                                                               @PathVariable String activity) {
+        ResponseParams responseParams = new ResponseParams();
+        Object certificateWebCopy = null;
+        Object certificateOriginal = null;
+        try {
+            String checkIfAlreadyExists = "issuance/"+entityId+".pdf";
+            certificateOriginal = certificateService.getCred(checkIfAlreadyExists);
+            checkEntityNameInDefinitionManager(entityName);
+            String readerUserId = getUserId(entityName, request);
+            JsonNode jsonNode = registryHelper.readEntity(readerUserId, entityName, entityId, false, null, false)
+                    .get(entityName);
+            JsonNode node = jsonNode.get(attestationName);
+            String fileName = getFileNameOfCredentials(node);
+
+
+            String courseType = jsonNode.get("courseType") != null ? jsonNode.get("courseType").asText() : null;
+            String councilName = jsonNode.get("council") != null ? jsonNode.get("council").asText() : null;
+            String courseName = jsonNode.get("courseName") != null ? jsonNode.get("courseName").asText() : null;
+
+
+            String requestType = jsonNode.get("requestType") !=null ? jsonNode.get("requestType").asText():null;
+            if((certificateOriginal == null) || (courseName!=null && (courseName.contains("Correction") || courseName.contains("Duplicate") || courseName.contains("Reissue"))) )
+            {
+
+                CourseDetailDTO courseDetailDTO = CourseDetailDTO.builder()
+                        .entityName(entityName)
+                        .courseType(courseType)
+                        .councilName(councilName)
+                        .courseName(courseName)
+                        .activityName(activity)
+                        .build();
+
+                boolean wc = false;
+                JsonNode attestationNode = getAttestationSignedData(attestationId, node);
+                String templateUrlFromRequest = getTemplateUrlFromRequest(request, courseDetailDTO);
                 String fileName1 = fileName + "webcopy";
                 certificateWebCopy = certificateService.getCertificate(attestationNode,
                         entityName,

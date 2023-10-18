@@ -32,8 +32,8 @@ public class CourseDetails {
     @Column(name = "courseKey")
     private String courseKey;
 
-    @Column(name = "category")
-    private String category;
+    @Column(name = "entityName")
+    private String entityName;
 
     @Column(name = "courseType")
     private String courseType;
