@@ -21,8 +21,12 @@ public interface CourseDetailsRepository extends JpaRepository<CourseDetails, Lo
     Optional<String> findCourseKeyByCouncilAndCategory(String councilName, String category);
 
     @Query("SELECT distinct cd.courseName FROM CourseDetails cd WHERE cd.councilName = :councilName " +
-            "and cd.entityName = :category and courseType =:courseType")
-    List<String> findAllByCouncilNameAndCategoryAndCourseType(String councilName, String category, String courseType);
+            "and cd.entityName = :entityName and courseType =:courseType")
+    List<String> findAllByCouncilNameAndCategoryAndCourseType(String councilName, String entityName, String courseType);
+
+    @Query("SELECT distinct cd.courseName FROM CourseDetails cd WHERE cd.councilName = :councilName " +
+            "and cd.entityName = :entityName")
+    List<String> findAllByCouncilNameAndEntityName(String councilName, String entityName);
 
     @Query("SELECT distinct cd.activityName FROM CourseDetails cd WHERE cd.councilName = :councilName and " +
             "cd.courseName =:courseName and cd.entityName = :category and cd.courseType= :courseType")

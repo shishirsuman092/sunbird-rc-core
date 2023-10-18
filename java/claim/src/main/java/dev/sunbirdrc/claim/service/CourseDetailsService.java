@@ -21,9 +21,15 @@ public class CourseDetailsService {
     public List<String> findByCoursesByCouncilName(CourseDetailDTO courseDetailDTO) {
         // validate request
         validateCoursesByCouncilNamePayload(courseDetailDTO);
+        List<String> courseNames = Collections.emptyList();
         // fetch record from DB
-        List<String> courseNames = courseDetailsRepository.findAllByCouncilNameAndCategoryAndCourseType(courseDetailDTO.getCouncilName(),
-                courseDetailDTO.getEntityName().name(), courseDetailDTO.getCourseType());
+        if(courseDetailDTO.getCourseType() != null && !courseDetailDTO.getCourseType().isBlank()) {
+            courseNames = courseDetailsRepository.findAllByCouncilNameAndCategoryAndCourseType(courseDetailDTO.getCouncilName(),
+                    courseDetailDTO.getEntityName().name(), courseDetailDTO.getCourseType());
+        } else {
+            courseNames = courseDetailsRepository.findAllByCouncilNameAndEntityName(courseDetailDTO.getCouncilName(),
+                    courseDetailDTO.getEntityName().name());
+        }
         if(courseNames != null && !courseNames.isEmpty()) {
             return courseNames;
         }
@@ -65,7 +71,7 @@ public class CourseDetailsService {
            throw new RuntimeException("Missing Council Name.");
         }
         if(courseDetailDTO.getEntityName() == null) {
-            throw new RuntimeException("Missing Category.");
+            throw new RuntimeException("Missing Entity.");
         }
     }
 }
