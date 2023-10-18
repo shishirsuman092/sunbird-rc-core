@@ -428,4 +428,13 @@ public class ClaimRequestClient {
         return response.getBody();
     }
 
+    public String getCourseTemplateKey(CourseDetailDTO courseDetailDTO) {
+        String templateKey = restTemplate.postForObject(claimRequestUrl + GET_TEMPLATE_KEY, courseDetailDTO,
+                                                        String.class);
+
+        logger.info(">>>>>>>>> Received course template key: " + templateKey);
+
+        return templateKey;
+    }
+
 }

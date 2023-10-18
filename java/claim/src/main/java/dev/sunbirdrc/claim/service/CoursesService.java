@@ -62,26 +62,26 @@ public class CoursesService {
      */
     public String getCourseKey(CourseDetailDTO courseDetailDTO) {
         if (courseDetailDTO != null && !StringUtils.isEmpty(courseDetailDTO.getCouncilName())
-                && courseDetailDTO.getCategory() != null) {
+                && courseDetailDTO.getEntityName() != null) {
             Optional<String> courseKey = Optional.empty();
 
-            if (EntityType.StudentForeignVerification.equals(courseDetailDTO.getCategory())) {
+            if (EntityType.StudentForeignVerification.equals(courseDetailDTO.getEntityName())) {
                 courseKey = courseDetailsRepository.findCourseKeyByCouncilAndCategory(courseDetailDTO.getCouncilName(),
-                        courseDetailDTO.getCategory().name());
+                        courseDetailDTO.getEntityName().name());
 
-            } else if (EntityType.StudentGoodstanding.equals(courseDetailDTO.getCategory())) {
+            } else if (EntityType.StudentGoodstanding.equals(courseDetailDTO.getEntityName())) {
                 courseKey = courseDetailsRepository.findCourseKeyByCouncilAndCategory(courseDetailDTO.getCouncilName(),
-                        courseDetailDTO.getCategory().name());
+                        courseDetailDTO.getEntityName().name());
 
-            } else if (EntityType.StudentFromUP.equals(courseDetailDTO.getCategory())
-                    || EntityType.StudentOutsideUP.equals(courseDetailDTO.getCategory())) {
+            } else if (EntityType.StudentFromUP.equals(courseDetailDTO.getEntityName())
+                    || EntityType.StudentOutsideUP.equals(courseDetailDTO.getEntityName())) {
 
                 if (!StringUtils.isEmpty(courseDetailDTO.getCourseName())
                         && !StringUtils.isEmpty(courseDetailDTO.getActivityName())
                         && !StringUtils.isEmpty(courseDetailDTO.getCourseType())) {
 
                     courseKey = courseDetailsRepository.findCourseKeyForGeneralCategory(courseDetailDTO.getCouncilName(),
-                            courseDetailDTO.getCourseName(), courseDetailDTO.getActivityName(), courseDetailDTO.getCategory().name());
+                            courseDetailDTO.getCourseName(), courseDetailDTO.getActivityName(), courseDetailDTO.getEntityName().name());
                 }else {
                     throw new InvalidInputException("Invalid input exception while getting course key from " +
                             "general(UP & outside) category");

@@ -1,16 +1,15 @@
-package dev.sunbirdrc.claim.dto;
+package dev.sunbirdrc.registry.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dev.sunbirdrc.claim.model.EntityType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.Column;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class CourseDetailDTO {
     @JsonProperty("councilName")
     private String councilName;
@@ -22,7 +21,7 @@ public class CourseDetailDTO {
     private String activityName;
 
     @JsonProperty("entityName")
-    private EntityType entityName;
+    private String entityName;
 
     @JsonProperty("courseType")
     private String courseType;
