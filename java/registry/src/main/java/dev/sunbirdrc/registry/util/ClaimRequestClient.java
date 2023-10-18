@@ -38,6 +38,8 @@ public class ClaimRequestClient {
     private static final String GET_CERTIFICATE_NUMBER = "/api/v1/generate-certNumber";
 
     private static final String GET_TEMPLATE_KEY = "/api/v1/courses/course-template-key/";
+    private static final String GET_COURSE_NAME = "/api/v1/courses/names";
+    private static final String GET_ACTIVITY_NAME = "/api/v1/courses/activity";
 
     private String DIGI_LOCKER_GET = "/api/v1/digilicker/osid/";
     private String DIGI_LOCKER_GET_OSID = "/api/v1/digilicker/uri/";
@@ -429,12 +431,26 @@ public class ClaimRequestClient {
     }
 
     public String getCourseTemplateKey(CourseDetailDTO courseDetailDTO) {
-        String templateKey = restTemplate.postForObject(claimRequestUrl + GET_TEMPLATE_KEY, courseDetailDTO,
+        String templateKey = restTemplate.postForObject(claimRequestUrl.concat(GET_TEMPLATE_KEY), courseDetailDTO,
                                                         String.class);
 
         logger.info(">>>>>>>>> Received course template key: " + templateKey);
 
         return templateKey;
+    }
+
+    public List<String> getCourseName(CourseDetailDTO courseDetailDTO) {
+        List<String> courseList = restTemplate.postForObject(claimRequestUrl.concat(GET_COURSE_NAME), courseDetailDTO,
+                List.class);
+        logger.info(">>>>>>>>> Received course list: " + courseList);
+        return courseList;
+    }
+
+    public List<String> getActivityName(CourseDetailDTO courseDetailDTO) {
+        List<String> activityList = restTemplate.postForObject(claimRequestUrl.concat(GET_ACTIVITY_NAME), courseDetailDTO,
+                List.class);
+        logger.info(">>>>>>>>> Received activity list: " + activityList);
+        return activityList;
     }
 
 }
