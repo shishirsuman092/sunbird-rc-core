@@ -23,7 +23,7 @@ public class CourseDetailsService {
         validateCoursesByCouncilNamePayload(courseDetailDTO);
         // fetch record from DB
         List<String> courseNames = courseDetailsRepository.findAllByCouncilNameAndCategoryAndCourseType(courseDetailDTO.getCouncilName(),
-                courseDetailDTO.getCategory().name(), courseDetailDTO.getCourseType());
+                courseDetailDTO.getEntityName().name(), courseDetailDTO.getCourseType());
         if(courseNames != null && !courseNames.isEmpty()) {
             return courseNames;
         }
@@ -35,7 +35,7 @@ public class CourseDetailsService {
         validateActivityByCouncilNameAndCourseNamePayload(courseDetailDTO);
         // fetch record from DB
         List<String> activityNames = courseDetailsRepository.findAllByCourseName(courseDetailDTO.getCouncilName(), courseDetailDTO.getCourseName(),
-                courseDetailDTO.getCategory().name(), courseDetailDTO.getCourseType());
+                courseDetailDTO.getEntityName().name(), courseDetailDTO.getCourseType());
         if(activityNames != null && !activityNames.isEmpty()) {
             return activityNames;
         }
@@ -52,7 +52,7 @@ public class CourseDetailsService {
         if(courseDetailDTO.getCourseName() == null || courseDetailDTO.getCourseName().isBlank()) {
             throw new RuntimeException("Missing Course Name.");
         }
-        if(courseDetailDTO.getCategory() == null) {
+        if(courseDetailDTO.getEntityName() == null) {
             throw new RuntimeException("Missing Category.");
         }
     }
@@ -64,7 +64,7 @@ public class CourseDetailsService {
         if(courseDetailDTO.getCouncilName() == null || courseDetailDTO.getCouncilName().isBlank()) {
            throw new RuntimeException("Missing Council Name.");
         }
-        if(courseDetailDTO.getCategory() == null) {
+        if(courseDetailDTO.getEntityName() == null) {
             throw new RuntimeException("Missing Category.");
         }
     }
