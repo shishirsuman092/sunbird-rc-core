@@ -2,6 +2,7 @@ package dev.sunbirdrc.claim.controller;
 
 import dev.sunbirdrc.claim.dto.CourseDetailDTO;
 import dev.sunbirdrc.claim.entity.Courses;
+import dev.sunbirdrc.claim.service.CourseDetailsService;
 import dev.sunbirdrc.claim.service.CoursesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,9 @@ import java.util.Optional;
 public class CoursesController {
 
     private CoursesService coursesService;
+
+    @Autowired
+    private CourseDetailsService courseDetailsService;
 
     @Autowired
     public CoursesController(CoursesService coursesService) {
@@ -90,6 +94,18 @@ public class CoursesController {
     public ResponseEntity<String> getCourseShortNameRequestType(@RequestBody CourseDetailDTO courseDetailDTO) {
         String course = coursesService.getCourseKey(courseDetailDTO);
         return ResponseEntity.ok(course);
+    }
+
+    @PostMapping("/name")
+    public ResponseEntity<List<String>> getCourseNameByCouncilAndEntityAndCourseType(@RequestBody CourseDetailDTO courseDetailDTO) {
+        List<String> coursesByCouncilName = courseDetailsService.findByCoursesByCouncilName(courseDetailDTO);
+        return ResponseEntity.ok(coursesByCouncilName);
+    }
+
+    @PostMapping("/activity")
+    public ResponseEntity<List<String>> getActivityByCourseNameAndCouncilAndEntityAndCourseType(@RequestBody CourseDetailDTO courseDetailDTO) {
+        List<String> activityByCouncilNameAndCourseName = courseDetailsService.findByActivityByCouncilNameAndCourseName(courseDetailDTO);
+        return ResponseEntity.ok(activityByCouncilNameAndCourseName);
     }
 
 }
