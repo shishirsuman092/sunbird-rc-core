@@ -851,6 +851,102 @@ public class RegistryEntityController extends AbstractController {
         }
     }
 
+    /**
+     * @param entityName
+     * @param entityId
+     * @param request
+     * @param viewTemplateId
+     * @return
+     */
+    @RequestMapping(value = "/api/v3/{entityName}/{entityId}", method = RequestMethod.GET, produces =
+            {MediaType.APPLICATION_PDF_VALUE, MediaType.TEXT_HTML_VALUE, Constants.SVG_MEDIA_TYPE})
+    public ResponseEntity<Object> getEntityDownload(@PathVariable String entityName,
+                                                @PathVariable String entityId,
+                                                HttpServletRequest request,
+                                                @RequestHeader(required = false) String viewTemplateId) {
+        ResponseParams responseParams = new ResponseParams();
+        Object certificateWebCopy = null;
+        Object certificateOriginal = null;
+        Response response;
+        if (registryHelper.doesEntityOperationRequireAuthorization(entityName) && securityEnabled) {
+            try {
+
+                registryHelper.authorize(entityName, entityId, request);
+            } catch (Exception e) {
+                try {
+                    checkEntityNameInDefinitionManager(entityName);
+                    registryHelper.authorizeAttestor(entityName, request);
+                } catch (RecordNotFoundException re) {
+                    createSchemaNotFoundResponse(re.getMessage(), responseParams);
+                    response = new Response(Response.API_ID.GET, "ERROR", responseParams);
+                    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+                } catch (Exception exceptionFromAuthorizeAttestor) {
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
+            }
+        }
+        try {
+            String checkIfAlreadyExists = "issuance/" + entityId + ".pdf";
+            certificateOriginal = certificateService.getCred(checkIfAlreadyExists);
+
+            String readerUserId = getUserId(entityName, request);
+            JsonNode node = registryHelper.readEntity(readerUserId, entityName, entityId, false,
+                            viewTemplateManager.getViewTemplateById(viewTemplateId), false)
+                    .get(entityName);
+
+            String courseType = "DIPLOMA";
+            String councilName = node.get("council") != null ? node.get("council").asText() : null;
+            String courseName = node.get("courseName") != null ? node.get("courseName").asText() : null;
+
+            CourseDetailDTO courseDetailDTO = CourseDetailDTO.builder()
+                    .entityName(entityName)
+                    .courseType(courseType)
+                    .councilName(councilName)
+                    .courseName(courseName)
+                    .activityName(null)
+                    .build();
+
+            String templateUrlFromRequest = getTemplateUrlFromRequest(request, courseDetailDTO);
+            String fileName = entityId;
+            JsonNode signedNode = objectMapper.readTree(node.get(OSSystemFields._osSignedData.name()).asText());
+            if ((certificateOriginal == null)) {
+                String fileName1 = fileName + "webcopy";
+                String url = "https://storage.googleapis.com/dev-public-upsmf/issuance/"+fileName1+".pdf";
+                certificateWebCopy = certificateService.getCertificate(signedNode,
+                        entityName,
+                        entityId,
+                        request.getHeader(HttpHeaders.ACCEPT),
+                        templateUrlFromRequest.replace(".html", "-WC.html"),
+                        JSONUtil.removeNodesByPath(node, definitionsManager.getExcludingFieldsForEntity(entityName)), url, false
+                );
+
+                String fileUrlForQR = url;
+                //getFileUrl(fileName1);
+                if (certificateWebCopy != null) {
+                    url = certificateService.saveToGCS(certificateWebCopy, fileName1);
+                    logger.debug("WebCopy of Certificate:" + url);
+                }
+                certificateOriginal = certificateService.getCertificate(signedNode,
+                        entityName,
+                        entityId,
+                        request.getHeader(HttpHeaders.ACCEPT),
+                        templateUrlFromRequest,
+                        JSONUtil.removeNodesByPath(node, definitionsManager.getExcludingFieldsForEntity(entityName)), url, false
+                );
+                if (certificateOriginal != null) {
+                    String originalUrl = getCredUrl(fileName, certificateOriginal);
+                    if (originalUrl != null) {
+                        shareCredentials(signedNode, originalUrl);
+                    }
+                }
+
+            }
+            return new ResponseEntity<>(certificateOriginal, HttpStatus.OK);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 
     private String getTemplateUrlFromRequestFromRegType(HttpServletRequest request, String entityName, String courseName) {
         String template = Template;

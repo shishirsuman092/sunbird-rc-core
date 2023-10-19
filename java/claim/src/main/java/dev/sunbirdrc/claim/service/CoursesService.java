@@ -65,6 +65,8 @@ public class CoursesService {
     public String getCourseKey(CourseDetailDTO courseDetailDTO) {
         if (courseDetailDTO != null && !StringUtils.isEmpty(courseDetailDTO.getCouncilName())
                 && courseDetailDTO.getEntityName() != null) {
+            log.info(">>>>>>>>>>>>> course details: " + courseDetailDTO);
+
             Optional<String> courseKey = Optional.empty();
 
             if (EntityType.StudentForeignVerification.equals(courseDetailDTO.getEntityName())) {
@@ -75,10 +77,20 @@ public class CoursesService {
                 courseKey = courseDetailsRepository.findCourseKeyByCouncilAndCategory(courseDetailDTO.getCouncilName(),
                         courseDetailDTO.getEntityName().name());
 
+            } else if (EntityType.DiplomaFromUP.equals(courseDetailDTO.getEntityName())) {
+                if (!StringUtils.isEmpty(courseDetailDTO.getCourseName())
+                        && !StringUtils.isEmpty(courseDetailDTO.getCourseType())) {
+
+                    courseDetailDTO.setActivityName(courseDetailDTO.getActivityName() != null ? courseDetailDTO.getActivityName() : "");
+
+                    courseKey = courseDetailsRepository.findCourseKeyForDiploma(courseDetailDTO.getCouncilName(),
+                            courseDetailDTO.getCourseName(), courseDetailDTO.getEntityName().name());
+                }
+
             } else if (EntityType.StudentFromUP.equals(courseDetailDTO.getEntityName())
                     || EntityType.StudentOutsideUP.equals(courseDetailDTO.getEntityName())) {
 
-            log.info(">>>>>>>>>>>>> course details: " + courseDetailDTO);
+
                 
                 if (!StringUtils.isEmpty(courseDetailDTO.getCourseName())
                         && !StringUtils.isEmpty(courseDetailDTO.getActivityName())
