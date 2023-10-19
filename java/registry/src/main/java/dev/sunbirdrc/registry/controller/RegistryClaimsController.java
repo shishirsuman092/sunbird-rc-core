@@ -11,6 +11,7 @@ import dev.sunbirdrc.registry.entities.AttestationPolicy;
 import dev.sunbirdrc.registry.helper.RegistryHelper;
 import dev.sunbirdrc.registry.middleware.util.JSONUtil;
 import dev.sunbirdrc.registry.model.dto.AttestationRequest;
+import dev.sunbirdrc.registry.model.dto.CourseDetailDTO;
 import dev.sunbirdrc.registry.util.ClaimRequestClient;
 import dev.sunbirdrc.registry.util.CommonUtils;
 import dev.sunbirdrc.registry.util.IDefinitionsManager;
@@ -260,5 +261,15 @@ public class RegistryClaimsController extends AbstractController{
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PostMapping("/api/v1/course/name")
+    public ResponseEntity<List<String>> getCourseNameByCouncilAndEntityAndCourseType(@RequestBody CourseDetailDTO courseDetailDTO) {
+        List<String> coursesByCouncilName = claimRequestClient.getCourseName(courseDetailDTO);
+        return ResponseEntity.ok(coursesByCouncilName);
+    }
 
+    @PostMapping("/api/v1/course/activity")
+    public ResponseEntity<List<String>> getActivityByCourseNameAndCouncilAndEntityAndCourseType(@RequestBody CourseDetailDTO courseDetailDTO) {
+        List<String> activityByCouncilNameAndCourseName = claimRequestClient.getActivityName(courseDetailDTO);
+        return ResponseEntity.ok(activityByCouncilNameAndCourseName);
+    }
 }

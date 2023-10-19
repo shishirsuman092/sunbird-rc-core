@@ -26,15 +26,16 @@ public class CourseDetails {
     @Column(name = "activityName")
     private String activityName;
 
-    @Column(name = "isGoodStanding")
-    private boolean goodStanding;
-
-    @Column(name = "isForeignVerification")
-    private boolean foreignVerification;
-
     @Column(name = "status")
-    private boolean status;
+    private Boolean status;
 
     @Column(name = "courseKey")
     private String courseKey;
+
+    @Column(name = "entityName")
+    private String entityName;
+
+    @Column(name = "courseType")
+    private String courseType;
+
 }
