@@ -5,12 +5,14 @@ import dev.sunbirdrc.claim.model.EntityType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Column;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class CourseDetailDTO {
     @JsonProperty("councilName")
     private String councilName;
