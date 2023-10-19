@@ -10,11 +10,13 @@ import dev.sunbirdrc.claim.repository.CoursesRepository;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class CoursesService {
 
     private CoursesRepository coursesRepository;
@@ -76,6 +78,8 @@ public class CoursesService {
             } else if (EntityType.StudentFromUP.equals(courseDetailDTO.getEntityName())
                     || EntityType.StudentOutsideUP.equals(courseDetailDTO.getEntityName())) {
 
+            log.info(">>>>>>>>>>>>> course details: " + courseDetailDTO);
+                
                 if (!StringUtils.isEmpty(courseDetailDTO.getCourseName())
                         && !StringUtils.isEmpty(courseDetailDTO.getActivityName())
                         && !StringUtils.isEmpty(courseDetailDTO.getCourseType())) {
