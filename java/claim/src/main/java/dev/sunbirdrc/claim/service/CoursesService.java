@@ -90,14 +90,13 @@ public class CoursesService {
             } else if (EntityType.StudentFromUP.equals(courseDetailDTO.getEntityName())
                     || EntityType.StudentOutsideUP.equals(courseDetailDTO.getEntityName())) {
 
-
-                
                 if (!StringUtils.isEmpty(courseDetailDTO.getCourseName())
                         && !StringUtils.isEmpty(courseDetailDTO.getActivityName())
                         && !StringUtils.isEmpty(courseDetailDTO.getCourseType())) {
 
                     courseKey = courseDetailsRepository.findCourseKeyForGeneralCategory(courseDetailDTO.getCouncilName(),
-                            courseDetailDTO.getCourseName(), courseDetailDTO.getActivityName(), courseDetailDTO.getEntityName().name());
+                            courseDetailDTO.getCourseName(), courseDetailDTO.getActivityName(),
+                            courseDetailDTO.getEntityName().name(), courseDetailDTO.getCourseType().toUpperCase());
                 }else {
                     throw new InvalidInputException("Invalid input exception while getting course key from " +
                             "general(UP & outside) category");

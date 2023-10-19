@@ -14,11 +14,12 @@ public interface CourseDetailsRepository extends JpaRepository<CourseDetails, Lo
 
     @Query("SELECT cd.courseKey FROM CourseDetails cd WHERE cd.councilName = :councilName " +
             "and cd.courseName = :courseName and cd.activityName = :activityName " +
-            "and entityName = :category and cd.status = true")
-    Optional<String> findCourseKeyForGeneralCategory(String councilName, String courseName, String activityName, String category);
+            "and cd.entityName = :entityName and cd.courseType = :courseType and cd.status = true")
+    Optional<String> findCourseKeyForGeneralCategory(String councilName, String courseName, String activityName,
+                                                     String entityName, String courseType);
 
     @Query("SELECT cd.courseKey FROM CourseDetails cd WHERE cd.councilName = :councilName " +
-            "and cd.courseName = :courseName and entityName = :entityName and cd.courseType = 'DIPLOMA'  and cd.status = true")
+            "and cd.courseName = :courseName and cd.entityName = :entityName and cd.courseType = 'DIPLOMA'  and cd.status = true")
     Optional<String> findCourseKeyForDiploma(String councilName, String courseName, String entityName);
 
     @Query("SELECT cd.courseKey FROM CourseDetails cd WHERE cd.councilName = :councilName " +
