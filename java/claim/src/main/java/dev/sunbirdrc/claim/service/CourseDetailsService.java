@@ -25,7 +25,7 @@ public class CourseDetailsService {
         // fetch record from DB
         if(courseDetailDTO.getCourseType() != null && !courseDetailDTO.getCourseType().isBlank()) {
             courseNames = courseDetailsRepository.findAllByCouncilNameAndCategoryAndCourseType(courseDetailDTO.getCouncilName(),
-                    courseDetailDTO.getEntityName().name(), courseDetailDTO.getCourseType());
+                    courseDetailDTO.getEntityName().name(), courseDetailDTO.getCourseType().toUpperCase());
         } else {
             courseNames = courseDetailsRepository.findAllByCouncilNameAndEntityName(courseDetailDTO.getCouncilName(),
                     courseDetailDTO.getEntityName().name());
@@ -46,7 +46,7 @@ public class CourseDetailsService {
                    courseDetailDTO.getEntityName().name());
         } else {
             activityNames = courseDetailsRepository.findAllByCourseName(courseDetailDTO.getCouncilName(), courseDetailDTO.getCourseName(),
-                    courseDetailDTO.getEntityName().name(), courseDetailDTO.getCourseType());
+                    courseDetailDTO.getEntityName().name(), courseDetailDTO.getCourseType().toUpperCase());
         }
         if(activityNames != null && !activityNames.isEmpty()) {
             return activityNames;
