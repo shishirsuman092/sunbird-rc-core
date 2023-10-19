@@ -374,7 +374,8 @@
       }
     ],
     "certificateTemplates": {
-      "StudentGoodStandingTemp": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/Foreign-certificate.html"
+      "StudentGoodStandingTemp": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/Foreign-certificate.html",
+      "GOODTANDING_UPDC": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/goodstanding.html"
     }
   }
 }
