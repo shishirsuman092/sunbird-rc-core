@@ -84,7 +84,7 @@ public class CoursesService {
                     courseDetailDTO.setActivityName(courseDetailDTO.getActivityName() != null ? courseDetailDTO.getActivityName() : "");
 
                     courseKey = courseDetailsRepository.findCourseKeyForDiploma(courseDetailDTO.getCouncilName(),
-                            courseDetailDTO.getCourseName(), courseDetailDTO.getEntityName().name());
+                            courseDetailDTO.getCourseName(), courseDetailDTO.getEntityName().name(), courseDetailDTO.getActivityName());
                 }
 
             } else if (EntityType.StudentFromUP.equals(courseDetailDTO.getEntityName())

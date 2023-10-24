@@ -897,13 +897,14 @@ public class RegistryEntityController extends AbstractController {
             String courseType = "DIPLOMA";
             String councilName = node.get("council") != null ? node.get("council").asText() : null;
             String courseName = node.get("courseName") != null ? node.get("courseName").asText() : null;
+            String activityName = node.get("activityName") != null ? node.get("activityName").asText() : null;
 
             CourseDetailDTO courseDetailDTO = CourseDetailDTO.builder()
                     .entityName(entityName)
                     .courseType(courseType)
                     .councilName(councilName)
                     .courseName(courseName)
-                    .activityName(null)
+                    .activityName(activityName)
                     .build();
 
             String templateUrlFromRequest = getTemplateUrlFromRequest(request, courseDetailDTO);
