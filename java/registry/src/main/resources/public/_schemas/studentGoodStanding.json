@@ -142,6 +142,7 @@
         "candidatePic": {"$id": "#/properties/candidatePic", "type": "string","title": "Candidate Pic"},
         "joiningDate": {"$id": "#/properties/joiningDate", "type": "string","title": "Joining Date"},
         "courseDate": {"$id": "#/properties/courseDate", "type": "string","title": "Course Date"},
+        "registrationIssueDate": {"$id": "#/properties/registrationIssueDate", "type": "string","title": "Registration Issue Date"},
         "nurseRegDate": {"$id": "#/properties/nurseRegDate", "type": "string", "title": "nurseRegDate"}
       }
     }
@@ -179,6 +180,7 @@
           "candidatePic":  "$.candidatePic",
           "joiningDate":  "$.joiningDate",
           "courseDate":  "$.courseDate",
+          "registrationIssueDate":  "$.registrationIssueDate",
           "nurseRegDate": "$.nurseRegDate"
         },
         "credentialTemplate": {
@@ -334,6 +336,12 @@
                   "name": "schema:Text"
                 }
               },
+              "registrationIssueDate": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#registrationIssueDate",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
               "nurseRegDate": {
                 "@id": "https://github.com/sunbird-specs/vc-specs#nurseRegDate",
                 "@context": {
@@ -367,6 +375,7 @@
             "candidatePic":  "{{candidatePic}}",
             "joiningDate":  "{{joiningDate}}",
             "courseDate":  "{{courseDate}}",
+            "registrationIssueDate":  "{{registrationIssueDate}}",
             "nurseRegDate":  "{{nurseRegDate}}"
           },
           "issuer": "did:web:sunbirdrc.dev/vc/skill"

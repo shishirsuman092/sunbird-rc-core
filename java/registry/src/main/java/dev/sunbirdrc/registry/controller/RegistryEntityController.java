@@ -995,7 +995,7 @@ public class RegistryEntityController extends AbstractController {
         String template = Template;
 
         if ("StudentForeignVerification".equalsIgnoreCase(courseDetailDTO.getEntityName())) {
-            return "https://raw.githubusercontent.com/kumarpawantarento/templates/main/Foreign-certificate.html";
+            return "https://raw.githubusercontent.com/kumarpawantarento/templates/main/Foreign-certificate-new.html";
         }
 
         if (externalTemplatesEnabled && !StringUtils.isEmpty(request.getHeader(template))) {

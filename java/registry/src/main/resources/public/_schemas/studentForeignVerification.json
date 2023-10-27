@@ -100,6 +100,11 @@
           "type": "string",
           "title": "Registration Number"
         },
+        "registrationIssueDate": {
+          "$id": "#/properties/registrationIssueDate",
+          "type": "string",
+          "title": "Registration Issue Date"
+        },
         "council": {
           "$id": "#/properties/council",
           "type": "string",
@@ -154,6 +159,9 @@
         "university":{"$id": "#/properties/university", "type": "string","title": "University"},
         "validityUpto":{"$id": "#/properties/validityUpto", "type": "string","title": "Validity Upto"},
         "maidenName":{"$id": "#/properties/maidenName", "type": "string","title": "Maiden Name"},
+        "foreignCouncilName":{"$id": "#/properties/foreignCouncilName", "type": "string","title": "Foreign Council Name"},
+        "foreignCouncilAddress":{"$id": "#/properties/foreignCouncilAddress", "type": "string","title": "Foreign Council Address"},
+        "foreignCouncilCountry":{"$id": "#/properties/foreignCouncilCountry", "type": "string","title": "Foreign Council Country"},
         "marriedName":{"$id": "#/properties/marriedName", "type": "string","title": "Married Name"},
         "presentAddress": {"$id": "#/properties/presentAddress", "type": "string","title": "Present Address"}
       }
@@ -176,6 +184,7 @@
           "email": "$.email",
           "trainingCenter": "$.trainingCenter",
           "registrationNumber": "$.registrationNumber",
+          "registrationIssueDate": "$.registrationIssueDate",
           "workPlace": "$.workPlace",
           "council": "$.council",
           "refNo": "$.refNo",
@@ -195,6 +204,9 @@
           "university":"$.university",
           "validityUpto":"$.validityUpto",
           "maidenName":"$.maidenName",
+          "foreignCouncilName":"$.foreignCouncilName",
+          "foreignCouncilAddress":"$.foreignCouncilAddress",
+          "foreignCouncilCountry":"$.foreignCouncilCountry",
           "marriedName": "$.marriedName"
         },
         "credentialTemplate": {
@@ -280,6 +292,12 @@
               },
               "registrationNumber": {
                 "@id": "https://github.com/sunbird-specs/vc-specs#registrationNumber",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "registrationIssueDate": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#registrationIssueDate",
                 "@context": {
                   "name": "schema:Text"
                 }
@@ -374,6 +392,24 @@
                   "name": "schema:Text"
                 }
               },
+              "foreignCouncilName": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#foreignCouncilName",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "foreignCouncilAddress": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#foreignCouncilAddress",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "foreignCouncilCountry": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#foreignCouncilCountry",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
               "marriedName": {
                 "@id": "https://github.com/sunbird-specs/vc-specs#marriedName",
                 "@context": {
@@ -403,6 +439,9 @@
             "name": "{{name}}",
             "marriedName": "{{marriedName}}",
             "maidenName": "{{maidenName}}",
+            "foreignCouncilName": "{{foreignCouncilName}}",
+            "foreignCouncilAddress": "{{foreignCouncilAddress}}",
+            "foreignCouncilCountry": "{{foreignCouncilCountry}}",
             "fathersName": "{{fathersName}}",
             "presentAddress": "{{presentAddress}}",
             "phoneNumber": "{{phoneNumber}}",
@@ -413,6 +452,7 @@
             "certificateNumber": "{{certificateNumber}}",
             "nurseRegDate": "{{nurseRegDate}}",
             "registrationNumber": "{{registrationNumber}}",
+            "registrationIssueDate": "{{registrationIssueDate}}",
             "workPlace": "{{workPlace}}",
             "docproof": "{{docproof}}",
             "claimType": "{{claimType}}",
