@@ -461,6 +461,7 @@
             "district":  "{{district}}",
             "country":   "{{country}}",
             "pincode":  "{{pincode}}",
+            "address":  "{{address}}",
             "date":  "{{date}}",
             "university":  "{{university}}",
             "validityUpto":  "{{validityUpto}}",
