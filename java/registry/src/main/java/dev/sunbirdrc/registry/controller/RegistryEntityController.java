@@ -461,6 +461,9 @@ public class RegistryEntityController extends AbstractController {
         ObjectNode objectNode = (ObjectNode) rootNode;
         objectNode.put("certificateNumber", String.valueOf(claimRequestClient.getCertificateNumber()));
 
+        logger.info("certificate number: " + String.valueOf(claimRequestClient.getCertificateNumber()));
+        logger.info("certificate number by object Node: " + objectNode.get("certificateNumber"));
+
 //        JsonNode university = objectNode.get("university");
 //        if (university == null || (university != null && (university.asText() == null || !university.asText().equalsIgnoreCase("NA")))) {
 //            objectNode.put("university", "NA");
