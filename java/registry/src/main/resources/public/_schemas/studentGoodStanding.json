@@ -146,6 +146,8 @@
         "universityName": {"$id": "#/properties/universityName", "type": "string","title": "University Name"},
         "instituteName": {"$id": "#/properties/instituteName", "type": "string","title": "Institute Name"},
         "courseName": {"$id": "#/properties/courseName", "type": "string","title": "Course Name"},
+        "dob": {"$id": "#/properties/dob", "type": "string","title": "Date of birth"},
+        "certificateNumber": {"$id": "#/properties/certificateNumber", "type": "string","title": "Certificate number"},
         "nurseRegDate": {"$id": "#/properties/nurseRegDate", "type": "string", "title": "nurseRegDate"}
       }
     }
@@ -187,6 +189,8 @@
           "universityName":  "$.universityName",
           "instituteName":  "$.instituteName",
           "courseName":  "$.courseName",
+          "dob":  "$.dob",
+          "certificateNumber":  "$.certificateNumber",
           "nurseRegDate": "$.nurseRegDate"
         },
         "credentialTemplate": {
@@ -366,6 +370,18 @@
                   "name": "schema:Text"
                 }
               },
+              "dob": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#dob",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "certificateNumber": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#certificateNumber",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
               "nurseRegDate": {
                 "@id": "https://github.com/sunbird-specs/vc-specs#nurseRegDate",
                 "@context": {
@@ -403,6 +419,8 @@
             "universityName":  "{{universityName}}",
             "instituteName":  "{{instituteName}}",
             "courseName":  "{{courseName}}",
+            "dob":  "{{dob}}",
+            "certificateNumber":  "{{certificateNumber}}",
             "nurseRegDate":  "{{nurseRegDate}}"
           },
           "issuer": "did:web:sunbirdrc.dev/vc/skill"
