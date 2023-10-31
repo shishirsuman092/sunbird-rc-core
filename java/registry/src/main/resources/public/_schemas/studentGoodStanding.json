@@ -410,8 +410,9 @@
       }
     ],
     "certificateTemplates": {
-      "StudentGoodStandingTemp": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/Foreign-certificate.html",
-      "GOODTANDING_UPDC": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/goodstanding_updc.html"
+      "GOODSTANDING_UPDC": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/GoodStanding-updc.html",
+      "GOODSTANDING_UPMC": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/GoodStanding-upmc.html",
+      "GOODSTANDING_UPNC": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/GoodStanding-upnc.html"
     }
   }
 }
