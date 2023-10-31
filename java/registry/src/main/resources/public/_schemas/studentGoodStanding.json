@@ -143,6 +143,9 @@
         "joiningDate": {"$id": "#/properties/joiningDate", "type": "string","title": "Joining Date"},
         "courseDate": {"$id": "#/properties/courseDate", "type": "string","title": "Course Date"},
         "registrationIssueDate": {"$id": "#/properties/registrationIssueDate", "type": "string","title": "Registration Issue Date"},
+        "universityName": {"$id": "#/properties/universityName", "type": "string","title": "University Name"},
+        "instituteName": {"$id": "#/properties/instituteName", "type": "string","title": "Institute Name"},
+        "courseName": {"$id": "#/properties/courseName", "type": "string","title": "Course Name"},
         "nurseRegDate": {"$id": "#/properties/nurseRegDate", "type": "string", "title": "nurseRegDate"}
       }
     }
@@ -181,6 +184,9 @@
           "joiningDate":  "$.joiningDate",
           "courseDate":  "$.courseDate",
           "registrationIssueDate":  "$.registrationIssueDate",
+          "universityName":  "$.universityName",
+          "instituteName":  "$.instituteName",
+          "courseName":  "$.courseName",
           "nurseRegDate": "$.nurseRegDate"
         },
         "credentialTemplate": {
@@ -342,6 +348,24 @@
                   "name": "schema:Text"
                 }
               },
+              "universityName": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#universityName",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "instituteName": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#instituteName",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
+              "courseName": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#courseName",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
               "nurseRegDate": {
                 "@id": "https://github.com/sunbird-specs/vc-specs#nurseRegDate",
                 "@context": {
@@ -376,6 +400,9 @@
             "joiningDate":  "{{joiningDate}}",
             "courseDate":  "{{courseDate}}",
             "registrationIssueDate":  "{{registrationIssueDate}}",
+            "universityName":  "{{universityName}}",
+            "instituteName":  "{{instituteName}}",
+            "courseName":  "{{courseName}}",
             "nurseRegDate":  "{{nurseRegDate}}"
           },
           "issuer": "did:web:sunbirdrc.dev/vc/skill"
@@ -384,7 +411,7 @@
     ],
     "certificateTemplates": {
       "StudentGoodStandingTemp": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/Foreign-certificate.html",
-      "GOODTANDING_UPDC": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/goodstanding.html"
+      "GOODTANDING_UPDC": "https://raw.githubusercontent.com/kumarpawantarento/templates/main/goodstanding_updc.html"
     }
   }
 }
