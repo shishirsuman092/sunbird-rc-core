@@ -148,6 +148,7 @@
         "courseName": {"$id": "#/properties/courseName", "type": "string","title": "Course Name"},
         "dob": {"$id": "#/properties/dob", "type": "string","title": "Date of birth"},
         "certificateNumber": {"$id": "#/properties/certificateNumber", "type": "string","title": "Certificate number"},
+        "refNoYear": {"$id": "#/properties/refNoYear", "type": "string","title": "Reference No year"},
         "nurseRegDate": {"$id": "#/properties/nurseRegDate", "type": "string", "title": "nurseRegDate"}
       }
     }
@@ -191,6 +192,7 @@
           "courseName":  "$.courseName",
           "dob":  "$.dob",
           "certificateNumber":  "$.certificateNumber",
+          "refNoYear":  "$.refNoYear",
           "nurseRegDate": "$.nurseRegDate"
         },
         "credentialTemplate": {
@@ -382,6 +384,12 @@
                   "name": "schema:Text"
                 }
               },
+              "refNoYear": {
+                "@id": "https://github.com/sunbird-specs/vc-specs#refNoYear",
+                "@context": {
+                  "name": "schema:Text"
+                }
+              },
               "nurseRegDate": {
                 "@id": "https://github.com/sunbird-specs/vc-specs#nurseRegDate",
                 "@context": {
@@ -421,6 +429,8 @@
             "courseName":  "{{courseName}}",
             "dob":  "{{dob}}",
             "certificateNumber":  "{{certificateNumber}}",
+            "refNoYear":  "{{refNoYear}}",
+            "council":  "{{council}}",
             "nurseRegDate":  "{{nurseRegDate}}"
           },
           "issuer": "did:web:sunbirdrc.dev/vc/skill"
