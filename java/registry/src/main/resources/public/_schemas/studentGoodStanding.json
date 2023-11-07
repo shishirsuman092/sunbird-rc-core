@@ -390,12 +390,6 @@
                   "name": "schema:Text"
                 }
               },
-              "council": {
-                "@id": "https://github.com/sunbird-specs/vc-specs#council",
-                "@context": {
-                  "name": "schema:Text"
-                }
-              },
               "nurseRegDate": {
                 "@id": "https://github.com/sunbird-specs/vc-specs#nurseRegDate",
                 "@context": {
