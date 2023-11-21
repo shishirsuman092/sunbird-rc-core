@@ -187,4 +187,11 @@ public class UserController {
         return userService.getUserByAttribute(body);
     }
 
+    @PostMapping("/user/exist")
+    public ResponseEntity<Boolean> isUserExistByUsername(@Valid @RequestBody CustomUsernameDTO customUsernameDTO) {
+        Boolean isUserExist = userService.isUserExist(customUsernameDTO.getUsername());
+
+        return new ResponseEntity<>(isUserExist, HttpStatus.OK);
+    }
+
 }
