@@ -3,9 +3,9 @@ package dev.sunbirdrc.exception;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class OtpException extends CustomException {
+public class CustomException extends RuntimeException {
 
-    public OtpException(String message) {
+    public CustomException(String message) {
         super(message);
     }
 }

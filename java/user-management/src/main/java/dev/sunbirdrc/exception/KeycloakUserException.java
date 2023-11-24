@@ -3,7 +3,7 @@ package dev.sunbirdrc.exception;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class KeycloakUserException extends RuntimeException {
+public class KeycloakUserException extends CustomException {
 
     public KeycloakUserException(String message) {
         super(message);

@@ -158,7 +158,7 @@ public class UserService {
                             .build();
                 } catch (NotAuthorizedException e) {
                     LOGGER.error("Credentials have authorization issue",e);
-                    throw new AuthorizationException("Credentials have authorization issue");
+                    throw new AuthorizationException("Invalid user cridentails");
                 } catch (Exception e) {
                     LOGGER.error("Unable to get user details",e);
                     throw new KeycloakUserException("Unable to get user details");
@@ -534,7 +534,7 @@ public class UserService {
             String username = customUsernameDTO.getUsername();
 
             if (!isUserExist(username)) {
-                throw new UserNotFoundException("User is not available in User Management System");
+                throw new UserNotFoundException("User is not available in our system");
             }
 
             List<UserRepresentation> userRepresentationList = getUserDetails(username);
