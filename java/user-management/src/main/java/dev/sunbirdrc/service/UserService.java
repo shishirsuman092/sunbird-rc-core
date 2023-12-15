@@ -614,10 +614,10 @@ public class UserService {
                         throw new AuthorizationException("Credentials have authorization issue");
                     } catch (Exception e) {
                         e.printStackTrace();
-                        throw new KeycloakUserException("Unable to get user detils - Update user");
+                        throw new KeycloakUserException("unable_to_get_user");
                     }
                 } else {
-                    throw new OtpException("OTP mismatch");
+                    throw new OtpException("otp_mismatch");
                 }
             } else {
                 throw new OtpException("Unable to get user details");
