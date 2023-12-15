@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.lang.NonNull;
 import org.springframework.scheduling.annotation.Async;
@@ -880,4 +881,25 @@ public class UserService {
         return substring;
     }
 
+    public ResponseEntity getUserStatusByAttribute(String userName) {
+        Boolean isActive = false;
+        if(userName == null || userName.isBlank()){
+            return new ResponseEntity<>("invalid_request", HttpStatus.BAD_REQUEST);
+        }
+        List<UserRepresentation> userRepresentationList = getUserDetails(userName);
+
+        if (userRepresentationList != null && !userRepresentationList.isEmpty()) {
+            Optional<UserRepresentation> userRepresentationOptional = userRepresentationList.stream()
+                    .filter(userRepresentation ->
+                            userName.equalsIgnoreCase(userRepresentation.getUsername()))
+                    .findFirst();
+
+            if (!userRepresentationOptional.isPresent()) {
+                return new ResponseEntity<>("user_not_found", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            UserRepresentation userRepresentation = userRepresentationOptional.get();
+            isActive = userRepresentation.isEnabled();
+        }
+        return new ResponseEntity<>(isActive, HttpStatus.OK);
+    }
 }

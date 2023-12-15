@@ -187,4 +187,9 @@ public class UserController {
         return userService.getUserByAttribute(body);
     }
 
+    @PostMapping(value = "/user/status", produces = "application/json")
+    public ResponseEntity getUserStatusByAttribute(@RequestBody String userName) throws SQLException {
+        return userService.getUserStatusByAttribute(userName);
+    }
+
 }
